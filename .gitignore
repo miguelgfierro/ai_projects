@@ -88,5 +88,10 @@ ENV/
 # Rope project settings
 .ropeproject
 
+# Data files 
+.h5
+
 ######
 *~
+
+
