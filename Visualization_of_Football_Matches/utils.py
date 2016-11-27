@@ -82,6 +82,26 @@ def aggregate_dataframe_coordinates(dataframe):
             count += 3
     return df
 
+def get_info_similar_team(team, df_stadium, threshold=0.6, verbose=False):
+    max_rank = 0
+    max_idx = -1
+    stadium = "Unknown"
+    latitude = np.NaN
+    longitude = np.NaN
+    for idx, val in enumerate(df_stadium['Team']):
+        rank = similar(team, val)
+        if rank > threshold:
+            if(verbose): print("%s and %s(Idx=%d) are %f similar." % (team, val, idx, rank))
+            if rank > max_rank:
+                if(verbose): print("New maximum rank: %f" %rank)
+                max_rank = rank
+                max_idx = idx
+                stadium = df_stadium['Stadium'].iloc[max_idx]
+                latitude = df_stadium['Latitude'].iloc[max_idx]
+                longitude = df_stadium['Longitude'].iloc[max_idx]
+    return stadium, latitude, longitude
+
+
 
 
 
