@@ -94,4 +94,9 @@ ENV/
 ######
 *~
 
+# Other additions
+*.bin
+*.train
+*.test
+
 
