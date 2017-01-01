@@ -98,5 +98,5 @@ ENV/
 *.bin
 *.train
 *.test
-
+*.vec
 
