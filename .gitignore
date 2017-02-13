@@ -99,4 +99,6 @@ ENV/
 *.train
 *.test
 *.vec
-*.model #cntk models
+*.model
+
+
