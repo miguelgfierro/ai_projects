@@ -1,7 +1,8 @@
 from flask import Flask
 from flask import request, abort, jsonify, make_response, json
 from cntk import load_model, combine
-
+from PIL import Image, ImageOps
+from io import BytesIO
 
 BAD_REQUEST = 400
 app = Flask(__name__)
@@ -17,13 +18,13 @@ def post_status():
     if not request.json or 'image' not in request.json:
         abort(BAD_REQUEST)
     image_request = request.json['image']
-    img = read_image_from_request(image_request)
+    img = read_image_from_request_base64(image_request)
     resp = predict(NULL, img, NULL, 1)
     return make_response(jsonify({'message': resp}), STATUS_OK)
 
 
-def read_image_from_request(image_request):
-    img = Image.open(BytesIO(image_request.read())).convert('RGB')
+def read_image_from_request_base64(image_base64):
+    img = Image.open(BytesIO(base64.b64decode(image_base64)))
     return img
 
         
