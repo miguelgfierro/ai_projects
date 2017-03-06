@@ -3,31 +3,23 @@ from flask import request, abort, jsonify, make_response, json
 from cntk import load_model, combine
 from PIL import Image, ImageOps
 from io import BytesIO
+import numpy as np
 
+STATUS_OK = 200
 BAD_REQUEST = 400
 app = Flask(__name__)
-
-
-@app.errorhandler(BAD_REQUEST)
-def bad_request(error):
-    return make_response(jsonify({'error': 'Bad request'}), BAD_REQUEST)
-
-
-@app.route('/api/v1/classify_image', methods=['POST'])
-def post_status():
-    if not request.json or 'image' not in request.json:
-        abort(BAD_REQUEST)
-    image_request = request.json['image']
-    img = read_image_from_request_base64(image_request)
-    resp = predict(NULL, img, NULL, 1)
-    return make_response(jsonify({'message': resp}), STATUS_OK)
 
 
 def read_image_from_request_base64(image_base64):
     img = Image.open(BytesIO(base64.b64decode(image_base64)))
     return img
 
-        
+
+def read_image_from_ioreader(image_request):
+    img = Image.open(BytesIO(image_request.read())).convert('RGB')
+    return img
+
+
 def read_synsets(filename='synsets.txt'):
     with open(filename, 'r') as f:
         synsets = [l.rstrip() for l in f]
@@ -36,10 +28,6 @@ def read_synsets(filename='synsets.txt'):
 
 
 def predict(model, image, labels, number_results = 5):
-    #FIXME: load this with the API
-    model = load_model('ResNet_18.model')
-    labels = read_synsets()
-
     #Crop and center the image
     img = ImageOps.fit(image, (224, 224), Image.ANTIALIAS)
     #Transform the image for CNTK format
@@ -54,5 +42,23 @@ def predict(model, image, labels, number_results = 5):
     return pred
 
 
+@app.errorhandler(BAD_REQUEST)
+def bad_request(error):
+    return make_response(jsonify({'error': 'Bad request'}), BAD_REQUEST)
+
+
+@app.route('/api/v1/classify_image', methods=['POST'])
+def classify_image():
+    #if not request.json or 'image' not in request.json:
+    #    abort(BAD_REQUEST)
+    image_request = request.files['image']
+    #img = read_image_from_request_base64(image_request)
+    img = read_image_from_ioreader(image_request)
+    resp = predict(model, img, labels, 5)
+    return make_response(jsonify({'message': resp}), STATUS_OK)
+
+
 if __name__ == "__main__":
+    model = load_model('ResNet_152.model')
+    labels = read_synsets()
     app.run(debug=True)
