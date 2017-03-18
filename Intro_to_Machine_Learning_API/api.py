@@ -58,7 +58,12 @@ def classify_image():
     return make_response(jsonify({'message': resp}), STATUS_OK)
 
 
+@app.route('/')
+def hello():
+    return "<h1>The CNTK API works!</h1>"
+
+
 if __name__ == "__main__":
     model = load_model('ResNet_152.model')
     labels = read_synsets()
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
