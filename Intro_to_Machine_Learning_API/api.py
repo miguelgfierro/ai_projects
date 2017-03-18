@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import request, abort, jsonify, make_response, json
+from flask import request, abort, jsonify, make_response, json, render_template
 from cntk import load_model, combine
 from PIL import Image, ImageOps
 from io import BytesIO
@@ -60,7 +60,7 @@ def classify_image():
 
 @app.route('/')
 def hello():
-    return "<h1>The CNTK API works!</h1>"
+    return render_template('hello.html')
 
 
 if __name__ == "__main__":
