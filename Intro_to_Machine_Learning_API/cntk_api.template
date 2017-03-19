@@ -1,0 +1,8 @@
+server {
+    listen 80;
+    server_name server_domain_or_IP;
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/user/myproject/myproject.sock;
+    }
+}

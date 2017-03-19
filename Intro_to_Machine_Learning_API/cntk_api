@@ -1,0 +1,8 @@
+server {
+    listen 80;
+    server_name http://migonzacpulinuxvm.southcentralus.cloudapp.azure.com;
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/hoaphumanoid/repo/sciblog_support/Intro_to_Machine_Learning_API/cntk_api.sock;
+    }
+}
