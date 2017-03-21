@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name server_domain_or_IP;
+    server_name server_domain_or_IP_without_http;
     location / {
         include proxy_params;
         proxy_pass http://unix:/home/user/myproject/myproject.sock;
