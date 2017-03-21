@@ -1,0 +1,14 @@
+[Unit]
+Description=Gunicorn instance to serve CNTK API
+After=network.target
+
+[Service]
+User=hoaphumanoid
+Group=www-data
+WorkingDirectory=/home/hoaphumanoid/repo/sciblog_support/Intro_to_Machine_Learning_API
+Environment="PATH=/home/hoaphumanoid/anaconda3/envs/cntk-py35/bin/"
+ExecStart=/home/hoaphumanoid/anaconda3/envs/cntk-py35/bin/gunicorn --workers 3 --bind unix:cntk_api.sock -m 007 wsgi:app
+
+[Install]
+WantedBy=multi-user.target
+
