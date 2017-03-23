@@ -51,6 +51,7 @@ def bad_request(error):
 def classify_image():
     #if not request.json or 'image' not in request.json:
     #    abort(BAD_REQUEST)
+    print("Request received")
     image_request = request.files['image']
     #img = read_image_from_request_base64(image_request)
     img = read_image_from_ioreader(image_request)
