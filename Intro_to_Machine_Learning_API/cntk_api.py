@@ -10,6 +10,7 @@ BAD_REQUEST = 400
 app = Flask(__name__)
 
 
+
 def read_image_from_request_base64(image_base64):
     img = Image.open(BytesIO(base64.b64decode(image_base64)))
     return img
@@ -49,7 +50,7 @@ def bad_request(error):
 
 @app.route('/api/v1/classify_image', methods=['POST'])
 def classify_image():
-    #if not request.json or 'image' not in request.json:
+    #if not request.json or 'image' not in request:
     #    abort(BAD_REQUEST)
     print("Request received")
     image_request = request.files['image']
@@ -64,7 +65,8 @@ def hello():
     return render_template('hello.html')
 
 
+labels = read_synsets()
+model = load_model('ResNet_152.model')
+
 if __name__ == "__main__":
-    model = load_model('ResNet_152.model')
-    labels = read_synsets()
     app.run(debug=True, host='0.0.0.0')
