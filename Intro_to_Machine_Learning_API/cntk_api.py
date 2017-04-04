@@ -4,15 +4,19 @@ from cntk import load_model, combine
 from PIL import Image, ImageOps
 from io import BytesIO
 import numpy as np
+import requests
+
 
 STATUS_OK = 200
+NOT_FOUND = 404
 BAD_REQUEST = 400
+BAD_PARAM = 450
 app = Flask(__name__)
 
 
 
-def read_image_from_request_base64(image_base64):
-    img = Image.open(BytesIO(base64.b64decode(image_base64)))
+def read_image_from_url(url):
+    img = Image.open(requests.get(url, stream=True).raw)
     return img
 
 
@@ -48,14 +52,29 @@ def bad_request(error):
     return make_response(jsonify({'error': 'Bad request'}), BAD_REQUEST)
 
 
+@app.errorhandler(NOT_FOUND)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), NOT_FOUND)
+
+
+#TODO: make custom error handler
+#@app.errorhandler(BAD_PARAM)
+#def bad_param(error=None):
+#    return make_response(jsonify({'error': 'Bad parameter'}), BAD_PARAM)
+
+
 @app.route('/api/v1/classify_image', methods=['POST'])
 def classify_image():
-    #if not request.json or 'image' not in request:
-    #    abort(BAD_REQUEST)
-    print("Request received")
-    image_request = request.files['image']
-    #img = read_image_from_request_base64(image_request)
-    img = read_image_from_ioreader(image_request)
+    if 'image' in request.files:
+        print("Image request")
+        image_request = request.files['image']
+        img = read_image_from_ioreader(image_request)
+    elif 'url' in request.json: 
+        print("JSON request: ", request.json)
+        image_url = request.json['url']
+        img = read_image_from_url(image_url)
+    else:
+        abort(BAD_REQUEST)
     resp = predict(model, img, labels, 5)
     return make_response(jsonify({'message': resp}), STATUS_OK)
 
