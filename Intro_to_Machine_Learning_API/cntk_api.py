@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 
 def read_image_from_url(url):
-    img = Image.open(requests.get(url, stream=True).raw)
+    img = Image.open(requests.get(url, stream=True).raw).convert('RGB')
     return img
 
 
