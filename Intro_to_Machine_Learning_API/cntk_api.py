@@ -39,8 +39,9 @@ def predict(model, image, labels, number_results = 5):
     img = np.array(img, dtype=np.float32)
     img = np.ascontiguousarray(np.transpose(img, (2, 0, 1)))
     # Use last layer to make prediction
-    z_out = combine([model.outputs[3].owner])
-    result = np.squeeze(z_out.eval({z_out.arguments[0]:[img]}))
+    arguments = {model.arguments[0]: [img]}
+    result = model.eval(arguments)
+    result = np.squeeze(result)
     # Sort probabilities 
     prob_idx = np.argsort(result)[::-1][:number_results]
     pred = [labels[i] for i in prob_idx]
