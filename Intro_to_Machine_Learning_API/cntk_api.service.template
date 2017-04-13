@@ -7,7 +7,7 @@ User=user
 Group=www-data
 WorkingDirectory=/home/user/myproject
 Environment="PATH=/home/user/myproject/myprojectenv/bin"
-ExecStart=/home/user/myproject/myprojectenv/bin/gunicorn --workers 3 --log-level debug --error-logfile /home/user/myproject/debug.log --bind 0.0.0.0:8008 -m 007 wsgi:app
+ExecStart=/home/user/myproject/myprojectenv/bin/gunicorn --workers 3 --log-level debug --error-logfile /home/user/myproject/debug_gunicorn.log --bind 0.0.0.0:8008 -m 007 wsgi:app
 
 [Install]
 WantedBy=multi-user.target
