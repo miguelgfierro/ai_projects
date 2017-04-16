@@ -13,7 +13,6 @@ from config import DEVELOPMENT, PORT
 STATUS_OK = 200
 NOT_FOUND = 404
 BAD_REQUEST = 400
-BAD_PARAM = 450
 SERVER_ERROR = 500
 app = Flask(__name__)
 
@@ -62,9 +61,8 @@ def not_found(error):
 
 
 @app.errorhandler(SERVER_ERROR)
-def not_found(error):
+def server_error(error):
     return make_response(jsonify({'error': 'Server error'}), SERVER_ERROR)
-
 
 
 @app.route('/api/v1/classify_image', methods=['POST'])
@@ -88,9 +86,6 @@ def hello():
     return render_template('hello.html')
 
 
-labels = read_synsets()
-model = load_model('ResNet_152.model')
-
 def run_server():
     # Enable WSGI access logging via Paste
     app_logged = TransLogger(app)
@@ -110,6 +105,12 @@ def run_server():
     # Start the CherryPy WSGI web server
     cherrypy.engine.start()
     cherrypy.engine.block()
+
+    
+# Load synsets and model as global variables
+labels = read_synsets()
+model = load_model('ResNet_152.model')
+
 
 if __name__ == "__main__":
     if DEVELOPMENT:
