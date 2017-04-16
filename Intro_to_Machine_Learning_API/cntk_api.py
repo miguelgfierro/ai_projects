@@ -5,14 +5,17 @@ from PIL import Image, ImageOps
 from io import BytesIO
 import numpy as np
 import requests
+import cherrypy
+from paste.translogger import TransLogger
+from config import DEVELOPMENT, PORT
 
 
 STATUS_OK = 200
 NOT_FOUND = 404
 BAD_REQUEST = 400
 BAD_PARAM = 450
+SERVER_ERROR = 500
 app = Flask(__name__)
-
 
 
 def read_image_from_url(url):
@@ -58,10 +61,10 @@ def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), NOT_FOUND)
 
 
-#TODO: make custom error handler
-#@app.errorhandler(BAD_PARAM)
-#def bad_param(error=None):
-#    return make_response(jsonify({'error': 'Bad parameter'}), BAD_PARAM)
+@app.errorhandler(SERVER_ERROR)
+def not_found(error):
+    return make_response(jsonify({'error': 'Server error'}), SERVER_ERROR)
+
 
 
 @app.route('/api/v1/classify_image', methods=['POST'])
@@ -88,5 +91,28 @@ def hello():
 labels = read_synsets()
 model = load_model('ResNet_152.model')
 
+def run_server():
+    # Enable WSGI access logging via Paste
+    app_logged = TransLogger(app)
+
+    # Mount the WSGI callable object (app) on the root directory
+    cherrypy.tree.graft(app_logged, '/')
+
+    # Set the configuration of the web server
+    cherrypy.config.update({
+        'engine.autoreload_on': True,
+        'log.screen': True,
+        'server.socket_port': PORT,
+        'server.socket_host': '0.0.0.0',
+        'server.thread_pool': 50, # 10 is default
+    })
+
+    # Start the CherryPy WSGI web server
+    cherrypy.engine.start()
+    cherrypy.engine.block()
+
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')
+    if DEVELOPMENT:
+        app.run(debug=True)
+    else:
+        run_server()
