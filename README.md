@@ -7,8 +7,8 @@ This repo contains the projects, additional information and code to support my b
 
 * [Visualization of Football Matches with Datashader](https://github.com/miguelgfierro/sciblog_support/blob/master/Visualization_of_Football_Matches/visualization_football.md): In this notebook we explain how to visualize all matches in the UEFA Champions League since its beginning using the python library datashader. To create the project we use the Lean Startup method. Here the [blog entry](https://miguelgfierro.com/blog/2016/how-to-develop-a-data-science-project-using-the-lean-startup-method/).
 
-* [Introduction to Natural Language Processing with fastText](https://github.com/miguelgfierro/sciblog_support/blob/master/Intro_to_NLP_with_fastText/Intro_to_NLP.ipynb). In this project we show how to implement text classification, sentiment analysis and word embedding using the library fastText. We also show a way to represent the word embeddings in a reduced space using t-SNE algorithm. Here the [blog entry](https://miguelgfierro.com/blog/2017/a-gentle-introduction-to-text-classification-and-sentiment-analysis/).
+* [Introduction to Natural Language Processing with fastText](https://github.com/miguelgfierro/sciblog_support/blob/master/Intro_to_NLP_with_fastText/Intro_to_NLP.ipynb): In this project we show how to implement text classification, sentiment analysis and word embedding using the library fastText. We also show a way to represent the word embeddings in a reduced space using t-SNE algorithm. Here the [blog entry](https://miguelgfierro.com/blog/2017/a-gentle-introduction-to-text-classification-and-sentiment-analysis/).
 
-
+* [Introduction to Machine Learning API](https://github.com/miguelgfierro/sciblog_support/blob/master/Intro_to_Machine_Learning_API/Intro_to_Cloud_ML_with_Flask_and_CNTK.ipynb): In this notebook we show how to create an image classification API. The system works with a pretrained CNN using CNTK deep learning library. The API is setup with Flask for managing the end point services and CherryPy as the backend server.
 
 
