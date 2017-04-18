@@ -34,12 +34,20 @@ def read_synsets(filename='synsets.txt'):
     return labels
 
 
-def predict(model, image, labels, number_results = 5):
+def get_preprocessed_image(my_image, mean_image):
     #Crop and center the image
-    img = ImageOps.fit(image, (224, 224), Image.ANTIALIAS)
+    my_image = ImageOps.fit(my_image, (224, 224), Image.ANTIALIAS)
     #Transform the image for CNTK format
-    img = np.array(img, dtype=np.float32)
-    img = np.ascontiguousarray(np.transpose(img, (2, 0, 1)))
+    my_image = np.array(my_image, dtype=np.float32)
+    # RGB -> BGR
+    bgr_image = my_image[:, :, ::-1] 
+    image_data = np.ascontiguousarray(np.transpose(bgr_image, (2, 0, 1)))
+    image_data -= mean_image
+    return image_data
+
+
+def predict(model, image, labels, number_results=5):
+    img = get_preprocessed_image(image, 0)
     # Use last layer to make prediction
     arguments = {model.arguments[0]: [img]}
     result = model.eval(arguments)
