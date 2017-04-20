@@ -106,8 +106,7 @@ def run_server():
     cherrypy.config.update({
         'engine.autoreload_on': True,
         'log.screen': True,
-        'log.access_file': "cherrypy_access.log",
-        'log.error_file': "cherrypy_error.log",
+        'log.error_file': "cherrypy.log",
         'server.socket_port': PORT,
         'server.socket_host': '0.0.0.0',
         'server.thread_pool': 50, # 10 is default
