@@ -76,14 +76,15 @@ def server_error(error):
 @app.route('/api/v1/classify_image', methods=['POST'])
 def classify_image():
     if 'image' in request.files:
-        print("Image request")
+        cherrypy.log("CHERRYPY LOG: Image request")
         image_request = request.files['image']
         img = read_image_from_ioreader(image_request)
     elif 'url' in request.json: 
-        print("JSON request: ", request.json)
+        cherrypy.log("CHERRYPY LOG: JSON request: {}".format(request.json['url']))
         image_url = request.json['url']
         img = read_image_from_url(image_url)
     else:
+        cherrypy.log("CHERRYPY LOG: Bad request")
         abort(BAD_REQUEST)
     resp = predict(model, img, labels, 5)
     return make_response(jsonify({'message': resp}), STATUS_OK)
@@ -105,6 +106,8 @@ def run_server():
     cherrypy.config.update({
         'engine.autoreload_on': True,
         'log.screen': True,
+        'log.access_file': "cherrypy_access.log",
+        'log.error_file': "cherrypy_error.log",
         'server.socket_port': PORT,
         'server.socket_host': '0.0.0.0',
         'server.thread_pool': 50, # 10 is default
