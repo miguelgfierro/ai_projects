@@ -101,4 +101,5 @@ ENV/
 *.vec
 *.model
 
-
+#projects
+A_Gentle_Introduction_to_Transfer_Learning/data/
