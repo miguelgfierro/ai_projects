@@ -1,6 +1,7 @@
 import subprocess
 import os
 import glob
+from collections import Counter
 import numpy as np
 import matplotlib.pyplot as plt
 import torchvision
@@ -117,10 +118,10 @@ def plot_pytorch_data_stream(dataobject, max_images=8, title=True):
         plt.title(names)
 
 
-def train_model(dataloders, model, criterion, optimizer, scheduler, num_epochs=25):
+def train_model(dataloaders, model, criterion, optimizer, scheduler, num_epochs=25):
     since = time.time()
-    sets = list(dataloders.keys())
-    dataset_sizes = {x: len(dataloders[x]) for x in sets}
+    sets = list(dataloaders.keys())
+    dataset_sizes = {x: len(dataloaders[x].dataset) for x in sets}
     best_model_wts = model.state_dict()
     best_acc = 0.0
 
@@ -140,7 +141,7 @@ def train_model(dataloders, model, criterion, optimizer, scheduler, num_epochs=2
             running_corrects = 0
 
             # Iterate over data.
-            for data in dataloders[phase]:
+            for data in dataloaders[phase]:
                 # get the inputs
                 inputs, labels = data
 
