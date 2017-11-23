@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torchvision
 from torchvision import datasets, transforms
+from torchvision import models
 import torch
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
@@ -124,9 +125,10 @@ def train_model(dataloaders, model, criterion, optimizer, scheduler, num_epochs=
     dataset_sizes = {x: len(dataloaders[x].dataset) for x in sets}
     best_model_wts = model.state_dict()
     best_acc = 0.0
-
+    acc_per_epoch = []
+    loss_per_epoch = []
     for epoch in range(num_epochs):
-        print('Epoch {}/{}'.format(epoch, num_epochs - 1))
+        print('Epoch {}/{}'.format(epoch + 1, num_epochs))
         print('-' * 10)
 
         # Each epoch has a training and validation phase
@@ -169,9 +171,10 @@ def train_model(dataloaders, model, criterion, optimizer, scheduler, num_epochs=
 
             epoch_loss = running_loss / dataset_sizes[phase]
             epoch_acc = running_corrects / dataset_sizes[phase]
-
-            print('{} Loss: {:.4f} Acc: {:.4f}'.format(
-                phase, epoch_loss, epoch_acc))
+            print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
+            if phase == 'val':
+                loss_per_epoch.append(epoch_loss)
+                acc_per_epoch.append(epoch_acc)
 
             # deep copy the model
             if phase == 'val' and epoch_acc > best_acc:
@@ -187,8 +190,14 @@ def train_model(dataloaders, model, criterion, optimizer, scheduler, num_epochs=
 
     # load best model weights
     model.load_state_dict(best_model_wts)
-    return model
+    return model, acc_per_epoch, loss_per_epoch
 
+
+def available_models():
+    """Return available pytorch models, callable using `models.__dict__[name]`"""
+    model_names = sorted(name for name in models.__dict__  if name.islower() and not name.startswith("__") and 
+                         callable(models.__dict__[name]))
+    return model_names
 
 
 
