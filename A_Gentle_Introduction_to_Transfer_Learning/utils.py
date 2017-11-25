@@ -11,6 +11,7 @@ import torch
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
 import time
+from scipy.interpolate import interp1d
 
 
 def get_number_processors():
@@ -125,11 +126,10 @@ def train_model(dataloaders, model, criterion, optimizer, scheduler, num_epochs=
     dataset_sizes = {x: len(dataloaders[x].dataset) for x in sets}
     best_model_wts = model.state_dict()
     best_acc = 0.0
-    acc_per_epoch = []
-    loss_per_epoch = []
+    metrics = {'train_acc':[],'val_acc':[],'train_loss':[],'val_loss':[]}
     for epoch in range(num_epochs):
         if verbose:
-            print('Epoch {}/{}'.format(epoch + 1, num_epochs))
+            print('\nEpoch {}/{}'.format(epoch + 1, num_epochs))
             print('-' * 10)
 
         # Each epoch has a training and validation phase
@@ -170,13 +170,16 @@ def train_model(dataloaders, model, criterion, optimizer, scheduler, num_epochs=
                 running_loss += loss.data[0]
                 running_corrects += torch.sum(preds == labels.data)
 
+            #metrics
             epoch_loss = running_loss / dataset_sizes[phase]
             epoch_acc = running_corrects / dataset_sizes[phase]
-            if verbose: print('{} Loss: {:.4f} Acc: {:.4f}\n'.format(phase, epoch_loss, epoch_acc))
-            if phase == 'val':
-                loss_per_epoch.append(epoch_loss)
-                acc_per_epoch.append(epoch_acc)
-
+            if verbose: print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
+            if phase == 'train':
+                metrics['train_acc'].append(epoch_acc)
+                metrics['train_loss'].append(epoch_loss)
+            else:
+                metrics['val_acc'].append(epoch_acc)
+                metrics['val_loss'].append(epoch_loss)
             # deep copy the model
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
@@ -190,7 +193,7 @@ def train_model(dataloaders, model, criterion, optimizer, scheduler, num_epochs=
 
     # load best model weights
     model.load_state_dict(best_model_wts)
-    return model, acc_per_epoch, loss_per_epoch
+    return model, metrics
 
 
 def available_models():
@@ -200,5 +203,36 @@ def available_models():
     return model_names
 
 
+def plot_metrics(metrics):
+    """Plot metrics from training. metrics is a dict containing 'train_acc', 'val_acc', 'train_loss' and
+    'val_loss', each of them contains the metrics values in a list"""
+    max_epochs = len(metrics['train_acc']) + 1
+    epochs = range(1, max_epochs)
+    epochs_dx = np.linspace(epochs[0], epochs[-1], num=max_epochs*4, endpoint=True)
+    s_train_acc = interp1d(epochs, metrics['train_acc'], kind='cubic')    
+    s_val_acc = interp1d(epochs, metrics['val_acc'], kind='cubic')    
+    s_train_loss = interp1d(epochs, metrics['train_loss'], kind='cubic')    
+    s_val_loss = interp1d(epochs, metrics['val_loss'], kind='cubic')    
+
+    plt.figure()
+    ax1 = plt.subplot(121)
+    ax1.plot(epochs, metrics['train_acc'], 'b.', label='train')
+    ax1.plot(epochs_dx, s_train_acc(epochs_dx), 'b')
+    ax1.plot(epochs, metrics['val_acc'], 'g.', label='val')
+    ax1.plot(epochs_dx, s_val_acc(epochs_dx), 'g')
+    ax1.legend( loc="lower right")
+    plt.title("Accuracy")
+    plt.xlabel("Epochs")
+    plt.subplots_adjust(right=2)
+
+    ax2 = plt.subplot(122)
+    ax2.plot(epochs, metrics['train_loss'], 'b.', label='train')
+    ax2.plot(epochs_dx, s_train_loss(epochs_dx), 'b')
+    ax2.plot(epochs, metrics['val_loss'], 'g.', label='val')
+    ax2.plot(epochs_dx, s_val_loss(epochs_dx), 'g')
+    ax2.legend(loc="upper right")
+    plt.title("Loss")
+    plt.xlabel("Epochs")
+    plt.show()
 
 
