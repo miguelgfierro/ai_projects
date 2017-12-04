@@ -1,6 +1,8 @@
 import subprocess
 import os
 import glob
+import json
+import shutil
 from collections import Counter
 import numpy as np
 import matplotlib.pyplot as plt
@@ -45,6 +47,25 @@ def get_gpu_name():
     except Exception as e:
         print(e)
 
+        
+def format_dictionary(dct, indent=4):
+    """Formats a dictionary to be printed
+    Parameters:
+        dct (dict): Dictionary.
+        indent (int): Indentation value.
+    Returns:
+        result (str): Formatted dictionary ready to be printed
+    Examples:
+        >>> dct = {'bkey':1, 'akey':2}
+        >>> print(format_dictionary(dct))
+        {
+            "akey": 2,
+            "bkey": 1
+        }
+    """
+    return json.dumps(dct, indent=indent, sort_keys=True)
+
+
 
 def get_filenames_in_folder(folderpath):
     """ Return the files names in a folder.
@@ -58,7 +79,63 @@ def get_filenames_in_folder(folderpath):
 
     """
     names = [os.path.basename(x) for x in glob.glob(os.path.join(folderpath, '*'))]
-    return names
+    return sorted(names)
+
+
+def _create_sets_folders(root_folder, sets_names, target_folder):
+    for s in sets_names:
+        dest = os.path.join(root_folder, s, target_folder)
+        if not os.path.isdir(dest):
+            os.makedirs(dest)
+
+            
+def split_dataset_folder(root_folder, dest_folder, sets_names=['train','val'], sets_sizes=[0.8,0.2], shuffle=False, verbose=True):
+    assert sum(sets_sizes) == 1, "Data set sizes do not sum to 1"
+    for folder in get_filenames_in_folder(root_folder):
+        if verbose: print("Folder: ", folder)
+        _create_sets_folders(dest_folder, sets_names, folder)
+        files = get_filenames_in_folder(os.path.join(root_folder, folder))
+        files_split = split_list(files, sets_sizes, shuffle)
+        for split, set_name in zip(files_split, sets_names):
+            for f in split:
+                orig = os.path.join(root_folder, folder, f)
+                dest = os.path.join(dest_folder, set_name, folder)
+                if verbose: print("Copying {} into {}".format(orig, dest))
+                shutil.copy2(orig, dest)
+
+                
+def split_list(py_list, perc_size=[0.8, 0.2], shuffle=False):
+    """Split a list in weighted chunks
+    Parameters:
+        py_list (list): A list of elements.
+        perc_size (list): The percentual size of each chunk size.
+        shuffle (bool): Shuffle the list or not
+    Returns:
+        result_list (list of list): A list of lists with the chunks.
+    Examples:
+        >>> split_list(list(range(7)),[0.47,0.33,0.2])
+        [[0, 1, 2], [3, 4, 5], [6]]
+        >>> split_list(list(range(10)),[0.6,0.4], True)
+        [[1, 2, 3, 6, 9, 5], [4, 8, 0, 7]]
+
+    """
+    assert sum(perc_size) == 1, "Percentage sizes do not sum to 1"
+    l = py_list[:]
+    if shuffle:
+        random.shuffle(l)
+    # Turn percentages into values between 0 and 1
+    splits = np.cumsum(perc_size)
+
+    # Split doesn't need last percent, it will just take what is left
+    splits = splits[:-1]
+
+    # Turn values into indices
+    splits *= len(l)
+
+    # Turn double indices into integers.
+    splits = splits.round().astype(np.int)
+
+    return [list(chunks) for chunks in np.split(l, splits)]
 
 
 def create_dataset(data_dir, batch_size=32, sets=['train', 'val'], verbose=True):
@@ -67,6 +144,7 @@ def create_dataset(data_dir, batch_size=32, sets=['train', 'val'], verbose=True)
     """
     data_transforms = {
         'train': transforms.Compose([
+            transforms.Scale(256),
             transforms.RandomSizedCrop(224),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
@@ -89,8 +167,8 @@ def create_dataset(data_dir, batch_size=32, sets=['train', 'val'], verbose=True)
     if verbose:
         dataset_sizes = {x: len(image_datasets[x]) for x in sets}
         class_names = dataloaders[sets[0]].dataset.class_to_idx
-        print("There are {} clases in the dataset: {}".format(len(class_names), class_names))
-        print("Sets sizes: ", dataset_sizes)
+        print("There are {} clases in the dataset: {}".format(len(class_names), format_dictionary(class_names)))
+        print("Sets sizes: ", format_dictionary(dataset_sizes))
         for x in sets:   
             c = Counter(item[1] for item in image_datasets[x])
             c = dict(c)
@@ -120,9 +198,8 @@ def plot_pytorch_data_stream(dataobject, max_images=8, title=True):
         plt.title(names)
 
 
-def train_model(dataloaders, model, criterion, optimizer, scheduler, num_epochs=25, verbose=True):
+def train_model(dataloaders, model, sets, criterion, optimizer, scheduler, num_epochs=25, verbose=True):
     since = time.time()
-    sets = list(dataloaders.keys())
     dataset_sizes = {x: len(dataloaders[x].dataset) for x in sets}
     best_model_wts = model.state_dict()
     best_acc = 0.0
