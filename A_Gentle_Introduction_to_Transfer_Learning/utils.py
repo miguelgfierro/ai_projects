@@ -3,6 +3,7 @@ import os
 import glob
 import json
 import shutil
+from PIL import Image
 from collections import Counter
 import numpy as np
 import matplotlib.pyplot as plt
@@ -82,27 +83,19 @@ def get_filenames_in_folder(folderpath):
     return sorted(names)
 
 
+def get_files_in_folder_recursively(folderpath):
+    if folderpath[-1]!='/': #Add final '/' if it doesn't exist
+        folderpath += '/'
+    names = [x.replace(folderpath,'') for x in glob.iglob(folderpath+'/**', recursive=True) if os.path.isfile(x)]
+    return sorted(names)
+
+
 def _create_sets_folders(root_folder, sets_names, target_folder):
     for s in sets_names:
         dest = os.path.join(root_folder, s, target_folder)
         if not os.path.isdir(dest):
             os.makedirs(dest)
-
-            
-def split_dataset_folder(root_folder, dest_folder, sets_names=['train','val'], sets_sizes=[0.8,0.2], shuffle=False, verbose=True):
-    assert sum(sets_sizes) == 1, "Data set sizes do not sum to 1"
-    for folder in get_filenames_in_folder(root_folder):
-        if verbose: print("Folder: ", folder)
-        _create_sets_folders(dest_folder, sets_names, folder)
-        files = get_filenames_in_folder(os.path.join(root_folder, folder))
-        files_split = split_list(files, sets_sizes, shuffle)
-        for split, set_name in zip(files_split, sets_names):
-            for f in split:
-                orig = os.path.join(root_folder, folder, f)
-                dest = os.path.join(dest_folder, set_name, folder)
-                if verbose: print("Copying {} into {}".format(orig, dest))
-                shutil.copy2(orig, dest)
-
+          
                 
 def split_list(py_list, perc_size=[0.8, 0.2], shuffle=False):
     """Split a list in weighted chunks
@@ -138,6 +131,39 @@ def split_list(py_list, perc_size=[0.8, 0.2], shuffle=False):
     return [list(chunks) for chunks in np.split(l, splits)]
 
 
+def split_dataset_folder(root_folder, dest_folder, sets_names=['train','val'], sets_sizes=[0.8,0.2], shuffle=False, verbose=True):
+    assert sum(sets_sizes) == 1, "Data set sizes do not sum to 1"
+    for folder in get_filenames_in_folder(root_folder):
+        if verbose: print("Folder: ", folder)
+        _create_sets_folders(dest_folder, sets_names, folder)
+        files = get_filenames_in_folder(os.path.join(root_folder, folder))
+        files_split = split_list(files, sets_sizes, shuffle)
+        for split, set_name in zip(files_split, sets_names):
+            for f in split:
+                orig = os.path.join(root_folder, folder, f)
+                dest = os.path.join(dest_folder, set_name, folder)
+                if verbose: print("Copying {} into {}".format(orig, dest))
+                shutil.copy2(orig, dest)
+
+                
+def convert_image_dataset_to_grayscale(root_folder, dest_folder):
+    files = get_files_in_folder_recursively(root_folder)
+    for f in files:
+        filename = os.path.join(root_folder, f)
+        print("Converting {} to grayscale".format(filename))
+        img = Image.open(filename)
+        img_gray = img.convert('L')
+        dest = os.path.join(dest_folder, f)
+        try:
+            img_gray.save(dest)
+        except FileNotFoundError as e:
+            print(e)
+            path = os.path.dirname(dest)
+            print("Creating folder {}".format(path))
+            os.makedirs(path)
+            img_gray.save(dest)
+            
+            
 def create_dataset(data_dir, batch_size=32, sets=['train', 'val'], verbose=True):
     """Create a dataset object given the path. On data_dir there should be a train and validation folder
     and in each of them there should be the folders containing the data. One folder for each class
