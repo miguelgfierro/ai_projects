@@ -306,7 +306,7 @@ def available_models():
     return model_names
 
 
-def plot_metrics(metrics):
+def plot_metrics(metrics, title=None):
     """Plot metrics from training. metrics is a dict containing 'train_acc', 'val_acc', 'train_loss' and
     'val_loss', each of them contains the metrics values in a list"""
     max_epochs = len(metrics['train_acc']) + 1
@@ -317,25 +317,28 @@ def plot_metrics(metrics):
     s_train_loss = interp1d(epochs, metrics['train_loss'], kind='cubic')    
     s_val_loss = interp1d(epochs, metrics['val_loss'], kind='cubic')    
 
-    plt.figure()
-    ax1 = plt.subplot(121)
-    ax1.plot(epochs, metrics['train_acc'], 'b.', label='train')
-    ax1.plot(epochs_dx, s_train_acc(epochs_dx), 'b')
-    ax1.plot(epochs, metrics['val_acc'], 'g.', label='val')
-    ax1.plot(epochs_dx, s_val_acc(epochs_dx), 'g')
-    ax1.legend( loc="lower right")
-    plt.title("Accuracy")
-    plt.xlabel("Epochs")
-    plt.subplots_adjust(right=2)
+    fig, ax = plt.subplots(1, 2)
+    fig.subplots_adjust(right=2, top=0.85)
+    if title is not None:
+        st = fig.suptitle(title, fontsize=16)
+        st.set_x(1)
+    ax[0].plot(epochs, metrics['train_acc'], 'b.', label='train')
+    ax[0].plot(epochs_dx, s_train_acc(epochs_dx), 'b')
+    ax[0].plot(epochs, metrics['val_acc'], 'g.', label='val')
+    ax[0].plot(epochs_dx, s_val_acc(epochs_dx), 'g')
+    ax[0].legend( loc="lower right")
+    ax[0].set_title("Accuracy")
+    ax[0].set_xlabel("Epochs")
 
-    ax2 = plt.subplot(122)
-    ax2.plot(epochs, metrics['train_loss'], 'b.', label='train')
-    ax2.plot(epochs_dx, s_train_loss(epochs_dx), 'b')
-    ax2.plot(epochs, metrics['val_loss'], 'g.', label='val')
-    ax2.plot(epochs_dx, s_val_loss(epochs_dx), 'g')
-    ax2.legend(loc="upper right")
-    plt.title("Loss")
-    plt.xlabel("Epochs")
+    ax[1].plot(epochs, metrics['train_loss'], 'b.', label='train')
+    ax[1].plot(epochs_dx, s_train_loss(epochs_dx), 'b')
+    ax[1].plot(epochs, metrics['val_loss'], 'g.', label='val')
+    ax[1].plot(epochs_dx, s_val_loss(epochs_dx), 'g')
+    ax[1].legend(loc="upper right")
+    ax[1].set_title("Loss")
+    ax[1].set_xlabel("Epochs")
     plt.show()
-
-
+    
+    
+    
+    
