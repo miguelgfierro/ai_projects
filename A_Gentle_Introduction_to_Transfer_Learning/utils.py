@@ -15,6 +15,8 @@ from torch.utils.data import DataLoader
 from torch.autograd import Variable
 import time
 from scipy.interpolate import interp1d
+import subprocess
+import requests
 
 
 def get_number_processors():
@@ -340,5 +342,35 @@ def plot_metrics(metrics, title=None):
     plt.show()
     
     
+def _list_lsun_categories(tag):
+    url = 'http://lsun.cs.princeton.edu/htbin/list.cgi?tag=' + tag
+    f = requests.get(url)
+    return json.loads(f.text)
+
+
+def _download_lsun(out_dir, category, set_name, tag):
+    url = 'http://lsun.cs.princeton.edu/htbin/download.cgi?tag={tag}' \
+          '&category={category}&set={set_name}'.format(**locals())
+    if set_name == 'test':
+        out_name = 'test_lmdb.zip'
+    else:
+        out_name = '{category}_{set_name}_lmdb.zip'.format(**locals())
+    out_path = os.path.join(out_dir, out_name)
+    cmd = ['curl', url, '-o', out_path]
+    print('Downloading', category, set_name, 'set')
+    subprocess.call(cmd)  
     
+    
+def download_lsun_dataset(out_dir):
+    """Download LSUN dataset and create pytorch folder structure
+    source: https://github.com/fyu/lsun
+    """
+    tag = 'latest'
+    categories = _list_lsun_categories(tag)
+    print('Downloading', len(categories), 'categories')
+    for category in categories:
+        _download_lsun(out_dir, category, 'train', tag)
+        _download_lsun(out_dir, category, 'val', tag)
+    #_download_lsun(args.out_dir, '', 'test', args.tag)
+
     
