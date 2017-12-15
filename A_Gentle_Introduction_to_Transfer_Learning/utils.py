@@ -17,6 +17,8 @@ import time
 from scipy.interpolate import interp1d
 import subprocess
 import requests
+from urllib.request import urlretrieve
+import tarfile
 
 
 def get_number_processors():
@@ -92,11 +94,15 @@ def get_files_in_folder_recursively(folderpath):
     return sorted(names)
 
 
+def _make_directory(directory):
+    if not os.path.isdir(directory):
+        os.makedirs(directory)
+
+        
 def _create_sets_folders(root_folder, sets_names, target_folder):
     for s in sets_names:
         dest = os.path.join(root_folder, s, target_folder)
-        if not os.path.isdir(dest):
-            os.makedirs(dest)
+        _make_directory(dest)
           
                 
 def split_list(py_list, perc_size=[0.8, 0.2], shuffle=False):
@@ -355,6 +361,7 @@ def _download_lsun(out_dir, category, set_name, tag):
         out_name = 'test_lmdb.zip'
     else:
         out_name = '{category}_{set_name}_lmdb.zip'.format(**locals())
+    _make_directory(out_dir)
     out_path = os.path.join(out_dir, out_name)
     cmd = ['curl', url, '-o', out_path]
     print('Downloading', category, set_name, 'set')
@@ -373,4 +380,27 @@ def download_lsun_dataset(out_dir):
         _download_lsun(out_dir, category, 'val', tag)
     #_download_lsun(args.out_dir, '', 'test', args.tag)
 
+    
+def download_caltech256(out_dir):
+    url = 'http://www.vision.caltech.edu/Image_Datasets/Caltech256/256_ObjectCategories.tar'
+    #TODO
+    if len(os.listdir(out_dir)) != 0:
+        print("Dataset already donwloaded in {}".format(out_dir)) 
+    else:
+        print("Downloading {}".format(url))
+        filepath = os.path.join(out_dir, 'delete.me')
+        fname, h = urlretrieve(url, filepath)
+        print("Extracting files from {}".format(fname))
+        with tarfile.open(fname) as tar:
+            tar.extractall(path=out_dir)
+        os.remove(fname)
+        output = os.path.join(out_dir, '256_ObjectCategories')
+        shutil.copytree(output, out_dir)
+        shutil.rmtree(output, ignore_errors=True)
+    
+  
+
+    
+    
+    
     
