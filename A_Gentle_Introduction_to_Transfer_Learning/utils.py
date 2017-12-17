@@ -382,8 +382,8 @@ def download_lsun_dataset(out_dir):
 
     
 def download_caltech256(out_dir):
+    #FIXME
     url = 'http://www.vision.caltech.edu/Image_Datasets/Caltech256/256_ObjectCategories.tar'
-    #TODO
     if len(os.listdir(out_dir)) != 0:
         print("Dataset already donwloaded in {}".format(out_dir)) 
     else:
