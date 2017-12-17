@@ -139,7 +139,7 @@ def split_list(py_list, perc_size=[0.8, 0.2], shuffle=False):
     return [list(chunks) for chunks in np.split(l, splits)]
 
 
-def split_dataset_folder(root_folder, dest_folder, sets_names=['train','val'], sets_sizes=[0.8,0.2], shuffle=False, verbose=True):
+def split_dataset_folder(root_folder, dest_folder, sets_names=['train','val'], sets_sizes=[0.8,0.2], shuffle=False, verbose=False):
     assert sum(sets_sizes) == 1, "Data set sizes do not sum to 1"
     for folder in get_filenames_in_folder(root_folder):
         if verbose: print("Folder: ", folder)
@@ -154,20 +154,20 @@ def split_dataset_folder(root_folder, dest_folder, sets_names=['train','val'], s
                 shutil.copy2(orig, dest)
 
                 
-def convert_image_dataset_to_grayscale(root_folder, dest_folder):
+def convert_image_dataset_to_grayscale(root_folder, dest_folder, verbose=False):
     files = get_files_in_folder_recursively(root_folder)
     for f in files:
         filename = os.path.join(root_folder, f)
-        print("Converting {} to grayscale".format(filename))
+        if verbose: print("Converting {} to grayscale".format(filename))
         img = Image.open(filename)
         img_gray = img.convert('L')
         dest = os.path.join(dest_folder, f)
         try:
             img_gray.save(dest)
         except FileNotFoundError as e:
-            print(e)
+            if verbose: print(e)
             path = os.path.dirname(dest)
-            print("Creating folder {}".format(path))
+            if verbose: print("Creating folder {}".format(path))
             os.makedirs(path)
             img_gray.save(dest)
             
