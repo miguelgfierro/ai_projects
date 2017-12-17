@@ -7,6 +7,7 @@ from PIL import Image
 from collections import Counter
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MultipleLocator
 import torchvision
 from torchvision import datasets, transforms
 from torchvision import models
@@ -337,7 +338,8 @@ def plot_metrics(metrics, title=None):
     ax[0].legend( loc="lower right")
     ax[0].set_title("Accuracy")
     ax[0].set_xlabel("Epochs")
-
+    ax[0].xaxis.set_major_locator(MultipleLocator(1))#only integers in axis multiples of 1
+    
     ax[1].plot(epochs, metrics['train_loss'], 'b.', label='train')
     ax[1].plot(epochs_dx, s_train_loss(epochs_dx), 'b')
     ax[1].plot(epochs, metrics['val_loss'], 'g.', label='val')
@@ -345,6 +347,7 @@ def plot_metrics(metrics, title=None):
     ax[1].legend(loc="upper right")
     ax[1].set_title("Loss")
     ax[1].set_xlabel("Epochs")
+    ax[1].xaxis.set_major_locator(MultipleLocator(1))
     plt.show()
     
     
