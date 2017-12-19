@@ -12,8 +12,11 @@ import torchvision
 from torchvision import datasets, transforms
 from torchvision import models
 import torch
-from torch.utils.data import DataLoader
+import torch.nn as nn
+from torch.optim import lr_scheduler, SGD
 from torch.autograd import Variable
+from torchvision import models
+from torch.utils.data import DataLoader
 import time
 from scipy.interpolate import interp1d
 import subprocess
@@ -173,7 +176,7 @@ def convert_image_dataset_to_grayscale(root_folder, dest_folder, verbose=False):
             img_gray.save(dest)
             
             
-def create_dataset(data_dir, batch_size=32, sets=['train', 'val'], verbose=True):
+def create_dataset(data_dir, batch_size=32, sets=['train', 'val'], verbose=False):
     """Create a dataset object given the path. On data_dir there should be a train and validation folder
     and in each of them there should be the folders containing the data. One folder for each class
     """
@@ -232,8 +235,64 @@ def plot_pytorch_data_stream(dataobject, max_images=8, title=True):
         names = [class_names[x] for x in classes]
         plt.title(names)
 
+        
+def finetune(dataloaders, model_name, sets, num_epochs, num_gpus, lr, momentum, lr_step, lr_epochs, verbose=False):
+    #Class adaptation
+    num_class = len(dataloaders[sets[0]].dataset.class_to_idx)
+    model_ft = models.__dict__[model_name](pretrained=True)
+    num_ftrs = model_ft.fc.in_features
+    model_ft.fc = nn.Linear(num_ftrs, num_class)
+    
+    #gpus
+    if num_gpus > 1: 
+        model_ft = nn.DataParallel(model_ft)
+    model_ft = model_ft.cuda()
+    
+    #loss
+    criterion = nn.CrossEntropyLoss()
 
-def train_model(dataloaders, model, sets, criterion, optimizer, scheduler, num_epochs=25, verbose=True):
+    # All parameters are being optimized
+    optimizer = SGD(model_ft.parameters(), lr=lr, momentum=momentum)
+
+    # Decay LR by a factor of lr_step every lr_epochs epochs
+    exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=lr_epochs, gamma=lr_step)
+    model_ft = train_model(dataloaders, model_ft, sets, criterion, optimizer, exp_lr_scheduler, 
+                           num_epochs=num_epochs, verbose=verbose)
+    return model_ft
+
+
+def freeze_and_train(dataloaders, model_name, sets, num_epochs, num_gpus, lr, momentum, lr_step, lr_epochs, verbose=False):
+    #Class adaptation
+    num_class = len(dataloaders[sets[0]].dataset.class_to_idx)
+    model_conv = models.__dict__[model_name](pretrained=True)
+    for param in model_conv.parameters(): #params have requires_grad=True by default
+        param.requires_grad = False
+    num_ftrs = model_conv.fc.in_features
+    model_conv.fc = nn.Linear(num_ftrs, num_class)
+    
+    #gpus
+    if num_gpus > 1: 
+        model_conv = nn.DataParallel(model_conv)
+    model_conv = model_conv.cuda()
+    
+    #loss
+    criterion = nn.CrossEntropyLoss()
+
+    # Only parameters of final layer are being optimized 
+    if num_gpus > 1:
+        params = model_conv.module.fc.parameters()
+    else:
+        params = model_conv.fc.parameters()
+    optimizer = SGD(params, lr=lr, momentum=momentum)
+
+    # Decay LR by a factor of lr_step every lr_epochs epochs
+    exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=lr_epochs, gamma=lr_step)
+    model_conv = train_model(dataloaders, model_conv, sets, criterion, optimizer, exp_lr_scheduler, 
+                             num_epochs=num_epochs, verbose=verbose)
+    return model_conv
+
+
+def train_model(dataloaders, model, sets, criterion, optimizer, scheduler, num_epochs=25, verbose=False):
     since = time.time()
     dataset_sizes = {x: len(dataloaders[x].dataset) for x in sets}
     best_model_wts = model.state_dict()
