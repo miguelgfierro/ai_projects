@@ -92,18 +92,30 @@ def get_filenames_in_folder(folderpath):
 
 
 def get_files_in_folder_recursively(folderpath):
-    if folderpath[-1]!='/': #Add final '/' if it doesn't exist
-        folderpath += '/'
+    """ Return the files inside a folder recursivaly.
+    Parameters:
+        folderpath (str): folder path
+    Returns:
+        filelist (list): list of files
+    Examples:
+        >>> get_files_in_folder_recursively(r'C:\\run3x\\codebase\\command_line')
+        ['linux\\compress.txt', 'linux\\paths.txt', 'windows\\resources_management.txt']
+    """
+    if folderpath[-1] != os.path.sep: #Add final '/' if it doesn't exist
+        folderpath += os.path.sep
     names = [x.replace(folderpath,'') for x in glob.iglob(folderpath+'/**', recursive=True) if os.path.isfile(x)]
     return sorted(names)
 
 
+
 def _make_directory(directory):
+    """Make a directory"""
     if not os.path.isdir(directory):
         os.makedirs(directory)
 
         
 def _create_sets_folders(root_folder, sets_names, target_folder):
+    """Create folder structure"""
     for s in sets_names:
         dest = os.path.join(root_folder, s, target_folder)
         _make_directory(dest)
@@ -144,6 +156,26 @@ def split_list(py_list, perc_size=[0.8, 0.2], shuffle=False):
 
 
 def split_dataset_folder(root_folder, dest_folder, sets_names=['train','val'], sets_sizes=[0.8,0.2], shuffle=False, verbose=False):
+    """Split the folders in a dataset to pytorch format. If the intial format is:
+    --class1
+    ----img1.jpg
+    ----img2.jpg
+    --class2
+    ----img1.jpg
+    ----img2.jpg
+    It transforms it into:
+    --train
+    ----class1
+    ------img1.jpg
+    ----class2
+    ------img1.jpg
+    --val
+    ----class1
+    ------img2.jpg
+    ----class2
+    ------img2.jpg   
+
+    """
     assert sum(sets_sizes) == 1, "Data set sizes do not sum to 1"
     for folder in get_filenames_in_folder(root_folder):
         if verbose: print("Folder: ", folder)
@@ -159,6 +191,7 @@ def split_dataset_folder(root_folder, dest_folder, sets_names=['train','val'], s
 
                 
 def convert_image_dataset_to_grayscale(root_folder, dest_folder, verbose=False):
+    """Convert all the images from a dataset in disk to grayscale"""
     files = get_files_in_folder_recursively(root_folder)
     for f in files:
         filename = os.path.join(root_folder, f)
@@ -215,7 +248,7 @@ def create_dataset(data_dir, batch_size=32, sets=['train', 'val'], verbose=False
 
 
 def plot_pytorch_data_stream(dataobject, max_images=8, title=True):
-    """Plot a batch of data"""
+    """Plot a batch of images"""
     inputs, classes = next(iter(dataobject))  
     if max_images > dataobject.batch_size:
         max_images = dataobject.batch_size
@@ -237,6 +270,7 @@ def plot_pytorch_data_stream(dataobject, max_images=8, title=True):
 
         
 def finetune(dataloaders, model_name, sets, num_epochs, num_gpus, lr, momentum, lr_step, lr_epochs, verbose=False):
+    """Finetune all the layers of a model using a dataset loader. """
     #Class adaptation
     num_class = len(dataloaders[sets[0]].dataset.class_to_idx)
     model_ft = models.__dict__[model_name](pretrained=True)
@@ -262,6 +296,7 @@ def finetune(dataloaders, model_name, sets, num_epochs, num_gpus, lr, momentum, 
 
 
 def freeze_and_train(dataloaders, model_name, sets, num_epochs, num_gpus, lr, momentum, lr_step, lr_epochs, verbose=False):
+    """Freezes all layers but the last one and train the last layer using a dataset loader"""
     #Class adaptation
     num_class = len(dataloaders[sets[0]].dataset.class_to_idx)
     model_conv = models.__dict__[model_name](pretrained=True)
@@ -293,6 +328,7 @@ def freeze_and_train(dataloaders, model_name, sets, num_epochs, num_gpus, lr, mo
 
 
 def train_model(dataloaders, model, sets, criterion, optimizer, scheduler, num_epochs=25, verbose=False):
+    """Train a pytorch model"""
     since = time.time()
     dataset_sizes = {x: len(dataloaders[x].dataset) for x in sets}
     best_model_wts = model.state_dict()
@@ -411,12 +447,14 @@ def plot_metrics(metrics, title=None):
     
     
 def _list_lsun_categories(tag):
+    """List LSUN categories"""
     url = 'http://lsun.cs.princeton.edu/htbin/list.cgi?tag=' + tag
     f = requests.get(url)
     return json.loads(f.text)
 
 
 def _download_lsun(out_dir, category, set_name, tag):
+    """Download a specific category of LSUN"""
     url = 'http://lsun.cs.princeton.edu/htbin/download.cgi?tag={tag}' \
           '&category={category}&set={set_name}'.format(**locals())
     if set_name == 'test':
@@ -444,7 +482,7 @@ def download_lsun_dataset(out_dir):
 
     
 def download_caltech256(out_dir):
-    #FIXME
+    """Download Caltech256 dataset"""
     url = 'http://www.vision.caltech.edu/Image_Datasets/Caltech256/256_ObjectCategories.tar'
     if len(os.listdir(out_dir)) != 0:
         print("Dataset already donwloaded in {}".format(out_dir)) 
@@ -456,9 +494,7 @@ def download_caltech256(out_dir):
         with tarfile.open(fname) as tar:
             tar.extractall(path=out_dir)
         os.remove(fname)
-        output = os.path.join(out_dir, '256_ObjectCategories')
-        shutil.copytree(output, out_dir)
-        shutil.rmtree(output, ignore_errors=True)
+
     
   
 
