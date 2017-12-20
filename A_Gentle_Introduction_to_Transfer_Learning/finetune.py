@@ -1,7 +1,7 @@
 
 # A Gentle Introduction to Transfer Learning for Image Classification
 # Example of use:
-# python finetune.py -d /datadrive/simpsons/simpsons -b 128 -m resnet18 -lr 0.001 -g 4 -e 15 -f False
+# python finetune.py -d /datadrive/simpsons/simpsons -b 128 -m resnet18 -lr 0.001 -g 4 -e 15 -f 0
 
 
 import sys
@@ -30,7 +30,7 @@ parser.add_argument("-lre","--learning_rate_epochs", type=int, default=10)
 parser.add_argument("-mm","--momentum", type=float, default=0.9)
 parser.add_argument("-g","--gpus", type=int, default=1)
 parser.add_argument("-e","--epochs", type=int, default=25)
-parser.add_argument("-f","--finetune", type=bool, default=False)
+parser.add_argument("-f","--finetune", type=int, default=0)
 args = parser.parse_args()
 print("Arguments: {}".format(args))
 
