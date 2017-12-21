@@ -17,7 +17,8 @@ from torch.autograd import Variable
 import argparse
 from torchvision import models
 from utils import (get_gpu_name, get_number_processors, train_model, create_dataset, 
-                   available_models, finetune, freeze_and_train)
+                   available_models, finetune, freeze_and_train, get_gpu_memory,
+                   get_cuda_version)
 
 SETS = ['train', 'val']
 parser = argparse.ArgumentParser()
@@ -38,12 +39,15 @@ model_names = available_models()
 if args.model_name not in model_names:
     raise ValueError("Wrong model name, please select one among {}".format(model_names))
         
-print("OS: ", sys.platform)
-print("Python: ", sys.version)
-print("PyTorch: ", torch.__version__)
-print("Numpy: ", np.__version__)
-print("Number of CPU processors: ", get_number_processors())
-print("GPU: ", get_gpu_name())
+print("OS:", sys.platform)
+print("Python:", sys.version)
+print("PyTorch:", torch.__version__)
+print("Numpy:", np.__version__)
+print("Number of CPU processors:", get_number_processors())
+print("GPU:", get_gpu_name())
+print("GPU memory: {}".format(get_gpu_memory()))
+print("CUDA version:", get_cuda_version())
+print("CUDNN version:", torch.backends.cudnn.version())
 
 torch.backends.cudnn.benchmark=True # enables cudnn's auto-tuner
 
