@@ -18,6 +18,7 @@ from torch.optim import lr_scheduler, SGD
 from torch.autograd import Variable
 from torchvision import models
 from torch.utils.data import DataLoader
+import torchnet as tnt
 import time
 from scipy.interpolate import interp1d
 import subprocess
@@ -373,7 +374,9 @@ def train_model(dataloaders, model, sets, criterion, optimizer, scheduler, num_e
     dataset_sizes = {x: len(dataloaders[x].dataset) for x in sets}
     best_model_wts = model.state_dict()
     best_acc = 0.0
-    metrics = {'train_acc':[],'val_acc':[],'train_loss':[],'val_loss':[]}
+    num_classes = len(dataloaders[sets[0]].dataset.classes)
+    confusion_matrix = tnt.meter.ConfusionMeter(num_classes, normalized=False)
+    metrics = {'train_acc':[],'val_acc':[],'train_loss':[],'val_loss':[], 'cm':[]}
     for epoch in range(num_epochs):
         if verbose:
             print('\nEpoch {}/{}'.format(epoch + 1, num_epochs))
@@ -386,6 +389,7 @@ def train_model(dataloaders, model, sets, criterion, optimizer, scheduler, num_e
                 model.train(True)  # Set model to training mode
             else:
                 model.train(False)  # Set model to evaluate mode
+                confusion_matrix.reset()
 
             running_loss = 0.0
             running_corrects = 0
@@ -412,7 +416,9 @@ def train_model(dataloaders, model, sets, criterion, optimizer, scheduler, num_e
                 if phase == 'train':
                     loss.backward()
                     optimizer.step()
-
+                else:
+                    confusion_matrix.add(outputs.data, labels.data)
+                    
                 # statistics
                 running_loss += loss.data[0]
                 running_corrects += torch.sum(preds == labels.data)
@@ -427,11 +433,13 @@ def train_model(dataloaders, model, sets, criterion, optimizer, scheduler, num_e
             else:
                 metrics['val_acc'].append(epoch_acc)
                 metrics['val_loss'].append(epoch_loss)
+                cm = confusion_matrix.value().copy()
+                metrics['cm'].append(cm)
+                
             # deep copy the model
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = model.state_dict()
-
 
     time_elapsed = time.time() - since
     if verbose:
