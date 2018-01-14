@@ -103,6 +103,7 @@ ENV/
 
 #projects
 A_Gentle_Introduction_to_Transfer_Learning/data/
+Intro_to_Recommendation_Systems/Netflix
 playground*
 .DS_Store
 .~*
