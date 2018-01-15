@@ -105,6 +105,7 @@ ENV/
 A_Gentle_Introduction_to_Transfer_Learning/data/
 Intro_to_Recommendation_Systems/Netflix
 Intro_to_Recommendation_Systems/model_save
+Intro_to_Recommendation_Systems/preds.txt
 playground*
 .DS_Store
 .~*
