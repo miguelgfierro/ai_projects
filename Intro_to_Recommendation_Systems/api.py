@@ -134,8 +134,8 @@ def recommend():
     data_api = manage_query(dict_query, data_layer)
     result = evaluate_model(rencoder_api, data_api, data_layer)
     print("Result: {}".format(result))
-    return make_response(result, STATUS_OK)
-    #return "{}".format(result)
+    result = dict((str(k), str(v)) for k,v in result.items())
+    return make_response(jsonify(result), STATUS_OK)
 
   
 #Load data and model as global variables
