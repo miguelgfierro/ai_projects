@@ -99,21 +99,21 @@ def manage_query(dict_query, data_layer):
     data_api = input_layer_api.UserItemRecDataProviderAPI(params=params,
                                                         user_id_map=data_layer.userIdMap,
                                                         item_id_map=data_layer.itemIdMap)
+    print(data_api.data)
     data_api.src_data = data_layer.data
     return data_api
 
 
 def evaluate_model(rencoder_api, data_api, data_layer):   
-    #inv_userIdMap = {v: k for k, v in data_api.userIdMap.items()}
-    #inv_itemIdMap = {v: k for k, v in data_api.itemIdMap.items()}
-    inv_userIdMap = {v: k for k, v in data_layer.userIdMap.items()}
-    inv_itemIdMap = {v: k for k, v in data_layer.itemIdMap.items()}
+    inv_userIdMap = {v: k for k, v in data_api.userIdMap.items()}
+    inv_itemIdMap = {v: k for k, v in data_api.itemIdMap.items()}
     result = dict()
     for i, ((out, src), major_ind) in enumerate(data_api.iterate_one_epoch_eval(for_inf=True)):
         inputs = Variable(src.cuda().to_dense())
         targets_np = out.to_dense().numpy()[0, :]
-        outputs = rencoder_api(inputs).cpu().data.numpy()[0, :]
         non_zeros = targets_np.nonzero()[0].tolist()
+        print(non_zeros)
+        outputs = rencoder_api(inputs).cpu().data.numpy()[0, :]
         major_key = inv_userIdMap[major_ind]
         for ind in non_zeros:
             result[inv_itemIdMap[ind]] = outputs[ind]
