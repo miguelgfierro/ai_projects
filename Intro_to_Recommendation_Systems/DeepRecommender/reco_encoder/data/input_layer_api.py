@@ -7,7 +7,6 @@ class UserItemRecDataProviderAPI:
   def __init__(self, params, user_id_map, item_id_map):
     self._params = params
     self._data_dict = self.params['data_dict']
-    #self._extension = ".txt" if 'extension' not in self.params else self.params['extension']
     self._i_id = 0 if 'itemIdInd' not in self.params else self.params['itemIdInd']
     self._u_id = 1 if 'userIdInd' not in self.params else self.params['userIdInd']
     self._r_id = 2 if 'ratingInd' not in self.params else self.params['ratingInd']
@@ -17,14 +16,8 @@ class UserItemRecDataProviderAPI:
 
     self._major_ind = self._i_id if self._major == 'items' else self._u_id
     self._minor_ind = self._u_id if self._major == 'items' else self._i_id
-    #self._delimiter = '\t' if 'delimiter' not in self.params else self.params['delimiter']
     self.user_id = 0  if 'user_id' not in self.params else self.params['user_id']
 
-    #if user_id_map is None or item_id_map is None:
-    #  self._build_maps()
-    #else:
-    #  self._user_id_map = user_id_map
-    #  self._item_id_map = item_id_map
     #Map has to be defined
     self._user_id_map = user_id_map
     self._item_id_map = item_id_map
@@ -39,22 +32,6 @@ class UserItemRecDataProviderAPI:
     for item, rating in self._data_dict.items():   
       self.data[self.user_id].append((item, rating))
 
-    
-#  def _build_maps(self):
-#    self._user_id_map = dict()
-#    self._item_id_map = dict()
-#    u_id = 0
-#    i_id = 0
-#    for item, rating in self._data_dict.items():   
-#      u_id_orig = self.user_id
-#      if u_id_orig not in self._user_id_map:
-#        self._user_id_map[u_id_orig] = u_id
-#        u_id += 1
-
-#      i_id_orig =item
-#      if i_id_orig not in self._item_id_map:
-#        self._item_id_map[i_id_orig] = i_id
-#        i_id += 1
 
   def iterate_one_epoch(self):
     data = self.data

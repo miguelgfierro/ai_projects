@@ -45,6 +45,7 @@ def run_server():
     cherrypy.config.update({
         'engine.autoreload_on': True,
         'log.screen': True,
+        'log.access_file': 'access.log',
         'log.error_file': "cherrypy.log",
         'server.socket_port': 5000,
         'server.socket_host': '0.0.0.0',
@@ -58,7 +59,7 @@ def run_server():
 
 def load_model_weights(model_architecture, weights_path):
     if os.path.isfile(weights_path):
-        print("Loading model from: {}".format(weights_path))
+        cherrypy.log("CHERRYPYLOG Loading model from: {}".format(weights_path))
         model_architecture.load_state_dict(torch.load(weights_path))
     else:
         raise ValueError("Path not found {}".format(weights_path))
@@ -84,7 +85,7 @@ def load_train_data(data_dir):
     params['major'] = 'users'
     params['itemIdInd'] = 1
     params['userIdInd'] = 0
-    print("Loading training data")
+    cherrypy.log("CHERRYPYLOG Loading training data")
     data_layer = input_layer.UserItemRecDataProvider(params=params)
     return data_layer
 
@@ -99,31 +100,20 @@ def manage_query(dict_query, data_layer):
     data_api = input_layer_api.UserItemRecDataProviderAPI(params=params,
                                                         user_id_map=data_layer.userIdMap,
                                                         item_id_map=data_layer.itemIdMap)
-    print("Input data: {}", format(data_api.data))
-    inv_userIdMap = {v: k for k, v in data_layer.userIdMap.items()}
-    inv_itemIdMap = {v: k for k, v in data_layer.itemIdMap.items()}
+    cherrypy.log("CHERRYPYLOG Input data: {}".format(data_api.data))
     data_api.src_data = data_layer.data
-    return data_api, inv_userIdMap, inv_itemIdMap
+    return data_api
 
 
-def evaluate_model(rencoder_api, data_api, inv_userIdMap, inv_itemIdMap):   
-    #inv_userIdMap = {v: k for k, v in data_api.userIdMap.items()}
-    #inv_itemIdMap = {v: k for k, v in data_api.itemIdMap.items()}
-    print("len=",len(inv_itemIdMap))
+def evaluate_model(rencoder_api, data_api):   
     result = dict()
     for i, ((out, src), major_ind) in enumerate(data_api.iterate_one_epoch_eval(for_inf=True)):
         inputs = Variable(src.cuda().to_dense())
-        print("inputs=",inputs)#Variable containing:    4     4     3  ...      0     0     0 [torch.cuda.FloatTensor of size 1x17736 (GPU 0)]
         targets_np = out.to_dense().numpy()[0, :]
-        print("out.shape=",out.shape)#torch.Size([1, 17736])
         non_zeros = targets_np.nonzero()[0].tolist() 
-        print("non_zeros ", non_zeros)#[13, 191, 209] different from infer
         outputs = rencoder_api(inputs).cpu().data.numpy()[0, :]
-        major_key = inv_userIdMap[major_ind]
         for ind in non_zeros:
-            print("ind ",ind)
-            print(inv_itemIdMap[ind])
-            result[inv_itemIdMap[ind]] = outputs[ind]
+            result[ind] = outputs[ind]
     return result
 
     
@@ -138,9 +128,9 @@ def recommend():
         abort(BAD_REQUEST)
     dict_query = request.get_json()
     dict_query = dict((decode_string(k), decode_string(v)) for k, v in dict_query.items())
-    data_api, inv_userIdMap, inv_itemIdMap = manage_query(dict_query, data_layer)
-    result = evaluate_model(rencoder_api, data_api, inv_userIdMap, inv_itemIdMap)
-    print("Result: {}".format(result))
+    data_api = manage_query(dict_query, data_layer)
+    result = evaluate_model(rencoder_api, data_api)
+    cherrypy.log("CHERRYPYLOG Result: {}".format(result))
     result = dict((str(k), str(v)) for k,v in result.items())
     return make_response(jsonify(result), STATUS_OK)
 
