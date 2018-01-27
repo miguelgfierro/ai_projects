@@ -69,7 +69,8 @@ def main():
   rencoder = rencoder.cuda()
   inv_userIdMap = {v: k for k, v in data_layer.userIdMap.items()}
   inv_itemIdMap = {v: k for k, v in data_layer.itemIdMap.items()}
-
+  print("len=",len(inv_itemIdMap))
+  
   eval_data_layer.src_data = data_layer.data
   with open(args.predictions_path, 'w') as outf:
     for i, ((out, src), majorInd) in enumerate(eval_data_layer.iterate_one_epoch_eval(for_inf=True)):
@@ -77,8 +78,10 @@ def main():
       targets_np = out.to_dense().numpy()[0, :]
       outputs = rencoder(inputs).cpu().data.numpy()[0, :]
       non_zeros = targets_np.nonzero()[0].tolist()
+      print("non_zeros ", non_zeros)
       major_key = inv_userIdMap [majorInd]
       for ind in non_zeros:
+        print(inv_itemIdMap[ind])
         outf.write("{}\t{}\t{}\t{}\n".format(major_key, inv_itemIdMap[ind], outputs[ind], targets_np[ind]))
       if i % 10000 == 0:
         print("Done: {}".format(i))
