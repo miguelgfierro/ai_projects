@@ -9,6 +9,8 @@ This repo contains the projects, additional information and code to support my b
 
 * [Introduction to Machine Learning API](Intro_to_Machine_Learning_API/Intro_to_Cloud_ML_with_Flask_and_CNTK.ipynb): In this notebook we show how to create an image classification API. The system works with a pretrained CNN using CNTK deep learning library. The API is setup with Flask for managing the end point services and CherryPy as the backend server. Here the [blog entry](https://miguelgfierro.com/blog/2017/how-to-deploy-an-image-classification-api-based-on-deep-learning/).
 
+* [Introduction to Recommendation Systems with Deep Autoencoders](Intro_to_Recommendation_Systems/Intro_Recommender.ipynb): In this notebook we make an overview to recommendation systems and implement a recommendation API using a deep autoencoder with PyTorch and the Netflix dataset. Here the [blog entry](https://miguelgfierro.com/blog/2018/introduction-to-recommendation-systems-with-deep-autoencoders/).
+
 * [Introduction to Natural Language Processing with fastText](Intro_to_NLP_with_fastText/Intro_to_NLP.ipynb): In this project we show how to implement text classification, sentiment analysis and word embedding using the library fastText. We also show a way to represent the word embeddings in a reduced space using t-SNE algorithm. Here the [blog entry](https://miguelgfierro.com/blog/2017/a-gentle-introduction-to-text-classification-and-sentiment-analysis/).
 
 
