@@ -1,7 +1,7 @@
 # Copyright (c) 2017 NVIDIA Corporation
 # NOTE from Miguel: The code is the same as in https://github.com/NVIDIA/DeepRecommender/blob/master/run.py 
 # but I removed the logger
-
+import os
 import torch
 import argparse
 from reco_encoder.data import input_layer
@@ -94,7 +94,7 @@ def main():
                                is_constrained=args.constrained,
                                dp_drop_prob=args.drop_prob,
                                last_layer_activations=not args.skip_last_layer_nl)
-
+  os.makedirs(args.logdir, exist_ok=True)
   model_checkpoint = args.logdir + "/model"
   path_to_model = Path(model_checkpoint)
   if path_to_model.is_file():
