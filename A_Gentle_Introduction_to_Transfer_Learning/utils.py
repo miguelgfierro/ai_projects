@@ -25,6 +25,7 @@ import subprocess
 import requests
 from urllib.request import urlretrieve
 import tarfile
+import copy
 
 
 def get_number_processors():
@@ -439,7 +440,7 @@ def train_model(dataloaders, model, sets, criterion, optimizer, scheduler, num_e
             # deep copy the model
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
-                best_model_wts = model.state_dict()
+                best_model_wts = copy.deepcopy(model.state_dict())
 
     time_elapsed = time.time() - since
     if verbose:
