@@ -6,6 +6,7 @@ import json
 import numpy as np
 import time
 from ast import literal_eval
+import matplotlib.pyplot as plt
 
 
 def get_number_processors():
@@ -24,54 +25,47 @@ def get_number_processors():
     return num
 
 
-def get_gpu_name():
-    """Get the GPUs in the system
-    Examples:
-        >>> get_gpu_name()
-        ['Tesla M60', 'Tesla M60', 'Tesla M60', 'Tesla M60']
-        
-    """
-    try:
-        out_str = subprocess.run(["nvidia-smi", "--query-gpu=gpu_name", "--format=csv"], stdout=subprocess.PIPE).stdout
-        out_list = out_str.decode("utf-8").split('\n')
-        out_list = out_list[1:-1]
-        return out_list
-    except Exception as e:
-        print(e)
+def to_1dimension(df, step_size):
+    X, y = [], []
+    for i in range(len(df)-step_size-1):
+        data = df[i:(i+step_size), 0]
+        X.append(data)
+        y.append(df[i + step_size, 0])
+    X, y = np.array(X), np.array(y)
+    X = np.reshape(X, (X.shape[0], 1, X.shape[1]))
+    return X, y
+     
+    
+def plot_series(values, xlabel=None, ylabel=None, color='b', legend=None):
+    xx = np.arange(1, len(values) + 1, 1)
+    plt.plot(xx, values, color, label=legend)
+    plt.legend(loc = 'upper left')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.show()
 
+    
+def plot_series_prediction(true_values, train_predict, test_predict, time_ahead=1,
+                           xlabel=None, ylabel=None, color=['g','r','b'], legend=[None,None,None]):
+    pred_trainPlot = np.empty_like(true_values)
+    pred_trainPlot[:, :] = np.nan
+    pred_trainPlot[time_ahead:len(train_predict)+time_ahead, :] = train_predict
 
-def get_gpu_memory():
-    """Get the memory of the GPUs in the system
-    Examples:
-        >>> get_gpu_memory()
-        ['8123 MiB', '8123 MiB', '8123 MiB', '8123 MiB']
-    """
-    try:
-        out_str = subprocess.run(["nvidia-smi", "--query-gpu=memory.total", "--format=csv"], stdout=subprocess.PIPE).stdout
-        out_list = out_str.decode("utf-8").replace('\r','').split('\n')
-        out_list = out_list[1:-1]
-        return out_list
-    except Exception as e:
-        print(e)
+    pred_testPlot = np.empty_like(true_values)
+    pred_testPlot[:, :] = np.nan
+    pred_testPlot[len(train_predict)+(time_ahead*2)+1:len(true_values)-1, :] = test_predict
 
-        
-def get_cuda_version():
-    """Get the CUDA version
-    Examples:
-        >>> get_cuda_version()
-        'CUDA Version 8.0.61'
-    """
-    if sys.platform == 'win32':
-        raise NotImplementedError("Implement this!")
-    elif sys.platform == 'linux':
-        path = '/usr/local/cuda/version.txt'
-        if os.path.isfile(path):
-            with open(path, 'r') as f:
-                data = f.read().replace('\n','')
-            return data
-        else:
-            return "No CUDA in this machine"
-    elif sys.platform == 'darwin':
-        raise NotImplementedError("Find a Mac with GPU and implement this!")
-    else:
-        raise ValueError("Not in Windows, Linux or Mac")
+    plt.plot(true_values, color[0], label=legend[0])
+    plt.plot(pred_trainPlot, color[1], label=legend[1])
+    plt.plot(pred_testPlot, color[2], label=legend[2])
+    plt.legend(loc = 'upper left')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.show()
+    
+    
+    
+    
+    
+    
+    
