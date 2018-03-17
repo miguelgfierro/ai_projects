@@ -45,7 +45,7 @@ def plot_series(values, xlabel=None, ylabel=None, color='b', legend=None):
     plt.show()
 
     
-def plot_series_prediction(true_values, train_predict, test_predict, time_ahead=1,
+def plot_series_prediction(true_values, train_predict, test_predict, time_ahead=1, title=None,
                            xlabel=None, ylabel=None, color=['g','r','b'], legend=[None,None,None]):
     pred_trainPlot = np.empty_like(true_values)
     pred_trainPlot[:, :] = np.nan
@@ -61,6 +61,7 @@ def plot_series_prediction(true_values, train_predict, test_predict, time_ahead=
     plt.legend(loc = 'upper left')
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
+    plt.title(title)
     plt.show()
     
     
