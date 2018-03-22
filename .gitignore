@@ -106,6 +106,7 @@ A_Gentle_Introduction_to_Transfer_Learning/data/
 Intro_to_Recommendation_Systems/Netflix
 Intro_to_Recommendation_Systems/model_save
 Intro_to_Recommendation_Systems/preds.txt
+Time_Series_Forecasting_of_Stock_Price/*.svg
 playground*
 .DS_Store
 .~*
