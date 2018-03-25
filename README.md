@@ -1,3 +1,8 @@
+[![Issues](https://img.shields.io/github/issues/miguelgfierro/codebase.svg)](https://github.com/miguelgfierro/codebase/issues)
+[![Pull requests](https://img.shields.io/github/issues-pr/miguelgfierro/codebase.svg)](https://github.com/miguelgfierro/codebase/pulls)
+[![Commits](https://img.shields.io/github/commit-activity/y/miguelgfierro/codebase.svg)](https://github.com/miguelgfierro/codebase/commits/master)
+[![Last commit](https://img.shields.io/github/last-commit/miguelgfierro/codebase.svg)](https://github.com/miguelgfierro/codebase/commits/master)
+
 # Sciblog support information and code
 This repo contains the projects, additional information and code to support my blog: [sciblog](https://miguelgfierro.com/).
 
