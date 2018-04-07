@@ -16,8 +16,8 @@ class UserItemRecDataProvider:
     example: if the first column (here called major column) is the user, it stores it as the
     dictionary key and. Then for each user, it stores a list of item-rating pairs.
     :param params: Parameters of the recommender
-    :param user_id_map:
-    :param item_id_map:
+    :param user_id_map: Mapping between input user data and internal user representation.
+    :param item_id_map: Mapping between input item data and internal item representation.
     """
     # Initialize parameters
     self._params = params
@@ -44,7 +44,8 @@ class UserItemRecDataProvider:
                   for f in listdir(self._data_dir)
                   if path.isfile(path.join(self._data_dir, f)) and f.endswith(self._extension)]
 
-    # Definition of the user_id_map and item_id_map
+    # Initializes self._user_id_map and self._item_id_map, which are mappings
+    # between the original input user and item values and an internal representation.
     if user_id_map is None or item_id_map is None:
       self._build_maps()
     else:
@@ -77,32 +78,39 @@ class UserItemRecDataProvider:
           self.data[key].append((value, rating))
 
   def _build_maps(self):
+    """
+    Build a mapping between the original input user and item values and an internal representation
+    that is used in the model. It generates self._user_id_map and self._item_id_map.
+    """
     self._user_id_map = dict()
     self._item_id_map = dict()
 
+    # Input file
     src_files = [path.join(self._data_dir, f)
                  for f in listdir(self._data_dir)
                  if path.isfile(path.join(self._data_dir, f)) and f.endswith(self._extension)]
 
+    # Loop to read the data and create the internal mapping
     u_id = 0
     i_id = 0
     for source_file in src_files:
       with open(source_file, 'r') as src:
         for line in src.readlines():
           parts = line.strip().split(self._delimiter)
-          if len(parts)<3:
+          if len(parts) < 3:
             raise ValueError('Encountered badly formatted line in {}'.format(source_file))
 
+          # Mapping between input user data and internal user representation
           u_id_orig = int(parts[self._u_id])
           if u_id_orig not in self._user_id_map:
             self._user_id_map[u_id_orig] = u_id
             u_id += 1
 
+          # Mapping between input item data and internal item representation
           i_id_orig = int(parts[self._i_id])
           if i_id_orig not in self._item_id_map:
             self._item_id_map[i_id_orig] = i_id
             i_id += 1
-
 
   def iterate_one_epoch(self):
     data = self.data
