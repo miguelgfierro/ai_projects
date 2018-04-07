@@ -4,50 +4,74 @@ from os import listdir, path
 from random import shuffle
 import torch
 
+
 class UserItemRecDataProvider:
+  """
+  User-Item data layer class
+  """
   def __init__(self, params, user_id_map=None, item_id_map=None):
+    """
+    Initialize internal parameters and generates self.data.
+    self.data is a dictionary that relates user, item and rating in an aggregated fashion,
+    example: if the first column (here called major column) is the user, it stores it as the
+    dictionary key and. Then for each user, it stores a list of item-rating pairs.
+    :param params: Parameters of the recommender
+    :param user_id_map:
+    :param item_id_map:
+    """
+    # Initialize parameters
     self._params = params
-    self._data_dir = self.params['data_dir']
-    self._extension = ".txt" if 'extension' not in self.params else self.params['extension']
+    self._batch_size = self.params['batch_size']
+
+    # Parameters related with the column order of the input data.
+    # self._i_id is the index of the item, self._u_id is the index of the user/customer
+    # and self._r_id is the index of the rating. The param self._major defines if item or user
+    # are the first index (first column) in the input data.
     self._i_id = 0 if 'itemIdInd' not in self.params else self.params['itemIdInd']
     self._u_id = 1 if 'userIdInd' not in self.params else self.params['userIdInd']
     self._r_id = 2 if 'ratingInd' not in self.params else self.params['ratingInd']
     self._major = 'items' if 'major' not in self.params else self.params['major']
     if not (self._major == 'items' or self._major == 'users'):
       raise ValueError("Major must be 'users' or 'items', but got {}".format(self._major))
-
     self._major_ind = self._i_id if self._major == 'items' else self._u_id
     self._minor_ind = self._u_id if self._major == 'items' else self._i_id
-    self._delimiter = '\t' if 'delimiter' not in self.params else self.params['delimiter']
 
+    # Input file, extension and delimiter
+    self._data_dir = self.params['data_dir']
+    self._extension = ".txt" if 'extension' not in self.params else self.params['extension']
+    self._delimiter = '\t' if 'delimiter' not in self.params else self.params['delimiter']
+    src_files = [path.join(self._data_dir, f)
+                  for f in listdir(self._data_dir)
+                  if path.isfile(path.join(self._data_dir, f)) and f.endswith(self._extension)]
+
+    # Definition of the user_id_map and item_id_map
     if user_id_map is None or item_id_map is None:
       self._build_maps()
     else:
       self._user_id_map = user_id_map
       self._item_id_map = item_id_map
-
     major_map = self._item_id_map if self._major == 'items' else self._user_id_map
     minor_map = self._user_id_map if self._major == 'items' else self._item_id_map
     self._vector_dim = len(minor_map)
 
-    src_files = [path.join(self._data_dir, f)
-                  for f in listdir(self._data_dir)
-                  if path.isfile(path.join(self._data_dir, f)) and f.endswith(self._extension)]
-
-    self._batch_size = self.params['batch_size']
-
+    # Loop to read and format the data
     self.data = dict()
-
     for source_file in src_files:
       with open(source_file, 'r') as src:
         for line in src.readlines():
+          # Read line
           parts = line.strip().split(self._delimiter)
-          if len(parts)<3:
+          if len(parts) < 3:
             raise ValueError('Encountered badly formatted line in {}'.format(source_file))
+
+          # Parse the input data using the user and item mappings. The key of self.data
+          # uses the major index (firs column of input data)
           key = major_map[int(parts[self._major_ind])]
           value = minor_map[int(parts[self._minor_ind])]
           rating = float(parts[self._r_id])
-          #print("Key: {}, Value: {}, Rating: {}".format(key, value, rating))
+
+          # Populate data dictionary. For each key (major index) there is a list of value-rating tuples.
+          # Example: if the key is the user, self.data stores for each user, a list of item-rating pairs.
           if key not in self.data:
             self.data[key] = []
           self.data[key].append((value, rating))
