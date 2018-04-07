@@ -113,26 +113,43 @@ class UserItemRecDataProvider:
             i_id += 1
 
   def iterate_one_epoch(self):
+    """
+    Iterate one epoch and yield a minibatch of data.
+    The minibatch is a sparse tensor of size (self._batch_size, self._vector_dim), if the major index
+    (first column in input data) is user, the size would be (minibatch of users, number_items). Most entries
+    are zero, because the user has not rated most of the items. The non-zero elements are the items rated by
+    the user, the index of the element is the item index and the value of the element is the rating.
+    :return: Minibatch of data as a sparse tensor
+    """
     data = self.data
     keys = list(data.keys())
-    shuffle(keys)
+    shuffle(keys) # We shuffle because we are in the training phase
+
+    # Start and end index of the minibatch
     s_ind = 0
     e_ind = self._batch_size
+
+    # Loop to construct the sparse tensor http://pytorch.org/docs/master/sparse.html#torch-sparse
+    # Pytorch sparse tensors are represented in coordinate format. They consist of 2 tensors,
+    # a 2D tensor of indices and a tensor of values
     while e_ind < len(keys):
-      local_ind = 0
-      inds1 = []
-      inds2 = []
-      vals = []
+      local_ind = 0 # track the local minibatch index
+      inds1 = [] # contain the indices of the minibatch
+      inds2 = [] # contain the minor index of the input data (second column of the input data)
+      vals = [] # contain the ratings
       for ind in range(s_ind, e_ind):
         inds2 += [v[0] for v in data[keys[ind]]]
         inds1 += [local_ind]*len([v[0] for v in data[keys[ind]]])
         vals += [v[1] for v in data[keys[ind]]]
         local_ind += 1
 
+      # Set the minibatch as a sparse pytorch tensor, using a 2D tensor of indices i_torch
+      # and a tensor of values v_torch
       i_torch = torch.LongTensor([inds1, inds2])
       v_torch = torch.FloatTensor(vals)
-
       mini_batch = torch.sparse.FloatTensor(i_torch, v_torch, torch.Size([self._batch_size, self._vector_dim]))
+
+      # Update loop indexes with batch size
       s_ind += self._batch_size
       e_ind += self._batch_size
       yield  mini_batch
