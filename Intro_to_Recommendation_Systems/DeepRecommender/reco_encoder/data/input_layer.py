@@ -155,20 +155,40 @@ class UserItemRecDataProvider:
       yield  mini_batch
 
   def iterate_one_epoch_eval(self, for_inf=False):
+    """
+    Iterate one epoch of evaluation data and yield a minibatch.
+    The minibatch is composed by two sparse tensors with a similar structure as in iterate_one_epoch.
+    The first vector data is the evaluation data corresponding to the user-item pairs in the evaluation set
+    with the internal representation. The second vector src_data is a copy of the user-item pairs in the training
+    set using the internal representation. These two sets are used to obtain the loss or the test metrics.
+    The use of src_data is needed for the autoencoder to identify the user profile, then the autoencoder
+    use this profile to generate the ratings of all items for that user. Then the  evaluation data is used
+    to compute the loss or test metrics. In this case, the batch_size is reduced to 1, in words of the
+    author: to make sure no examples are missed.
+    :param for_inf: If True returns the minibatch and the major index value (first column in the input data)
+    corresponding to the current minibatch. If False, it only returns the minibatch.
+    :return: Minibatch of data as a sparse tensor
+    """
     keys = list(self.data.keys())
     s_ind = 0
     while s_ind < len(keys):
+      # Indices and value of the evaluation data like in iterate_one_epoch. In this case inds1 is always 0
+      # because the minibatch size is 1.
       inds1 = [0] * len([v[0] for v in self.data[keys[s_ind]]])
       inds2 = [v[0] for v in self.data[keys[s_ind]]]
       vals = [v[1] for v in self.data[keys[s_ind]]]
 
+      # Indices and values of the source data
       src_inds1 = [0] * len([v[0] for v in self.src_data[keys[s_ind]]])
       src_inds2 = [v[0] for v in self.src_data[keys[s_ind]]]
       src_vals = [v[1] for v in self.src_data[keys[s_ind]]]
 
+      # Set the sparse pytorch tensor of the evaluation data, using a 2D tensor of indices i_torch
+      # and a tensor of values v_torch
       i_torch = torch.LongTensor([inds1, inds2])
       v_torch = torch.FloatTensor(vals)
 
+      # Set the sparse tensor of the source data, which defines the user profile
       src_i_torch = torch.LongTensor([src_inds1, src_inds2])
       src_v_torch = torch.FloatTensor(src_vals)
 
@@ -182,16 +202,20 @@ class UserItemRecDataProvider:
 
   @property
   def vector_dim(self):
+    """Size of the minor index (the second column of the input data)"""
     return self._vector_dim
 
   @property
   def userIdMap(self):
+    """Mapping between input user data and internal user representation."""
     return self._user_id_map
 
   @property
   def itemIdMap(self):
+    """Mapping between input item data and internal item representation."""
     return self._item_id_map
 
   @property
   def params(self):
+    """Parameters of the recommender."""
     return self._params
