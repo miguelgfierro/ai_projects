@@ -53,24 +53,26 @@ def main():
   eval_data_layer = input_layer.UserItemRecDataProvider(params=eval_params,
                                                         user_id_map=data_layer.userIdMap,
                                                         item_id_map=data_layer.itemIdMap)
+  # Populate evaluation layer with user profile
+  eval_data_layer.src_data = data_layer.data
 
+  # Load model
   rencoder = model.AutoEncoder(layer_sizes=[data_layer.vector_dim] + [int(l) for l in args.hidden_layers.split(',')],
                                nl_type=args.non_linearity_type,
                                is_constrained=args.constrained,
                                dp_drop_prob=args.drop_prob,
                                last_layer_activations=not args.skip_last_layer_nl)
-
+  rencoder.eval()
+  rencoder = rencoder.cuda()
   path_to_model = Path(args.save_path)
   if path_to_model.is_file():
     print("Loading model from: {}".format(path_to_model))
     rencoder.load_state_dict(torch.load(args.save_path))
 
-  rencoder.eval()
-  rencoder = rencoder.cuda()
+  # Generate inverse user-item mapping: mapping from internal representation to input data
   inv_userIdMap = {v: k for k, v in data_layer.userIdMap.items()}
   inv_itemIdMap = {v: k for k, v in data_layer.itemIdMap.items()}
   
-  eval_data_layer.src_data = data_layer.data
   with open(args.predictions_path, 'w') as outf:
     for i, ((out, src), majorInd) in enumerate(eval_data_layer.iterate_one_epoch_eval(for_inf=True)):
       inputs = Variable(src.cuda().to_dense())
