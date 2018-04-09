@@ -5,8 +5,13 @@ import torch.nn.functional as F
 import torch.nn.init as weight_init
 from torch.autograd import Variable
 
+
 def activation(input, kind):
-  #print("Activation: {}".format(kind))
+  """
+  Apply an activation function to the input data
+  :param input: Input data
+  :param kind: Type of activation
+  """
   if kind == 'selu':
     return F.selu(input)
   elif kind == 'relu':
@@ -28,11 +33,20 @@ def activation(input, kind):
   else:
     raise ValueError('Unknown non-linearity type')
 
+
 def MSEloss(inputs, targets, size_avarage=False):
+  """
+  Masked Mean Square Error Loss http://pytorch.org/docs/master/nn.html#torch.nn.MSELoss
+  :param input: Input data
+  :param targets: Target data
+  :param size_avarage: if True, losses are averaged over observations for each minibatch, if False, the losses are
+  summed for each minibatch
+  """
   mask = targets != 0
   num_ratings = torch.sum(mask.float())
   criterion = nn.MSELoss(size_average=size_avarage)
   return criterion(inputs * mask.float(), targets), Variable(torch.Tensor([1.0])) if size_avarage else num_ratings
+
 
 class AutoEncoder(nn.Module):
   def __init__(self, layer_sizes, nl_type='selu', is_constrained=True, dp_drop_prob=0.0, last_layer_activations=True):
@@ -93,7 +107,6 @@ class AutoEncoder(nn.Module):
         print(self.decode_b[ind].size())
     print("******************************")
     print("******************************")
-
 
   def encode(self, x):
     for ind, w in enumerate(self.encode_w):
