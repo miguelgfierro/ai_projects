@@ -11,6 +11,13 @@ import torch.utils.data as data_utils
 import torch.nn.init as init
 from torch.autograd import Variable
 import torch.distributed as dist
+from torchvision import datasets, transforms
+import torchvision
+import logging
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def parse_args(arguments=[]):
@@ -28,10 +35,10 @@ def parse_args(arguments=[]):
     parser.add_argument('--num-layers', type=int,
                        help='number of layers in the neural network, \
                              required by some networks such as resnet')
-    parser.add_argument('--num-epochs', type=int, default=10,
+    parser.add_argument('--epochs', type=int, default=5,
                         help='max num of epochs')
     parser.add_argument('--lr', default=0.1, type=float, help='learning rate')        
-    parser.add_argument('--mom', type=float, default=0.9,
+    parser.add_argument('--momentum', type=float, default=0.9,
                        help='momentum for sgd')
     parser.add_argument('--wd', type=float, default=0.0001,
                        help='weight decay for sgd')
@@ -44,14 +51,14 @@ def parse_args(arguments=[]):
     return args
 
 
-def init_model(m, lr, momentum):
+def init_model(model, lr, momentum):
     # This criterion combines nn.LogSoftmax() and nn.NLLLoss() in one single class
-    opt = optim.SGD(m.parameters(), lr, momentum)
+    optimizer = optim.SGD(model.parameters(), lr, momentum)
     criterion = nn.CrossEntropyLoss()
-    return opt, criterion
+    return optimizer, criterion
 
 
-def get_cifar(batch_size, download_folder='data'):
+def get_cifar(batch_size, download_folder='data', distributed=False):
     transform_train = transforms.Compose([
         transforms.RandomCrop(32, padding=4),
         transforms.RandomHorizontalFlip(),
@@ -65,14 +72,23 @@ def get_cifar(batch_size, download_folder='data'):
     ])
 
     trainset = torchvision.datasets.CIFAR10(root=download_folder, train=True, download=True, transform=transform_train)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=2)
+    if distributed:
+        train_sampler = torch.utils.data.distributed.DistributedSampler(trainset)
+    else:
+        train_sampler = None
+    train_loader = torch.utils.data.DataLoader(trainset, 
+                                              batch_size=batch_size, 
+                                              shuffle=(train_sampler is None), 
+                                              num_workers=4,
+                                              pin_memory=True, 
+                                              sampler=train_sampler)
 
     testset = torchvision.datasets.CIFAR10(root=download_folder, train=False, download=True, transform=transform_test)
-    testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=2)
-    return trainloader, testloader
+    test_loader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=4)
+    return train_loader, test_loader
 
 
-def manage_multitraining(model, distributed=False, dist_backend, dist_url, world_size, rank):
+def manage_multitraining(model, distributed=False, dist_backend=None, dist_url=None, world_size=2, rank=None):
     # 1. Auto-tune
     torch.backends.cudnn.benchmark=True
     if distributed:
@@ -82,10 +98,60 @@ def manage_multitraining(model, distributed=False, dist_backend, dist_url, world
         model = torch.nn.parallel.DistributedDataParallel(model)
     else:
         model = torch.nn.DataParallel(model).cuda()
-        
-    
-    
+    return model    
 
+
+def train(train_loader, model, criterion, optimizer, epoch):
+    logger.info("Training epoch {}...".format(epoch))
+    model.train()
+    for i, (input, target) in enumerate(train_loader):
+        target = target.cuda(non_blocking=True)
+        # compute output
+        output = model(input)
+        loss = criterion(output, target)
+        # compute gradient and do SGD step
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        
+def validate(val_loader, model, criterion, epoch):
+    model.eval()
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        for i, (input, target) in enumerate(val_loader):
+            target = target.cuda(non_blocking=True)
+            # compute output
+            output = model(input)
+            _, predicted = torch.max(output.data, 1)
+            total += target.size(0)
+            correct += (predicted == target).sum().item()
+    logger.info("Epoch {} - validation accuracy: {:0.2f}%".format(epoch, (100 * correct / total)))
+
+    
+def main():
+    args = parse_args()
+    logger.info("Arguments: {}".format(vars(args)))   
+    
+    from models.resnet import ResNet50
+    model = ResNet50()
+    
+    optimizer, criterion = init_model(model, args.lr, args.momentum)
+    
+    train_loader, test_loader = get_cifar(args.batch_size, download_folder='data', distributed=False)
+    
+    model = manage_multitraining(model)
+    
+    for epoch in range(args.epochs):
+        train(train_loader, model, criterion, optimizer, epoch)
+        validate(test_loader, model, criterion, epoch)
+
+
+if __name__ == "__main__":
+    main()
+    
+    
 
 
 
