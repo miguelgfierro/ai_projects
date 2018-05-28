@@ -14,6 +14,7 @@ import torch.distributed as dist
 from torchvision import datasets, transforms
 import torchvision
 import logging
+from models.model_manager import ModelManager
 
 
 logging.basicConfig(level=logging.INFO)
@@ -32,17 +33,17 @@ def parse_args(arguments=[]):
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--network', type=str, default='resnet',
                        help='the neural network to use')
-    parser.add_argument('--num-layers', type=int,
+    parser.add_argument('--num_layers', type=str, default='50',
                        help='number of layers in the neural network, \
                              required by some networks such as resnet')
-    parser.add_argument('--epochs', type=int, default=5,
+    parser.add_argument('--epochs', type=int, default=10,
                         help='max num of epochs')
     parser.add_argument('--lr', default=0.1, type=float, help='learning rate')        
     parser.add_argument('--momentum', type=float, default=0.9,
                        help='momentum for sgd')
     parser.add_argument('--wd', type=float, default=0.0001,
                        help='weight decay for sgd')
-    parser.add_argument('--batch-size', type=int, default=128,
+    parser.add_argument('--batch_size', type=int, default=128,
                         help='the batch size')
     if arguments:  # when calling from notebook
         args = parser.parse_args(arguments)
@@ -134,8 +135,7 @@ def main():
     args = parse_args()
     logger.info("Arguments: {}".format(vars(args)))   
     
-    from models.resnet import ResNet50
-    model = ResNet50()
+    model = ModelManager.create(args.network, args.num_layers)
     
     optimizer, criterion = init_model(model, args.lr, args.momentum)
     

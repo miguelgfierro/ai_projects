@@ -96,22 +96,19 @@ class ResNet(nn.Module):
         out = out.view(out.size(0), -1)
         out = self.linear(out)
         return out
+    
 
-
-def ResNet18():
-    return ResNet(BasicBlock, [2,2,2,2])
-
-def ResNet34():
-    return ResNet(BasicBlock, [3,4,6,3])
-
-def ResNet50():
-    return ResNet(Bottleneck, [3,4,6,3])
-
-def ResNet101():
-    return ResNet(Bottleneck, [3,4,23,3])
-
-def ResNet152():
-    return ResNet(Bottleneck, [3,8,36,3])
-
-
+def get_symbol(variant):
+    if variant == '18':
+        return ResNet(BasicBlock, [2,2,2,2])
+    elif variant == '34':
+        return ResNet(BasicBlock, [3,4,6,3])
+    elif variant == '50':
+        return ResNet(Bottleneck, [3,4,6,3])
+    elif variant == '101':
+        return ResNet(Bottleneck, [3,4,23,3])
+    elif variant == '152':
+        return ResNet(Bottleneck, [3,8,36,3])
+    else:
+        ValueError("Variant {} not available in ResNext".format(variant))
 

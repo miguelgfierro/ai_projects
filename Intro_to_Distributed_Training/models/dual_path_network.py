@@ -72,24 +72,23 @@ class DPN(nn.Module):
         out = self.linear(out)
         return out
 
-
-def DPN26():
-    cfg = {
-        'in_planes': (96,192,384,768),
-        'out_planes': (256,512,1024,2048),
-        'num_blocks': (2,2,2,2),
-        'dense_depth': (16,32,24,128)
-    }
-    return DPN(cfg)
-
-def DPN92():
-    cfg = {
-        'in_planes': (96,192,384,768),
-        'out_planes': (256,512,1024,2048),
-        'num_blocks': (3,4,20,3),
-        'dense_depth': (16,32,24,128)
-    }
-    return DPN(cfg)
-
-
-
+    
+def get_symbol(variant):
+    if variant == '26':
+        cfg = {
+            'in_planes': (96,192,384,768),
+            'out_planes': (256,512,1024,2048),
+            'num_blocks': (2,2,2,2),
+            'dense_depth': (16,32,24,128)
+        }
+        return DPN(cfg)
+    elif variant == '92':
+        cfg = {
+            'in_planes': (96,192,384,768),
+            'out_planes': (256,512,1024,2048),
+            'num_blocks': (3,4,20,3),
+            'dense_depth': (16,32,24,128)
+        }
+        return DPN(cfg)
+    else:
+        ValueError("Variant {} not available in ResNext".format(variant))

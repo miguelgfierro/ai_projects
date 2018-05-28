@@ -85,19 +85,18 @@ class DenseNet(nn.Module):
         out = out.view(out.size(0), -1)
         out = self.linear(out)
         return out
+    
 
-def DenseNet121():
-    return DenseNet(Bottleneck, [6,12,24,16], growth_rate=32)
-
-def DenseNet169():
-    return DenseNet(Bottleneck, [6,12,32,32], growth_rate=32)
-
-def DenseNet201():
-    return DenseNet(Bottleneck, [6,12,48,32], growth_rate=32)
-
-def DenseNet161():
-    return DenseNet(Bottleneck, [6,12,36,24], growth_rate=48)
-
-def densenet_cifar():
-    return DenseNet(Bottleneck, [6,12,24,16], growth_rate=12)
-
+def get_symbol(variant):
+    if variant == '121':
+        return DenseNet(Bottleneck, [6,12,24,16], growth_rate=32)
+    elif variant == '161':
+        return DenseNet(Bottleneck, [6,12,36,24], growth_rate=48)
+    elif variant == '169':
+        return DenseNet(Bottleneck, [6,12,32,32], growth_rate=32)
+    elif variant == '201':
+        return DenseNet(Bottleneck, [6,12,48,32], growth_rate=32)
+    elif variant == 'CIFAR':
+        return DenseNet(Bottleneck, [6,12,24,16], growth_rate=12)
+    else:
+        ValueError("Variant {} not available in ResNext".format(variant))
