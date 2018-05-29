@@ -16,8 +16,8 @@ import torchvision
 import logging
 from models.model_manager import ModelManager
 
-
-logging.basicConfig(level=logging.INFO)
+format_str = '%(asctime)s %(levelname)s [%(filename)s:%(lineno)s]: %(message)s'
+logging.basicConfig(level=logging.INFO, format=format_str)
 logger = logging.getLogger(__name__)
 
 
@@ -45,6 +45,10 @@ def parse_args(arguments=[]):
                        help='weight decay for sgd')
     parser.add_argument('--batch_size', type=int, default=128,
                         help='the batch size')
+    parser.add_argument('--gpu_ids', type=str, default='0',
+                        help='comma-separated gpu ids to use for data parallel training')
+    parser.add_argument('--distributed', action='store_true',
+                        help='whether or not use distributed training')
     if arguments:  # when calling from notebook
         args = parser.parse_args(arguments)
     else:  # when calling from command line
@@ -89,7 +93,7 @@ def get_cifar(batch_size, download_folder='data', distributed=False):
     return train_loader, test_loader
 
 
-def manage_multitraining(model, distributed=False, dist_backend=None, dist_url=None, world_size=2, rank=None):
+def manage_multitraining(model, gpu_ids, distributed=False, dist_backend=None, dist_url=None, world_size=2, rank=None):
     # 1. Auto-tune
     torch.backends.cudnn.benchmark=True
     if distributed:
@@ -98,7 +102,16 @@ def manage_multitraining(model, distributed=False, dist_backend=None, dist_url=N
         model.cuda()
         model = torch.nn.parallel.DistributedDataParallel(model)
     else:
-        model = torch.nn.DataParallel(model).cuda()
+        gpus = [int(g) for g in gpu_ids.split(',')]
+        logger.info('Using GPUs: {}'.format(gpus))
+        if len(gpus) > 1:
+            # FIXME: this trains in all gpus, select some of them
+            # maybe follow https://discuss.pytorch.org/t/how-to-change-the-default-device-of-gpu-device-ids-0/1041/13
+            model = torch.nn.DataParallel(model).cuda()
+        else:
+            os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+            os.environ["CUDA_VISIBLE_DEVICES"] = gpu_ids
+            model = model.cuda()
     return model    
 
 
@@ -106,7 +119,9 @@ def train(train_loader, model, criterion, optimizer, epoch):
     logger.info("Training epoch {}...".format(epoch))
     model.train()
     for i, (input, target) in enumerate(train_loader):
-        target = target.cuda(non_blocking=True)
+        #target = target.cuda(non_blocking=True)
+        input = Variable(input.cuda())
+        target = Variable(target.cuda())
         # compute output
         output = model(input)
         loss = criterion(output, target)
@@ -141,7 +156,7 @@ def main():
     
     train_loader, test_loader = get_cifar(args.batch_size, download_folder='data', distributed=False)
     
-    model = manage_multitraining(model)
+    model = manage_multitraining(model, args.gpu_ids)
     
     for epoch in range(args.epochs):
         train(train_loader, model, criterion, optimizer, epoch)
