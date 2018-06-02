@@ -22,7 +22,13 @@ logger = logging.getLogger(__name__)
 
 
 def parse_args(arguments=[]):
-    """Example of argparse with different inputs.
+    """Example of argparse with different inputs. 
+    Available networks to train, first column is --network, second column is
+    --num_layers options separated by commas:
+    resnet | 18, 34, 50, 101, 152
+    resnext | 2x64, 4x64, 8x64, 32x4
+    densenet | 121, 161, 169, 201, CIFAR
+    dual_path_network | 26, 92
     Args:
         arguments (list): Arguments passed as a list of strings. This argument
                           can be used when calling the function from a
@@ -32,17 +38,17 @@ def parse_args(arguments=[]):
     parser = argparse.ArgumentParser(description="Parser",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--network', type=str, default='resnet',
-                       help='the neural network to use')
+                        help='the neural network to use')
     parser.add_argument('--num_layers', type=str, default='50',
-                       help='number of layers in the neural network, \
+                        help='number of layers in the neural network, \
                              required by some networks such as resnet')
     parser.add_argument('--epochs', type=int, default=10,
                         help='max num of epochs')
-    parser.add_argument('--lr', default=0.1, type=float, help='learning rate')        
+    parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
     parser.add_argument('--momentum', type=float, default=0.9,
-                       help='momentum for sgd')
+                        help='momentum for sgd')
     parser.add_argument('--wd', type=float, default=0.0001,
-                       help='weight decay for sgd')
+                        help='weight decay for sgd')
     parser.add_argument('--batch_size', type=int, default=128,
                         help='the batch size')
     parser.add_argument('--gpu_ids', type=str, default='0',
@@ -52,7 +58,7 @@ def parse_args(arguments=[]):
     if arguments:  # when calling from notebook
         args = parser.parse_args(arguments)
     else:  # when calling from command line
-        args = parser.parse_args()    
+        args = parser.parse_args()
     return args
 
 
@@ -68,34 +74,40 @@ def get_cifar(batch_size, download_folder='data', distributed=False):
         transforms.RandomCrop(32, padding=4),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        transforms.Normalize((0.4914, 0.4822, 0.4465),
+                             (0.2023, 0.1994, 0.2010)),
     ])
 
     transform_test = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        transforms.Normalize((0.4914, 0.4822, 0.4465),
+                             (0.2023, 0.1994, 0.2010)),
     ])
 
-    trainset = torchvision.datasets.CIFAR10(root=download_folder, train=True, download=True, transform=transform_train)
+    trainset = torchvision.datasets.CIFAR10(
+        root=download_folder, train=True, download=True, transform=transform_train)
     if distributed:
-        train_sampler = torch.utils.data.distributed.DistributedSampler(trainset)
+        train_sampler = torch.utils.data.distributed.DistributedSampler(
+            trainset)
     else:
         train_sampler = None
-    train_loader = torch.utils.data.DataLoader(trainset, 
-                                              batch_size=batch_size, 
-                                              shuffle=(train_sampler is None), 
-                                              num_workers=4,
-                                              pin_memory=True, 
-                                              sampler=train_sampler)
+    train_loader = torch.utils.data.DataLoader(trainset,
+                                               batch_size=batch_size,
+                                               shuffle=(train_sampler is None),
+                                               num_workers=4,
+                                               pin_memory=True,
+                                               sampler=train_sampler)
 
-    testset = torchvision.datasets.CIFAR10(root=download_folder, train=False, download=True, transform=transform_test)
-    test_loader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=4)
+    testset = torchvision.datasets.CIFAR10(
+        root=download_folder, train=False, download=True, transform=transform_test)
+    test_loader = torch.utils.data.DataLoader(
+        testset, batch_size=batch_size, shuffle=False, num_workers=4)
     return train_loader, test_loader
 
 
 def manage_multitraining(model, gpu_ids, distributed=False, dist_backend=None, dist_url=None, world_size=2, rank=None):
     # 1. Auto-tune
-    torch.backends.cudnn.benchmark=True
+    torch.backends.cudnn.benchmark = True
     if distributed:
         dist.init_process_group(backend=dist_backend, init_method=dist_url,
                                 world_size=world_size, rank=rank)
@@ -112,7 +124,7 @@ def manage_multitraining(model, gpu_ids, distributed=False, dist_backend=None, d
             os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
             os.environ["CUDA_VISIBLE_DEVICES"] = gpu_ids
             model = model.cuda()
-    return model    
+    return model
 
 
 def train(train_loader, model, criterion, optimizer, epoch):
@@ -130,7 +142,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
         loss.backward()
         optimizer.step()
 
-        
+
 def validate(val_loader, model, criterion, epoch):
     model.eval()
     correct = 0
@@ -143,21 +155,23 @@ def validate(val_loader, model, criterion, epoch):
             _, predicted = torch.max(output.data, 1)
             total += target.size(0)
             correct += (predicted == target).sum().item()
-    logger.info("Epoch {} - validation accuracy: {:0.2f}%".format(epoch, (100 * correct / total)))
+    logger.info(
+        "Epoch {} - validation accuracy: {:0.2f}%".format(epoch, (100 * correct / total)))
 
-    
+
 def main():
     args = parse_args()
-    logger.info("Arguments: {}".format(vars(args)))   
-    
+    logger.info("Arguments: {}".format(vars(args)))
+
     model = ModelManager.create(args.network, args.num_layers)
-    
+
     optimizer, criterion = init_model(model, args.lr, args.momentum)
-    
-    train_loader, test_loader = get_cifar(args.batch_size, download_folder='data', distributed=False)
-    
+
+    train_loader, test_loader = get_cifar(
+        args.batch_size, download_folder='data', distributed=False)
+
     model = manage_multitraining(model, args.gpu_ids)
-    
+
     for epoch in range(args.epochs):
         train(train_loader, model, criterion, optimizer, epoch)
         validate(test_loader, model, criterion, epoch)
@@ -165,8 +179,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
-    
-
-
-
