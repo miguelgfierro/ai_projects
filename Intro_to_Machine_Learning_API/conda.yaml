@@ -1,0 +1,29 @@
+# To create the conda environment:
+# $ conda env create -n cntk_api -f conda.yaml
+#
+# To update the conda environment:
+# $ conda env update -n cntk_api -f conda.yaml
+#
+# To register the conda environment in Jupyter:
+# $ source activate cntk_api
+# $ python -m ipykernel install --user --name cntk_api --display-name "Python (cntk_api)"
+#
+
+channels:
+- conda-forge
+- defaults
+dependencies:
+- python==3.5
+- numpy==1.13.3
+- requests==2.18.4
+- flask==0.12
+- cherrypy==12.0.1
+- ipykernel==4.6.1
+- pip:
+  - tornado==4.5.3
+  - jupyter==1.0.0
+  - matplotlib==1.5.3
+  - wget==3.2
+  - Pillow==5.0.0
+  - https://cntk.ai/PythonWheel/GPU/cntk-2.0-cp35-cp35m-linux_x86_64.whl
+  - aiohttp==2.0.3
