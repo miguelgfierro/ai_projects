@@ -15,6 +15,8 @@ from torchvision import datasets, transforms
 import torchvision
 import logging
 from models.model_manager import ModelManager
+from timer import Timer
+
 
 format_str = '%(asctime)s %(levelname)s [%(filename)s:%(lineno)s]: %(message)s'
 logging.basicConfig(level=logging.INFO, format=format_str)
@@ -173,8 +175,13 @@ def main():
     model = manage_multitraining(model, args.gpu_ids)
 
     for epoch in range(args.epochs):
-        train(train_loader, model, criterion, optimizer, epoch)
-        validate(test_loader, model, criterion, epoch)
+        with Timer() as t:
+            train(train_loader, model, criterion, optimizer, epoch)
+        logger.info("Training time {}".format(t))
+        
+        with Timer() as t:
+            validate(test_loader, model, criterion, epoch)
+        logger.info("Validation time {}".format(t))
 
 
 if __name__ == "__main__":
