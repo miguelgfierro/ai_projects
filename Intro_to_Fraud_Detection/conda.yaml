@@ -19,6 +19,7 @@ dependencies:
 - cherrypy==12.0.1
 - paste==2.0.3
 - ipykernel==4.6.1
+- imbalanced-learn==0.3.3
 - pip:
   - pandas==0.22.0
   - scipy==1.1.0
@@ -27,6 +28,7 @@ dependencies:
   - jupyter==1.0.0
   - lightgbm==2.1.1 --install-option=--gpu --install-option="--opencl-include-dir=/usr/local/cuda/include/" --install-option="--opencl-library=/usr/local/cuda/targets/x86_64-linux/lib/libOpenCL.so"
 #  - lightgbm==2.1.1
+  - matplotlib==2.1.2
 
   
   
