@@ -9,6 +9,7 @@
 #
 
 channels:
+- anaconda
 - conda-forge
 - defaults
 dependencies:
@@ -22,6 +23,8 @@ dependencies:
   - pandas==0.22.0
   - scipy==1.1.0
   - scikit-learn==0.19.1
+  - tornado==4.5.3
+  - jupyter==1.0.0
   - lightgbm==2.1.1 --install-option=--gpu --install-option="--opencl-include-dir=/usr/local/cuda/include/" --install-option="--opencl-library=/usr/local/cuda/targets/x86_64-linux/lib/libOpenCL.so"
 #  - lightgbm==2.1.1
 
