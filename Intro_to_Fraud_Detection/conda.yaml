@@ -26,10 +26,14 @@ dependencies:
   - scikit-learn==0.19.1
   - tornado==4.5.3
   - jupyter==1.0.0
+  # Make sure you add the correct path
   - lightgbm==2.1.1 --install-option=--gpu --install-option="--opencl-include-dir=/usr/local/cuda/include/" --install-option="--opencl-library=/usr/local/cuda/targets/x86_64-linux/lib/libOpenCL.so"
 #  - lightgbm==2.1.1
   - matplotlib==2.1.2
   - requests==2.18.4
+  - asyncio==3.4.3
+  - aiohttp==2.0.3
+  
 
   
   
