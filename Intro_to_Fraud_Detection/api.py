@@ -3,6 +3,8 @@ from paste.translogger import TransLogger
 from flask import Flask, request, abort, jsonify, make_response, render_template
 import json
 import os
+import pandas as pd
+import lightgbm as lgb
 from utils import BASELINE_MODEL, BAD_REQUEST, STATUS_OK, NOT_FOUND, SERVER_ERROR, PORT
 
 
@@ -30,6 +32,22 @@ def hello():
     return render_template('hello.html')
 
 
+def manage_query(request):
+    if not request.is_json:
+        abort(BAD_REQUEST)
+    dict_query = request.get_json()
+    X = pd.DataFrame(dict_query, index=[0])
+    X.to_csv('test.csv', index=False)
+    return X
+
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    X = manage_query(request)
+    y_pred = model.predict(X)[0]
+    return make_response(jsonify({'fraud': y_pred}), STATUS_OK)
+
+
 def run_server():
     # Enable WSGI access logging via Paste
     app_logged = TransLogger(app)
@@ -51,6 +69,10 @@ def run_server():
     cherrypy.engine.start()
     cherrypy.engine.block()
 
+# Load the model as a global variable
+model = lgb.Booster(model_file=BASELINE_MODEL)    
+    
+    
 if __name__ == "__main__":
     run_server()
     
