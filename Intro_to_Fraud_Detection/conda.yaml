@@ -29,6 +29,7 @@ dependencies:
   - lightgbm==2.1.1 --install-option=--gpu --install-option="--opencl-include-dir=/usr/local/cuda/include/" --install-option="--opencl-library=/usr/local/cuda/targets/x86_64-linux/lib/libOpenCL.so"
 #  - lightgbm==2.1.1
   - matplotlib==2.1.2
+  - requests==2.18.4
 
   
   
