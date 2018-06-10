@@ -5,6 +5,15 @@ import itertools
 import matplotlib.pyplot as plt
 
 
+# Constants
+BASELINE_MODEL = 'baseline.model'
+BAD_REQUEST = 400
+STATUS_OK = 200
+NOT_FOUND = 404
+SERVER_ERROR = 500
+PORT = 5000
+
+
 def split_train_test(X, y, test_size=0.2):
     """Split a dataset into train and test sets.
     Args:
