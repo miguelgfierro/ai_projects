@@ -1,0 +1,41 @@
+# To create the conda environment:
+# $ conda env create -n my_env_name -f conda.yaml
+#
+# To update the conda environment:
+# $ conda env update -n my_env_name -f conda.yaml
+#
+# To register the conda environment in Jupyter:
+# $ python -m ipykernel install --user --name my_env_name --display-name "Python (my_env_name)"
+#
+
+channels:
+- anaconda
+- conda-forge
+- defaults
+dependencies:
+- python==3.6
+- numpy==1.13.3
+- flask==1.0.2
+- cherrypy==12.0.1
+- paste==2.0.3
+- ipykernel==4.6.1
+- imbalanced-learn==0.3.3
+- pip:
+  - pandas==0.22.0
+  - scipy==1.1.0
+  - scikit-learn==0.19.1
+  - tornado==4.5.3
+  - jupyter==1.0.0
+  # In case you want to install LigthGBM with GPU, make sure you add the correct path
+  - lightgbm==2.1.1 --install-option=--gpu --install-option="--opencl-include-dir=/usr/local/cuda/include/" --install-option="--opencl-library=/usr/local/cuda/targets/x86_64-linux/lib/libOpenCL.so"
+#  - lightgbm==2.1.1
+  - matplotlib==2.1.2
+  - requests==2.18.4
+  - asyncio==3.4.3
+  - aiohttp==2.0.3
+  
+
+  
+  
+
+
