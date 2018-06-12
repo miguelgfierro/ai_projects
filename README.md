@@ -12,6 +12,8 @@ This repo contains the projects, additional information and code to support my b
 
 * [Introduction to Transfer Learning](A_Gentle_Introduction_to_Transfer_Learning/Intro_Transfer_Learning.ipynb): In this project we use PyTorch to explain the basic methodologies of transfer learning (finetuning and freezing) and analyze in which case is better to use each of them. Here the [blog entry](https://miguelgfierro.com/blog/2017/a-gentle-introduction-to-transfer-learning-for-image-classification/).
 
+* [Introduction to Fraud Detection](Intro_to_Fraud_Detection/fraud_detection.ipynb): In this notebook we design a baseline fraud detection model using LightGBM on GPU. The model is then operationalized through an API using Flask and CherryPy.  
+
 * [Introduction to Machine Learning API](Intro_to_Machine_Learning_API/Intro_to_Cloud_ML_with_Flask_and_CNTK.ipynb): In this notebook we show how to create an image classification API. The system works with a pretrained CNN using CNTK deep learning library. The API is setup with Flask for managing the end point services and CherryPy as the backend server. Here the [blog entry](https://miguelgfierro.com/blog/2017/how-to-deploy-an-image-classification-api-based-on-deep-learning/).
 
 * [Introduction to Recommendation Systems with Deep Autoencoders](Intro_to_Recommendation_Systems/Intro_Recommender.ipynb): In this notebook we make an overview to recommendation systems and implement a recommendation API using a deep autoencoder with PyTorch and the Netflix dataset. Here the [blog entry](https://miguelgfierro.com/blog/2018/introduction-to-recommendation-systems-with-deep-autoencoders/).
