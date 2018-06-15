@@ -3,12 +3,6 @@
     height: 500px;
   }
   
-  .map-marker {
-      /* adjusting for the marker dimensions
-      so that it is centered on coordinates */
-      margin-left: -8px;
-      margin-top: -8px;
-  }
   .map-marker.map-clickable {
       cursor: pointer;
   }
@@ -24,7 +18,7 @@
       position: absolute;
     }
   .map-marker .dot {
-      border: 2px solid #CC0000;
+      border: 3px solid #CC0000;
       background: transparent;
       -webkit-border-radius: 40px;
       -moz-border-radius: 40px;
@@ -38,8 +32,8 @@
       -moz-animation-iteration-count: infinite;
       animation-iteration-count: infinite;
       position: absolute;
-      top: -15px;
-      left: -15px;
+      top: -16px;
+      left: -16px;
       z-index: 1;
       opacity: 0;
     }
