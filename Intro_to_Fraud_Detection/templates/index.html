@@ -1,4 +1,5 @@
-    
+<!-- Based on https://www.amcharts.com/demos/custom-html-elements-map-markers/ -->
+
     <!-- Resources -->
     <link rel="stylesheet" href="css/map.css" type="text/css"  media="all" />
     <script src="js/ammap.js"></script>
@@ -9,10 +10,49 @@
     
     <!-- Chart code -->
     <script>
-    /**
-     * This example uses pulsating circles CSS by Kevin Urrutia
-     * http://kevinurrutia.tumblr.com/post/16411271583/creating-a-css3-pulsating-circle
-     */
+
+    function Location(title, latitude, longitude){
+      this.title = title;
+      this.latitude = latitude;
+      this.longitude = longitude;
+      this.scale = 0.5;
+      this.zoomLevel = 5;
+    }
+
+    function getLA(){
+      var latitude = 34.05;
+      var longitude = -118.24;
+      var title = "Los Angeles";
+      return new Location(title, latitude, longitude);
+    }
+
+    function getMadrid(){
+      var latitude = 40.4167;
+      var longitude = -3.7033;
+      var title = "Madrid";
+      return new Location(title, latitude, longitude);
+    }
+
+    function getTokio(){
+      var latitude = 35.6785;
+      var longitude = 139.6823;
+      var title = "Tokyo";
+      return new Location(title, latitude, longitude);
+    }
+
+
+    function generateLocations(){
+      var mapImages = [];
+      mapImages.push(getLA());
+      mapImages.push(getMadrid());
+      mapImages.push(getTokio());
+      return mapImages;
+    }
+
+
+
+
+
     var map = AmCharts.makeChart( "chartdiv", {
       "type": "map",
       "theme": "none",
@@ -29,157 +69,16 @@
       "areasSettings": {
         "unlistedAreasColor": "#222222" /* change color of the map */
       },
-    
       "dataProvider": {
         "map": "worldLow",
-        "images": [ {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Brussels",
-          "latitude": 50.8371,
-          "longitude": 4.3676
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Copenhagen",
-          "latitude": 55.6763,
-          "longitude": 12.5681
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Paris",
-          "latitude": 48.8567,
-          "longitude": 2.3510
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Reykjavik",
-          "latitude": 64.1353,
-          "longitude": -21.8952
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Moscow",
-          "latitude": 55.7558,
-          "longitude": 37.6176
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Madrid",
-          "latitude": 40.4167,
-          "longitude": -3.7033,
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "London",
-          "latitude": 51.5002,
-          "longitude": -0.1262,
-          "url": "http://www.google.co.uk"
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Peking",
-          "latitude": 39.9056,
-          "longitude": 116.3958
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "New Delhi",
-          "latitude": 28.6353,
-          "longitude": 77.2250
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Tokyo",
-          "latitude": 35.6785,
-          "longitude": 139.6823,
-          "url": "http://www.google.co.jp"
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Ankara",
-          "latitude": 39.9439,
-          "longitude": 32.8560
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Buenos Aires",
-          "latitude": -34.6118,
-          "longitude": -58.4173
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Brasilia",
-          "latitude": -15.7801,
-          "longitude": -47.9292
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Ottawa",
-          "latitude": 45.4235,
-          "longitude": -75.6979
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Washington",
-          "latitude": 38.8921,
-          "longitude": -77.0241
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Kinshasa",
-          "latitude": -4.3369,
-          "longitude": 15.3271
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Cairo",
-          "latitude": 30.0571,
-          "longitude": 31.2272
-        }, {
-          "zoomLevel": 5,
-          "scale": 0.5,
-          "title": "Pretoria",
-          "latitude": -25.7463,
-          "longitude": 28.1876
-        } ]
-      }
+        "images": generateLocations()
+      },
     } );
-    
-    map = drawLosAngeles(map);
+
 
     // add events to recalculate map position when the map is moved or zoomed
     map.addListener( "positionChanged", updateCustomMarkers );
     
-
-    function Location(title, latitude, longitude){
-      this.title = title
-      this.latitude = latitude
-      this.longitude = longitude
-      this.scale = 0.5
-      this.zoomLevel = 5
-    }
-
-    function drawLosAngeles(map){
-      var latitude = 34.05
-      var longitude = 118.24
-      var title = "Los Angeles"
-
-      mapImages = map.dataProvider.images
-      console.log("original length: " + mapImages.length)
-
-      console.log(typeof(mapImages))
-      console.log(Object.getOwnPropertyNames(mapImages))
-      console.log(Object.keys(mapImages))
-      console.log("image1")
-      var im0 = mapImages[0]
-      console.log(Object.getOwnPropertyNames(im0))
-      
-      mapImages.push(new Location(title, latitude, longitude))
-      console.log("final length: " + mapImages.length)
-
-      return map;
-    }
 
     // this function will take current images on the map and create HTML elements for them
     function updateCustomMarkers( event ) {
