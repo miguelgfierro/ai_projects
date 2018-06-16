@@ -40,6 +40,12 @@
       return new Location(title, latitude, longitude);
     }
 
+    function getNewDelhi(){
+      var latitude = 28.6353;
+      var longitude = 77.2250;
+      var title = "New Delhi";
+      return new Location(title, latitude, longitude);
+    }
 
     function generateLocations(){
       var mapImages = [];
@@ -48,8 +54,6 @@
       mapImages.push(getTokio());
       return mapImages;
     }
-
-
 
 
 
@@ -132,6 +136,32 @@
     
       return holder;
     }
+
+    /**
+ * Set interval to push new data points periodically
+ */
+// set up the chart to update every second
+setInterval( function() {
+  // normally you would load new datapoints here,
+  // but we will just generate some random values
+  // and remove the value from the beginning so that
+  // we get nice sliding graph feeling
+
+  // remove datapoint from the beginning
+  //map.dataProvider.shift();//error this is not a function
+
+  map.dataProvider.images.push(getNewDelhi());
+
+  console.log(map.dataProvider.images)
+
+
+  map.validateData();
+
+
+
+}, 3000 ); //this creates an infinite loop
+
+
     </script>
     
     <!-- HTML -->
