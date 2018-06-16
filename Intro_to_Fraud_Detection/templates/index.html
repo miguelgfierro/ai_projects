@@ -67,7 +67,7 @@
           "scale": 0.5,
           "title": "Madrid",
           "latitude": 40.4167,
-          "longitude": -3.7033
+          "longitude": -3.7033,
         }, {
           "zoomLevel": 5,
           "scale": 0.5,
@@ -146,9 +146,41 @@
       }
     } );
     
+    map = drawLosAngeles(map);
+
     // add events to recalculate map position when the map is moved or zoomed
     map.addListener( "positionChanged", updateCustomMarkers );
     
+
+    function Location(title, latitude, longitude){
+      this.title = title
+      this.latitude = latitude
+      this.longitude = longitude
+      this.scale = 0.5
+      this.zoomLevel = 5
+    }
+
+    function drawLosAngeles(map){
+      var latitude = 34.05
+      var longitude = 118.24
+      var title = "Los Angeles"
+
+      mapImages = map.dataProvider.images
+      console.log("original length: " + mapImages.length)
+
+      console.log(typeof(mapImages))
+      console.log(Object.getOwnPropertyNames(mapImages))
+      console.log(Object.keys(mapImages))
+      console.log("image1")
+      var im0 = mapImages[0]
+      console.log(Object.getOwnPropertyNames(im0))
+      
+      mapImages.push(new Location(title, latitude, longitude))
+      console.log("final length: " + mapImages.length)
+
+      return map;
+    }
+
     // this function will take current images on the map and create HTML elements for them
     function updateCustomMarkers( event ) {
       // get map object
@@ -158,7 +190,7 @@
       for ( var x in map.dataProvider.images ) {
         // get MapImage object
         var image = map.dataProvider.images[ x ];
-    
+        
         // check if it has corresponding HTML element
         if ( 'undefined' == typeof image.externalElement )
           image.externalElement = createCustomMarker( image );
