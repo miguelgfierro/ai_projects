@@ -1,11 +1,13 @@
 import cherrypy
 from paste.translogger import TransLogger
-from flask import Flask, request, abort, jsonify, make_response, render_template
+from flask import (Flask, request, abort, jsonify, make_response,
+                   render_template)
 import json
 import os
 import pandas as pd
 import lightgbm as lgb
-from utils import BASELINE_MODEL, BAD_REQUEST, STATUS_OK, NOT_FOUND, SERVER_ERROR, PORT
+from utils import (BASELINE_MODEL, BAD_REQUEST, STATUS_OK, NOT_FOUND,
+                   SERVER_ERROR, PORT, FRAUD_THRESHOLD)
 
 
 # app
@@ -44,7 +46,6 @@ def manage_query(request):
         abort(BAD_REQUEST)
     dict_query = request.get_json()
     X = pd.DataFrame(dict_query, index=[0])
-    # X.to_csv('test.csv', index=False)
     return X
 
 
@@ -57,12 +58,11 @@ def predict():
 
 @app.route('/predict_map', methods=['GET', 'POST'])
 def predict_map():
-    print(request)
-    if request is not None:
-        X = manage_query(request)
-        y_pred = model.predict(X)[0]
+    X = manage_query(request)
+    y_pred = model.predict(X)[0]
+
     # FIXME: call a database where the cities and coordinates are stored
-    locations = [{
+    locations_fair = [{
         "latitude": 28.6353,
         "longitude": 77.2250,
         "title": "New Delhi"
@@ -71,11 +71,25 @@ def predict_map():
         "longitude": -58.4173,
         "title": "Buenos Aires"
     }]
-    return render_template('index.html', locations=locations)
+
+    locations_fraud = [{
+        "latitude": 34.05,
+        "longitude": -118.24,
+        "title": "Los Angeles"
+    }, {
+        "latitude": 35.6785,
+        "longitude": 139.6823,
+        "title": "Tokyo"
+    }]
+
+    return render_template('index.html',
+                           locations_fair=locations_fair,
+                           locations_fraud=locations_fraud)
 
 
 def run_server():
     # Enable WSGI access logging via Paste
+
     app_logged = TransLogger(app)
 
     # Mount the WSGI callable object (app) on the root directory

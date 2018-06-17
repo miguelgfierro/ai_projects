@@ -14,6 +14,7 @@ STATUS_OK = 200
 NOT_FOUND = 404
 SERVER_ERROR = 500
 PORT = 5000
+FRAUD_THRESHOLD = 0.5
 
 
 def split_train_test(X, y, test_size=0.2):
@@ -32,9 +33,9 @@ def split_train_test(X, y, test_size=0.2):
         >>> print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
         (80, 5) (20, 5) (80,) (20,)
     """
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42, stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=42, stratify=y)
     return X_train, X_test, y_train, y_test
-
 
 
 def classification_metrics_binary(y_true, y_pred):
@@ -69,7 +70,8 @@ def classification_metrics_binary(y_true, y_pred):
     m_precision = precision_score(y_true, y_pred)
     m_recall = recall_score(y_true, y_pred)
     m_conf = confusion_matrix(y_true, y_pred)
-    report = {'Accuracy': m_acc, 'Precision': m_precision, 'Recall': m_recall, 'F1': m_f1, 'Confusion Matrix': m_conf}
+    report = {'Accuracy': m_acc, 'Precision': m_precision,
+              'Recall': m_recall, 'F1': m_f1, 'Confusion Matrix': m_conf}
     return report
 
 
@@ -126,7 +128,8 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
     """
     cm_max = cm.max()
     cm_min = cm.min()
-    if cm_min > 0: cm_min = 0
+    if cm_min > 0:
+        cm_min = 0
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         cm_max = 1
@@ -152,6 +155,7 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
 def chunked_http_client(num_chunks, s):
     # Use semaphore to limit number of requests
     semaphore = asyncio.Semaphore(num_chunks)
+
     @asyncio.coroutine
     # Return co-routine that will work asynchronously and respect locking of semaphore
     def http_get(url, payload, verbose):
@@ -159,9 +163,11 @@ def chunked_http_client(num_chunks, s):
         with (yield from semaphore):
             headers = {'content-type': 'application/json'}
             response = yield from s.request('post', url, data=json.dumps(payload), headers=headers)
-            if verbose: print("Response status:", response.status)
+            if verbose:
+                print("Response status:", response.status)
             body = yield from response.json()
-            if verbose: print(body)
+            if verbose:
+                print(body)
             yield from response.wait_for_close()
         return body
     return http_get
@@ -169,7 +175,7 @@ def chunked_http_client(num_chunks, s):
 
 def run_load_test(url, payloads, _session, concurrent, verbose):
     http_client = chunked_http_client(num_chunks=concurrent, s=_session)
-    
+
     # http_client returns futures, save all the futures to a list
     tasks = [http_client(url, payload, verbose) for payload in payloads]
 
@@ -181,4 +187,4 @@ def run_load_test(url, payloads, _session, concurrent, verbose):
             dfs_route.append(data)
         except Exception as err:
             print("Error {0}".format(err))
-    return dfs_route    
+    return dfs_route

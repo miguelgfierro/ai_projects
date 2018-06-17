@@ -1,7 +1,5 @@
 // Based on https://www.amcharts.com/demos/custom-html-elements-map-markers/ 
 
-var locations;
-
 function Location(title, latitude, longitude) {
     this.title = title;
     this.latitude = latitude;
@@ -40,10 +38,7 @@ function getNewDelhi() {
 
 function generateLocations() {
     var mapImages = [];
-    console.log(locations)
-    if (locations == 'LA') {
-        mapImages.push(getLA());
-    }
+    mapImages.push(getLA());
     mapImages.push(getMadrid());
     mapImages.push(getTokio());
 
