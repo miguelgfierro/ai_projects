@@ -10,6 +10,8 @@ from utils import BASELINE_MODEL, BAD_REQUEST, STATUS_OK, NOT_FOUND, SERVER_ERRO
 
 # app
 app = Flask(__name__)
+# define static folder for css, img, js
+app.static_folder = 'static'
 
 
 @app.errorhandler(BAD_REQUEST)
@@ -32,12 +34,17 @@ def hello():
     return render_template('hello.html')
 
 
+@app.route('/map')
+def map():
+    return render_template('index.html')
+
+
 def manage_query(request):
     if not request.is_json:
         abort(BAD_REQUEST)
     dict_query = request.get_json()
     X = pd.DataFrame(dict_query, index=[0])
-    X.to_csv('test.csv', index=False)
+    # X.to_csv('test.csv', index=False)
     return X
 
 
@@ -46,6 +53,25 @@ def predict():
     X = manage_query(request)
     y_pred = model.predict(X)[0]
     return make_response(jsonify({'fraud': y_pred}), STATUS_OK)
+
+
+@app.route('/predict_map', methods=['GET', 'POST'])
+def predict_map():
+    print(request)
+    if request is not None:
+        X = manage_query(request)
+        y_pred = model.predict(X)[0]
+    # FIXME: call a database where the cities and coordinates are stored
+    locations = [{
+        "latitude": 28.6353,
+        "longitude": 77.2250,
+        "title": "New Delhi"
+    }, {
+        "latitude": -34.6118,
+        "longitude": -58.4173,
+        "title": "Buenos Aires"
+    }]
+    return render_template('index.html', locations=locations)
 
 
 def run_server():
@@ -62,17 +88,17 @@ def run_server():
         'log.error_file': "cherrypy.log",
         'server.socket_port': PORT,
         'server.socket_host': '0.0.0.0',
-        'server.thread_pool': 50, # 10 is default
+        'server.thread_pool': 50,  # 10 is default
     })
 
     # Start the CherryPy WSGI web server
     cherrypy.engine.start()
     cherrypy.engine.block()
 
+
 # Load the model as a global variable
-model = lgb.Booster(model_file=BASELINE_MODEL)    
-    
-    
+model = lgb.Booster(model_file=BASELINE_MODEL)
+
+
 if __name__ == "__main__":
     run_server()
-    

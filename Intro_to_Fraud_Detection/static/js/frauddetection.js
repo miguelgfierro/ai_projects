@@ -1,5 +1,7 @@
 // Based on https://www.amcharts.com/demos/custom-html-elements-map-markers/ 
 
+var locations;
+
 function Location(title, latitude, longitude) {
     this.title = title;
     this.latitude = latitude;
@@ -38,9 +40,29 @@ function getNewDelhi() {
 
 function generateLocations() {
     var mapImages = [];
-    mapImages.push(getLA());
+    console.log(locations)
+    if (locations == 'LA') {
+        mapImages.push(getLA());
+    }
     mapImages.push(getMadrid());
     mapImages.push(getTokio());
+
+    //     newImages = [
+    //         {% for location in locations %}
+    // {
+    //     "title": {% location.title %},
+    //     "latitude": {% location.latitude %},
+    //     "longitude": {% location.longitude %},
+    //     "scale": 0.5,
+    //         "zoomLevel": 5
+    // }
+    // //{ { if not loop.last } } , { { endif } }
+    // {% endfor %}
+    // ];
+
+    //mapImages.push(newImages);
+
+
     return mapImages;
 }
 
