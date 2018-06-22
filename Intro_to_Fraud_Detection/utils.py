@@ -5,6 +5,8 @@ import itertools
 import matplotlib.pyplot as plt
 import asyncio
 import json
+import sqlite3
+from sqlite3 import Error
 
 
 # Constants
@@ -15,6 +17,51 @@ NOT_FOUND = 404
 SERVER_ERROR = 500
 PORT = 5000
 FRAUD_THRESHOLD = 0.5
+DATABASE_FILE = 'db.sqlite3'
+
+
+def connect_to_database(database=None):
+    """
+    Connect to a sqlite database. Don't forget to close the connection at the
+    end of the routine with `conn.close()`.
+    Args:
+        database (str): Database filename.
+    Returns:
+        conn (object): Connector object.
+
+    """
+    if database is None:
+        database = ':memory:'
+    try:
+        conn = sqlite3.connect(database)
+    except Error as e:
+        print(e)
+        raise
+    return conn
+
+
+def create_table(cursor, table_name, table_instruction):
+    """Create a table and drop it if it exists.
+    Args:
+        cursor (object): sqlite cursor.
+        table_name (str): Table name.
+        table_instruction (str): Table variable definition.
+    Example:
+        >>> conn = sqlite3.connect(':memory:')
+        >>> cur = conn.cursor()
+        >>> instruction = '''num INT(11) NULL, float_num FLOAT(8,6) NOT NULL DEFAULT "0",letter CHAR(1),input_date DATE'''
+        >>> create_table('', cur, "table_name", instruction)
+        >>> c = cur.execute('PRAGMA table_info([table_name]);')
+        >>> cur.fetchall()
+        [(0, 'num', 'INT(11)', 0, None, 0), (1, 'float_num', 'FLOAT(8,6)', 1, '"0"', 0), (2, 'letter', 'CHAR(1)', 0, None, 0), (3, 'input_date', 'DATE', 0, None, 0)]
+
+
+    """
+    query = "DROP TABLE IF EXISTS " + table_name + ";"
+    cursor.execute(query)
+    query = " CREATE TABLE " + table_name
+    query += " (" + table_instruction + " );"
+    cursor.execute(query)
 
 
 def split_train_test(X, y, test_size=0.2):
