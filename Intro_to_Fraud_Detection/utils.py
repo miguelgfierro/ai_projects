@@ -8,6 +8,7 @@ import json
 import sqlite3
 from sqlite3 import Error
 from contextlib import contextmanager
+from sqlalchemy import create_engine
 
 
 # Constants
@@ -19,6 +20,8 @@ SERVER_ERROR = 500
 PORT = 5000
 FRAUD_THRESHOLD = 0.5
 DATABASE_FILE = 'db.sqlite3'
+TABLE_FRAUD = 'fraud'
+TABLE_LOCATIONS = 'locations'
 
 
 def connect_to_database(database=None):
@@ -98,6 +101,33 @@ def _commit_transaction(connector):
         raise
     finally:
         cur.close()
+
+
+def save_to_sqlite(dataframe, database, table_name, **kargs):
+    """Save a dataframe to a SQL database.
+    Args:
+        dataframe (pd.DataFrame): A dataframe
+        database (str): Database filename.
+        connection_string (str): Database connection string.
+        table_name (str): Table name
+    Examples:
+        >>> df = pd.DataFrame({'col1':[1,2,3], 'col2':[0.1,0.2,0.3]})
+        >>> save_to_sqlite(df, 'test.db', 'table1', if_exists='replace')
+        >>> import sqlite3
+        >>> conn = sqlite3.connect('test.db')
+        >>> cur = conn.cursor()
+        >>> result = cur.execute("SELECT * FROM table1")
+        >>> cur.fetchall()
+        [(0, 1, 0.1), (1, 2, 0.2), (2, 3, 0.3)]
+        >>> save_to_sqlite(df, 'test.db', 'table1', if_exists='append', index=False)
+        >>> result = cur.execute("SELECT * FROM table1")
+        >>> cur.fetchall()
+        [(0, 1, 0.1), (1, 2, 0.2), (2, 3, 0.3), (None, 1, 0.1), (None, 2, 0.2), (None, 3, 0.3)]
+
+    """
+    connection_string = 'sqlite:///' + database
+    engine = create_engine(connection_string)
+    dataframe.to_sql(table_name, engine, **kargs)
 
 
 def split_train_test(X, y, test_size=0.2):
