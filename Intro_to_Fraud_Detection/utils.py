@@ -44,65 +44,6 @@ def connect_to_database(database=None):
     return conn
 
 
-def create_table(cursor, table_name, table_instruction):
-    """Create a table and drop it if it exists.
-    Args:
-        cursor (object): sqlite cursor.
-        table_name (str): Table name.
-        table_instruction (str): Table variable definition.
-    Example:
-        >>> conn = sqlite3.connect(':memory:')
-        >>> cur = conn.cursor()
-        >>> instruction = '''num INT(11) NULL, float_num FLOAT(8,6) NOT NULL DEFAULT "0",letter CHAR(1),input_date DATE'''
-        >>> create_table('', cur, "table_name", instruction)
-        >>> c = cur.execute('PRAGMA table_info([table_name]);')
-        >>> cur.fetchall()
-        [(0, 'num', 'INT(11)', 0, None, 0), (1, 'float_num', 'FLOAT(8,6)', 1, '"0"', 0), (2, 'letter', 'CHAR(1)', 0, None, 0), (3, 'input_date', 'DATE', 0, None, 0)]
-
-    """
-    query = "DROP TABLE IF EXISTS " + table_name + ";"
-    cursor.execute(query)
-    query = " CREATE TABLE " + table_name
-    query += " (" + table_instruction + " );"
-    cursor.execute(query)
-
-
-def insert_row(connector, table_name, table_instruction, values):
-    """Insert a row of items in a table.
-    Args:
-        connector (object): sqlite connector.
-        table_name (str): Table name.
-        table_instruction (str): Instruction to insert the values.
-        values (list): List with values to insert
-    Example:
-        >>> import datetime
-        >>> conn = sqlite3.connect('temp.db')
-        >>> instruction = '(num ,float_num, letter, input_date) VALUES (?,?,?,?)'
-        >>> values = [5, 1.5, 'b', datetime.date(2000, 1, 1)]
-        >>> insert_row(conn, 'table_name', instruction, values)
-        >>> result = cur.execute('SELECT * FROM table_name')
-        >>> cur.fetchone()
-        (5, 1.5, 'b', '2000-01-01')
-
-    """
-    query = 'INSERT INTO ' + table_name + ' ' + table_instruction
-    with _commit_transaction(connector) as cur:
-        cur.execute(query, values)
-
-
-@contextmanager
-def _commit_transaction(connector):
-    cur = connector.cursor()
-    try:
-        yield cur
-        connector.commit()
-    except:
-        connector.rollback()
-        raise
-    finally:
-        cur.close()
-
-
 def save_to_sqlite(dataframe, database, table_name, **kargs):
     """Save a dataframe to a SQL database.
     Args:
