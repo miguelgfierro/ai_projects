@@ -9,6 +9,7 @@ import sqlite3
 from sqlite3 import Error
 from contextlib import contextmanager
 from sqlalchemy import create_engine
+import pandas as pd
 
 
 # Constants
@@ -44,6 +45,15 @@ def connect_to_database(database=None):
     return conn
 
 
+def select_random_row(connection, table_name):
+    query = '''SELECT * FROM {0} LIMIT 1 
+            OFFSET ABS(RANDOM()) % MAX((SELECT COUNT(*) FROM {0}), 1)
+            '''.format(table_name)
+    cur = connection.cursor()
+    cur.execute(query)
+    return cur.fetchone()
+
+
 def save_to_sqlite(dataframe, database, table_name, **kargs):
     """Save a dataframe to a SQL database.
     Args:
@@ -69,6 +79,29 @@ def save_to_sqlite(dataframe, database, table_name, **kargs):
     connection_string = 'sqlite:///' + database
     engine = create_engine(connection_string)
     dataframe.to_sql(table_name, engine, **kargs)
+
+
+def read_from_sqlite(database, query, **kargs):
+    """Make a query to a SQL database.
+    Args:
+        database (str): Database filename.
+        query (str): Query.
+    Returns:
+        dataframe (pd.DataFrame): An dataframe.
+    Examples:
+        >>> df = read_from_sqlite('test.db', 'SELECT col1,col2 FROM table1;')
+        >>> df
+           col1  col2
+        0     1   0.1
+        1     2   0.2
+        2     3   0.3
+        3     1   0.1
+        4     2   0.2
+        5     3   0.3
+    """
+    connection_string = 'sqlite:///' + database
+    engine = create_engine(connection_string)
+    return pd.read_sql(query, engine, **kargs)
 
 
 def split_train_test(X, y, test_size=0.2):
@@ -106,8 +139,8 @@ def classification_metrics_binary(y_true, y_pred):
     High Recall and low Precision will return many positive results but most of them will be incorrect.
     - F1 Score: 2*((precision*recall)/(precision+recall)). It measures the balance between precision and recall.
     Args:
-        y_true (list or array): True labels.
-        y_pred (list or array): Predicted labels (binary).
+        y_true (list or np.array): True labels.
+        y_pred (list or np.array): Predicted labels (binary).
     Returns:
         report (dict): Dictionary with metrics.
     Examples:
@@ -137,8 +170,8 @@ def classification_metrics_binary_prob(y_true, y_prob):
     penalizing false classifications. Minimizing the Log Loss is equivalent to minimizing the squared error but using
     probabilistic predictions. Log loss penalize heavily classifiers that are confident about incorrect classifications.
     Args:
-        y_true (list or array): True labels.
-        y_prob (list or array): Predicted labels (probability).
+        y_true (list or np.array): True labels.
+        y_prob (list or np.array): Predicted labels (probability).
     Returns:
         report (dict): Dictionary with metrics.
     Examples:
@@ -160,6 +193,11 @@ def classification_metrics_binary_prob(y_true, y_prob):
 
 
 def binarize_prediction(y, threshold=0.5):
+    """Binarize prediction based on a threshold
+    Args:
+        y (np.array): Array with predictions.
+        threshold (float): Theshold value for binarization.
+    """
     y_pred = np.where(y > threshold, 1, 0)
     return y_pred
 
@@ -167,7 +205,7 @@ def binarize_prediction(y, threshold=0.5):
 def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
     """Plots a confusion matrix.
     Args:
-        cm (numpy array): The confusion matrix array.
+        cm (np.array): The confusion matrix array.
         classes (list): List wit the classes names.
         normalize (bool): Flag to normalize data.
         title (str): Title of the plot.

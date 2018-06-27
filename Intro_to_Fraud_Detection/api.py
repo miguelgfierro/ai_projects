@@ -7,7 +7,9 @@ import os
 import pandas as pd
 import lightgbm as lgb
 from utils import (BASELINE_MODEL, BAD_REQUEST, STATUS_OK, NOT_FOUND,
-                   SERVER_ERROR, PORT, FRAUD_THRESHOLD)
+                   SERVER_ERROR, PORT, FRAUD_THRESHOLD, DATABASE_FILE,
+                   TABLE_LOCATIONS)
+from utils import connect_to_database, select_random_row
 
 
 # app
@@ -61,7 +63,10 @@ def predict_map():
     X = manage_query(request)
     y_pred = model.predict(X)[0]
 
-    # FIXME: call a database where the cities and coordinates are stored
+    row = select_random_row(conn, TABLE_LOCATIONS)
+    location = {"title": row[0], "latitude": row[1], "longitude": row[2]}
+
+    # FIXME: send real time input to the map
     locations_fair = [{
         "latitude": 28.6353,
         "longitude": 77.2250,
@@ -113,6 +118,13 @@ def run_server():
 # Load the model as a global variable
 model = lgb.Booster(model_file=BASELINE_MODEL)
 
+# Connect to database
+conn = connect_to_database(DATABASE_FILE)
 
 if __name__ == "__main__":
-    run_server()
+    try:
+        run_server()
+    except:
+        raise
+    finally:
+        conn.close()
