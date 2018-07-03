@@ -32,6 +32,11 @@ dependencies:
   - asyncio==3.4.3
   - aiohttp==2.0.3
   - SQLAlchemy==1.2.4
+  # For websockets, add flask-socketio, gevent-websocket, wsaccel and ujson
+  - flask-socketio>=3.0.1
+  - gevent-websocket>=0.10.1
+  - wsaccel>=0.6.2
+  - ujson>=1.35
   
 
   
