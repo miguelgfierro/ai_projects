@@ -1,4 +1,16 @@
-// Based on https://www.amcharts.com/demos/custom-html-elements-map-markers/ 
+
+
+// An application can open a connection on multiple namespaces, and
+// Socket.IO will multiplex all those connections on a single
+// physical channel. If you don't care about multiple channels, you
+// can set the namespace to an empty string.
+// namespace = "/test";
+var namespace = "";
+
+// Connect to the Socket.IO server.
+// The connection URL has the following format:
+//     http[s]://<domain>:<port>[/<namespace>]
+var socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port + namespace);
 
 function Location(title, latitude, longitude) {
     this.title = title;
@@ -36,33 +48,22 @@ function getNewDelhi() {
     return new Location(title, latitude, longitude);
 }
 
-function generateLocations() {
-    var mapImages = [];
-    mapImages.push(getLA());
-    mapImages.push(getMadrid());
-    mapImages.push(getTokio());
+var mapLocations = [];
 
-    //     newImages = [
-    //         {% for location in locations %}
-    // {
-    //     "title": {% location.title %},
-    //     "latitude": {% location.latitude %},
-    //     "longitude": {% location.longitude %},
-    //     "scale": 0.5,
-    //         "zoomLevel": 5
-    // }
-    // //{ { if not loop.last } } , { { endif } }
-    // {% endfor %}
-    // ];
+// locations for testing
+// mapLocations.push(getLA());
+// mapLocations.push(getMadrid());
+// mapLocations.push(getTokio());
+// mapLocations.push(getNewDelhi());
 
-    //mapImages.push(newImages);
+// Location updated emitted by the server via websockets
+socket.on("map_update", function (msg) {
+    newLocation = new Location(msg.title, msg.latitude, msg.longitude);
+    mapLocations.push(newLocation);
+});
 
 
-    return mapImages;
-}
-
-
-
+// Based on https://www.amcharts.com/demos/custom-html-elements-map-markers/ 
 var map = AmCharts.makeChart("chartdiv", {
     "type": "map",
     "theme": "none",
@@ -81,7 +82,7 @@ var map = AmCharts.makeChart("chartdiv", {
     },
     "dataProvider": {
         "map": "worldLow",
-        "images": generateLocations()
+        "images": mapLocations
     },
 });
 
