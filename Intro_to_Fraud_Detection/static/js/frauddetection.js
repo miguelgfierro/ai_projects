@@ -1,21 +1,22 @@
 
-
+$(document).ready(function () {
 // An application can open a connection on multiple namespaces, and
 // Socket.IO will multiplex all those connections on a single
 // physical channel. If you don't care about multiple channels, you
 // can set the namespace to an empty string.
-// namespace = "/test";
-var namespace = "";
+var namespace = "/fraud";
 
 // Connect to the Socket.IO server.
 // The connection URL has the following format:
 //     http[s]://<domain>:<port>[/<namespace>]
-var socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port + namespace);
+var socket_url = location.protocol + "//" + document.domain + ":" + location.port + namespace;
+var socket = io.connect(socket_url);
+console.log("Connected to " + socket_url);
 
 function Location(title, latitude, longitude) {
     this.title = title;
-    this.latitude = latitude;
-    this.longitude = longitude;
+    this.latitude = parseFloat(latitude);
+    this.longitude = parseFloat(longitude);
     this.scale = 0.5;
     this.zoomLevel = 5;
 }
@@ -57,7 +58,9 @@ var mapLocations = [];
 // mapLocations.push(getNewDelhi());
 
 // Location updated emitted by the server via websockets
-socket.on("map_update", function (msg) {
+socket.on("map_update", function (msg) {  
+    console.log(msg.title);
+    mapLocations.push(getLA());
     newLocation = new Location(msg.title, msg.latitude, msg.longitude);
     mapLocations.push(newLocation);
 });
@@ -144,3 +147,31 @@ function createCustomMarker(image) {
     return holder;
 }
 
+
+    // Interval function that tests message latency by sending a "ping"
+    // message. The server then responds with a "pong" message and the
+    // round trip time is measured.
+    var pingPongTimes = [];
+    var startTime;
+    window.setInterval(function () {
+        startTime = (new Date).getTime();
+        socket.emit("my_ping");
+    }, 1000);
+
+    // Handler for the "pong" message. When the pong is received, the
+    // time from the ping is stored, and the average of the last 30
+    // samples is average and displayed.
+    socket.on("my_pong", function () {
+        var latency = (new Date).getTime() - startTime;
+        pingPongTimes.push(latency);
+        pingPongTimes = pingPongTimes.slice(-30); // keep last 30 samples
+        var sum = 0;
+        for (var i = 0; i < pingPongTimes.length; i++) {
+            sum += pingPongTimes[i];
+        }
+        console.log("Pong sum=" + sum);
+        $("#ping-pong").text(Math.round(10 * sum / pingPongTimes.length) / 10);
+    });
+
+
+});

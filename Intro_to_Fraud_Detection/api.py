@@ -59,12 +59,12 @@ def predict():
     return make_response(jsonify({'fraud': y_pred}), STATUS_OK)
 
 
-@socketio.on('connect')
+@socketio.on('connect', namespace='/fraud')
 def test_connect():
     print('Client connected')
 
 
-@socketio.on('disconnect')
+@socketio.on('disconnect', namespace='/fraud')
 def test_disconnect():
     print('Client disconnected')
 
@@ -77,7 +77,19 @@ def predict_map():
     row = select_random_row(conn, TABLE_LOCATIONS)
     location = {"title": row[0], "latitude": row[1], "longitude": row[2]}
     print("New location: {}".format(location))
-    emit('map_update', location)
+    socketio.emit('map_update', location, broadcast=True)
+    # fake_loc = {'title': 'Tebessa', 
+    #             'latitude': 35.41043418, 
+    #             'longitude': 8.120010537}
+    # socketio.emit('map_update', fake_loc, broadcast=True)            
+    return make_response(jsonify({'fraud': y_pred}), STATUS_OK)
+
+
+
+# Receives my_pong from the client and sends my_pong from the server
+@socketio.on('my_ping', namespace='/fraud')
+def ping_pong():
+    emit('my_pong')
 
 
 # Load the model as a global variable
@@ -88,8 +100,8 @@ conn = connect_to_database(DATABASE_FILE)
 
 if __name__ == "__main__":
     try:
-        print("Starting server")
-        socketio.run(app, debug=False)
+        print("Server started")
+        socketio.run(app, debug=True)
     except:
         raise
     finally:
