@@ -90,6 +90,10 @@ def predict_map():
 @socketio.on('my_ping', namespace='/fraud')
 def ping_pong():
     emit('my_pong')
+#     row = select_random_row(conn, TABLE_LOCATIONS)
+#     location = {"title": row[0], "latitude": row[1], "longitude": row[2]}
+#     print("New location: {}".format(location))
+#     emit('map_update', location, broadcast=True)
 
 
 # Load the model as a global variable

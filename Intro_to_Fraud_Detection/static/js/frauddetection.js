@@ -57,14 +57,6 @@ var mapLocations = [];
 // mapLocations.push(getTokio());
 // mapLocations.push(getNewDelhi());
 
-// Location updated emitted by the server via websockets
-socket.on("map_update", function (msg) {  
-    console.log(msg.title);
-    mapLocations.push(getLA());
-    newLocation = new Location(msg.title, msg.latitude, msg.longitude);
-    mapLocations.push(newLocation);
-});
-
 
 // Based on https://www.amcharts.com/demos/custom-html-elements-map-markers/ 
 var map = AmCharts.makeChart("chartdiv", {
@@ -88,6 +80,21 @@ var map = AmCharts.makeChart("chartdiv", {
         "images": mapLocations
     },
 });
+
+console.log(map);
+//map.dataProvider.images.push(getNewDelhi());
+
+
+// Location updated emitted by the server via websockets
+socket.on("map_update", function (msg) {  
+    console.log(msg.title);
+    console.log(msg.latitude);
+    console.log(typeof msg.latitude);
+    newLocation = new Location(msg.title, msg.latitude, msg.longitude);
+    map.dataProvider.images.push(newLocation);
+});
+
+
 
 
 // add events to recalculate map position when the map is moved or zoomed
@@ -169,7 +176,7 @@ function createCustomMarker(image) {
         for (var i = 0; i < pingPongTimes.length; i++) {
             sum += pingPongTimes[i];
         }
-        console.log("Pong sum=" + sum);
+        // console.log("Pong sum=" + sum);
         $("#ping-pong").text(Math.round(10 * sum / pingPongTimes.length) / 10);
     });
 
