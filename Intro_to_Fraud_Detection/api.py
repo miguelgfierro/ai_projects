@@ -77,7 +77,8 @@ def predict_map():
     row = select_random_row(conn, TABLE_LOCATIONS)
     location = {"title": row[0], "latitude": row[1], "longitude": row[2]}
     print("New location: {}".format(location))
-    emit('map_update', location)
+    socketio.emit('map_update', location)
+    return make_response(jsonify({'fraud': y_pred}), STATUS_OK)
 
 
 # Load the model as a global variable
