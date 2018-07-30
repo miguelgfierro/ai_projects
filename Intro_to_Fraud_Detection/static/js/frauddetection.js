@@ -18,6 +18,7 @@ $(document).ready(function () {
         console.log("Response from server: " + msg.data + " (note: " + msg.note + ")");
     });
 
+
     function Location(title, latitude, longitude) {
         this.title = title;
         this.latitude = parseFloat(latitude);

@@ -92,19 +92,21 @@ def ping_pong():
 
 
 # Health end point
+# $ curl http://localhost:5000/health
 @app.route('/health')
 def health_check():
     socketio.emit('health_signal',
                   {'data': 'HEALTH CHECK', 'note': 'OK'},
-                  broadcast=True)
+                  broadcast=True,
+                  namespace='/fraud')
     return make_response(jsonify({'health': 'OK'}), STATUS_OK)
 
 
-# # Load the model as a global variable
-# model = lgb.Booster(model_file=BASELINE_MODEL)
+# Load the model as a global variable
+model = lgb.Booster(model_file=BASELINE_MODEL)
 
-# # Connect to database
-# conn = connect_to_database(DATABASE_FILE)
+# Connect to database
+conn = connect_to_database(DATABASE_FILE)
 
 if __name__ == "__main__":
     try:
