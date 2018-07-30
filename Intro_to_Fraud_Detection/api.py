@@ -44,19 +44,19 @@ def map():
     return render_template('index.html')
 
 
-# def manage_query(request):
-#     if not request.is_json:
-#         abort(BAD_REQUEST)
-#     dict_query = request.get_json()
-#     X = pd.DataFrame(dict_query, index=[0])
-#     return X
+def manage_query(request):
+    if not request.is_json:
+        abort(BAD_REQUEST)
+    dict_query = request.get_json()
+    X = pd.DataFrame(dict_query, index=[0])
+    return X
 
 
-# @app.route('/predict', methods=['POST'])
-# def predict():
-#     X = manage_query(request)
-#     y_pred = model.predict(X)[0]
-#     return make_response(jsonify({'fraud': y_pred}), STATUS_OK)
+@app.route('/predict', methods=['POST'])
+def predict():
+    X = manage_query(request)
+    y_pred = model.predict(X)[0]
+    return make_response(jsonify({'fraud': y_pred}), STATUS_OK)
 
 
 @socketio.on('connect', namespace='/fraud')
@@ -69,20 +69,20 @@ def test_disconnect():
     print('Client disconnected')
 
 
-# @app.route('/predict_map', methods=['POST'])
-# def predict_map():
-#     X = manage_query(request)
-#     y_pred = model.predict(X)[0]
-#     print("Value predicted: {}".format(y_pred))
-#     row = select_random_row(conn, TABLE_LOCATIONS)
-#     location = {"title": row[0], "latitude": row[1], "longitude": row[2]}
-#     print("New location: {}".format(location))
-#     socketio.emit('map_update', location, broadcast=True)
-#     # fake_loc = {'title': 'Tebessa',
-#     #             'latitude': 35.41043418,
-#     #             'longitude': 8.120010537}
-#     # socketio.emit('map_update', fake_loc, broadcast=True)
-#     return make_response(jsonify({'fraud': y_pred}), STATUS_OK)
+@app.route('/predict_map', methods=['POST'])
+def predict_map():
+    X = manage_query(request)
+    y_pred = model.predict(X)[0]
+    print("Value predicted: {}".format(y_pred))
+    row = select_random_row(conn, TABLE_LOCATIONS)
+    location = {"title": row[0], "latitude": row[1], "longitude": row[2]}
+    print("New location: {}".format(location))
+    socketio.emit('map_update', location, broadcast=True, namespace='/fraud')
+    # fake_loc = {'title': 'Tebessa',
+    #             'latitude': 35.41043418,
+    #             'longitude': 8.120010537}
+    # socketio.emit('map_update', fake_loc, broadcast=True)
+    return make_response(jsonify({'fraud': y_pred}), STATUS_OK)
 
 
 # Receives my_pong from the client and sends my_pong from the server

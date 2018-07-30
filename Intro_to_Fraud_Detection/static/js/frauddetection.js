@@ -58,108 +58,108 @@ $(document).ready(function () {
     var mapLocations = [];
 
     // locations for testing
-    // mapLocations.push(getLA());
-    // mapLocations.push(getMadrid());
+    // To visualize this, you have to comment 
+    // $(document).ready(function () { at the beginning
+    mapLocations.push(getLA());
+    mapLocations.push(getMadrid());
     // mapLocations.push(getTokio());
     // mapLocations.push(getNewDelhi());
 
 
     // Based on https://www.amcharts.com/demos/custom-html-elements-map-markers/ 
-    // var map = AmCharts.makeChart("chartdiv", {
-    //     "type": "map",
-    //     "theme": "none",
-    //     "projection": "miller",
+    var map = AmCharts.makeChart("chartdiv", {
+        "type": "map",
+        "theme": "none",
+        "projection": "miller",
+        "imagesSettings": {
+            "rollOverColor": "#089282",
+            "rollOverScale": 3,
+            "selectedScale": 3,
+            "selectedColor": "#089282",
+            "color": "#13564e"
+        },
+        "areasSettings": {
+            "unlistedAreasColor": "#222222" /* change color of the map */
+        },
+        "dataProvider": {
+            "map": "worldLow",
+            "images": mapLocations
+        },
+    });
 
-    //     "imagesSettings": {
-    //         "rollOverColor": "#089282",
-    //         "rollOverScale": 3,
-    //         "selectedScale": 3,
-    //         "selectedColor": "#089282",
-    //         "color": "#13564e"
-    //     },
-
-    //     "areasSettings": {
-    //         "unlistedAreasColor": "#222222" /* change color of the map */
-    //     },
-    //     "dataProvider": {
-    //         "map": "worldLow",
-    //         "images": mapLocations
-    //     },
-    // });
-
-    //console.log(map);
-    //map.dataProvider.images.push(getNewDelhi());
+    console.log(map);
 
 
     // Location updated emitted by the server via websockets
-    // socket.on("map_update", function (msg) {
-    //     console.log(msg.title);
-    //     console.log(msg.latitude);
-    //     console.log(typeof msg.latitude);
-    //     newLocation = new Location(msg.title, msg.latitude, msg.longitude);
-    //     map.dataProvider.images.push(newLocation);
-    //     map.validateData(); //call to redraw the map with new data
-    // });
+    socket.on("map_update", function (msg) {
+        var message = "New event in " + msg.title + " (" + msg.latitude
+            + "," + msg.longitude + ")";
+        console.log(message);
+        newLocation = new Location(msg.title, msg.latitude, msg.longitude);
+        mapLocations.push(newLocation);
+        map.dataProvider.images = mapLocations;
+        map.validateData(); //call to redraw the map with new data
+    });
 
 
 
 
     // add events to recalculate map position when the map is moved or zoomed
-    // map.addListener("positionChanged", updateCustomMarkers);
+    map.addListener("positionChanged", updateCustomMarkers);
 
 
-    // // this function will take current images on the map and create HTML elements for them
-    // function updateCustomMarkers(event) {
-    //     // get map object
-    //     var map = event.chart;
+    // this function will take current images on the map and create HTML elements for them
+    function updateCustomMarkers(event) {
+        // get map object
+        var map = event.chart;
 
-    //     // go through all of the images
-    //     for (var x in map.dataProvider.images) {
-    //         // get MapImage object
-    //         var image = map.dataProvider.images[x];
+        // go through all of the images
+        for (var x in map.dataProvider.images) {
+            // get MapImage object
+            var image = map.dataProvider.images[x];
 
-    //         // check if it has corresponding HTML element
-    //         if ('undefined' == typeof image.externalElement)
-    //             image.externalElement = createCustomMarker(image);
+            // check if it has corresponding HTML element
+            if ('undefined' == typeof image.externalElement)
+                image.externalElement = createCustomMarker(image);
 
-    //         // reposition the element accoridng to coordinates
-    //         var xy = map.coordinatesToStageXY(image.longitude, image.latitude);
-    //         image.externalElement.style.top = xy.y + 'px';
-    //         image.externalElement.style.left = xy.x + 'px';
-    //     }
-    // }
+            // reposition the element accoridng to coordinates
+            var xy = map.coordinatesToStageXY(image.longitude, image.latitude);
+            image.externalElement.style.top = xy.y + 'px';
+            image.externalElement.style.left = xy.x + 'px';
+        }
+    }
 
-    // // this function creates and returns a new marker element
-    // function createCustomMarker(image) {
-    //     // create holder
-    //     var holder = document.createElement('div');
-    //     holder.className = 'map-marker';
-    //     holder.title = image.title;
-    //     holder.style.position = 'absolute';
+    // this function creates and returns a new marker element
+    function createCustomMarker(image) {
+        // create holder
+        var holder = document.createElement('div');
+        holder.className = 'map-marker';
+        holder.title = image.title;
+        holder.style.position = 'absolute';
 
-    //     // maybe add a link to it?
-    //     if (undefined != image.url) {
-    //         holder.onclick = function () {
-    //             window.location.href = image.url;
-    //         };
-    //         holder.className += ' map-clickable';
-    //     }
+        // maybe add a link to it?
+        if (undefined != image.url) {
+            holder.onclick = function () {
+                window.location.href = image.url;
+            };
+            holder.className += ' map-clickable';
+        }
 
-    //     // create dot
-    //     var dot = document.createElement('div');
-    //     dot.className = 'dot';
-    //     holder.appendChild(dot);
+        // create dot
+        var dot = document.createElement('div');
+        dot.className = 'dot';
+        holder.appendChild(dot);
 
-    //     // create pulse
-    //     var pulse = document.createElement('div');
-    //     pulse.className = 'pulse';
-    //     holder.appendChild(pulse);
+        // create pulse
+        var pulse = document.createElement('div');
+        pulse.className = 'pulse';
+        holder.appendChild(pulse);
 
-    //     // append the marker to the map container
-    //     image.chart.chartDiv.appendChild(holder);
+        // append the marker to the map container
+        image.chart.chartDiv.appendChild(holder);
 
-    //     return holder;
-    // }
+        return holder;
+    }
 
 
     // Interval function that tests message latency by sending a "ping"
@@ -187,9 +187,5 @@ $(document).ready(function () {
         $("#ping-pong").text(Math.round(10 * sum / pingPongTimes.length) / 10);
     });
 
-    // // Handler for health signal
-    // socket.on("health_signal", function (msg) {
-    //     console.log("Response from server: " + msg.data + " (note: " + msg.note + ")");
-    // });
 
-});
+}); // end jquery $(document).ready(function ()
