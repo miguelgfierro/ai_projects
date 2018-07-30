@@ -27,43 +27,7 @@ $(document).ready(function () {
         this.zoomLevel = 5;
     }
 
-    function getLA() {
-        var latitude = 34.05;
-        var longitude = -118.24;
-        var title = "Los Angeles";
-        return new Location(title, latitude, longitude);
-    }
-
-    function getMadrid() {
-        var latitude = 40.4167;
-        var longitude = -3.7033;
-        var title = "Madrid";
-        return new Location(title, latitude, longitude);
-    }
-
-    function getTokio() {
-        var latitude = 35.6785;
-        var longitude = 139.6823;
-        var title = "Tokyo";
-        return new Location(title, latitude, longitude);
-    }
-
-    function getNewDelhi() {
-        var latitude = 28.6353;
-        var longitude = 77.2250;
-        var title = "New Delhi";
-        return new Location(title, latitude, longitude);
-    }
-
     var mapLocations = [];
-
-    // locations for testing
-    // To visualize this, you have to comment 
-    // $(document).ready(function () { at the beginning
-    mapLocations.push(getLA());
-    mapLocations.push(getMadrid());
-    // mapLocations.push(getTokio());
-    // mapLocations.push(getNewDelhi());
 
 
     // Based on https://www.amcharts.com/demos/custom-html-elements-map-markers/ 
@@ -87,8 +51,6 @@ $(document).ready(function () {
         },
     });
 
-    console.log(map);
-
 
     // Location updated emitted by the server via websockets
     socket.on("map_update", function (msg) {
@@ -99,9 +61,8 @@ $(document).ready(function () {
         mapLocations.push(newLocation);
         map.dataProvider.images = mapLocations;
         map.validateData(); //call to redraw the map with new data
+        console.log(map);
     });
-
-
 
 
     // add events to recalculate map position when the map is moved or zoomed
