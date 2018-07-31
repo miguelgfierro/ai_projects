@@ -5,6 +5,11 @@ import itertools
 import matplotlib.pyplot as plt
 import asyncio
 import json
+import sqlite3
+from sqlite3 import Error
+from contextlib import contextmanager
+from sqlalchemy import create_engine
+import pandas as pd
 
 
 # Constants
@@ -14,6 +19,89 @@ STATUS_OK = 200
 NOT_FOUND = 404
 SERVER_ERROR = 500
 PORT = 5000
+FRAUD_THRESHOLD = 0.5
+DATABASE_FILE = 'db.sqlite3'
+TABLE_FRAUD = 'fraud'
+TABLE_LOCATIONS = 'locations'
+
+
+def connect_to_database(database=None):
+    """
+    Connect to a sqlite database. Don't forget to close the connection at the
+    end of the routine with `conn.close()`.
+    Args:
+        database (str): Database filename.
+    Returns:
+        conn (object): Connector object.
+
+    """
+    if database is None:
+        database = ':memory:'
+    try:
+        conn = sqlite3.connect(database)
+    except Error as e:
+        print(e)
+        raise
+    return conn
+
+
+def select_random_row(connection, table_name):
+    query = '''SELECT * FROM {0} LIMIT 1 
+            OFFSET ABS(RANDOM()) % MAX((SELECT COUNT(*) FROM {0}), 1)
+            '''.format(table_name)
+    cur = connection.cursor()
+    cur.execute(query)
+    return cur.fetchone()
+
+
+def save_to_sqlite(dataframe, database, table_name, **kargs):
+    """Save a dataframe to a SQL database.
+    Args:
+        dataframe (pd.DataFrame): A dataframe
+        database (str): Database filename.
+        connection_string (str): Database connection string.
+        table_name (str): Table name
+    Examples:
+        >>> df = pd.DataFrame({'col1':[1,2,3], 'col2':[0.1,0.2,0.3]})
+        >>> save_to_sqlite(df, 'test.db', 'table1', if_exists='replace')
+        >>> import sqlite3
+        >>> conn = sqlite3.connect('test.db')
+        >>> cur = conn.cursor()
+        >>> result = cur.execute("SELECT * FROM table1")
+        >>> cur.fetchall()
+        [(0, 1, 0.1), (1, 2, 0.2), (2, 3, 0.3)]
+        >>> save_to_sqlite(df, 'test.db', 'table1', if_exists='append', index=False)
+        >>> result = cur.execute("SELECT * FROM table1")
+        >>> cur.fetchall()
+        [(0, 1, 0.1), (1, 2, 0.2), (2, 3, 0.3), (None, 1, 0.1), (None, 2, 0.2), (None, 3, 0.3)]
+
+    """
+    connection_string = 'sqlite:///' + database
+    engine = create_engine(connection_string)
+    dataframe.to_sql(table_name, engine, **kargs)
+
+
+def read_from_sqlite(database, query, **kargs):
+    """Make a query to a SQL database.
+    Args:
+        database (str): Database filename.
+        query (str): Query.
+    Returns:
+        dataframe (pd.DataFrame): An dataframe.
+    Examples:
+        >>> df = read_from_sqlite('test.db', 'SELECT col1,col2 FROM table1;')
+        >>> df
+           col1  col2
+        0     1   0.1
+        1     2   0.2
+        2     3   0.3
+        3     1   0.1
+        4     2   0.2
+        5     3   0.3
+    """
+    connection_string = 'sqlite:///' + database
+    engine = create_engine(connection_string)
+    return pd.read_sql(query, engine, **kargs)
 
 
 def split_train_test(X, y, test_size=0.2):
@@ -32,9 +120,9 @@ def split_train_test(X, y, test_size=0.2):
         >>> print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
         (80, 5) (20, 5) (80,) (20,)
     """
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42, stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=42, stratify=y)
     return X_train, X_test, y_train, y_test
-
 
 
 def classification_metrics_binary(y_true, y_pred):
@@ -51,8 +139,8 @@ def classification_metrics_binary(y_true, y_pred):
     High Recall and low Precision will return many positive results but most of them will be incorrect.
     - F1 Score: 2*((precision*recall)/(precision+recall)). It measures the balance between precision and recall.
     Args:
-        y_true (list or array): True labels.
-        y_pred (list or array): Predicted labels (binary).
+        y_true (list or np.array): True labels.
+        y_pred (list or np.array): Predicted labels (binary).
     Returns:
         report (dict): Dictionary with metrics.
     Examples:
@@ -69,7 +157,8 @@ def classification_metrics_binary(y_true, y_pred):
     m_precision = precision_score(y_true, y_pred)
     m_recall = recall_score(y_true, y_pred)
     m_conf = confusion_matrix(y_true, y_pred)
-    report = {'Accuracy': m_acc, 'Precision': m_precision, 'Recall': m_recall, 'F1': m_f1, 'Confusion Matrix': m_conf}
+    report = {'Accuracy': m_acc, 'Precision': m_precision,
+              'Recall': m_recall, 'F1': m_f1, 'Confusion Matrix': m_conf}
     return report
 
 
@@ -81,8 +170,8 @@ def classification_metrics_binary_prob(y_true, y_prob):
     penalizing false classifications. Minimizing the Log Loss is equivalent to minimizing the squared error but using
     probabilistic predictions. Log loss penalize heavily classifiers that are confident about incorrect classifications.
     Args:
-        y_true (list or array): True labels.
-        y_prob (list or array): Predicted labels (probability).
+        y_true (list or np.array): True labels.
+        y_prob (list or np.array): Predicted labels (probability).
     Returns:
         report (dict): Dictionary with metrics.
     Examples:
@@ -104,6 +193,11 @@ def classification_metrics_binary_prob(y_true, y_prob):
 
 
 def binarize_prediction(y, threshold=0.5):
+    """Binarize prediction based on a threshold
+    Args:
+        y (np.array): Array with predictions.
+        threshold (float): Theshold value for binarization.
+    """
     y_pred = np.where(y > threshold, 1, 0)
     return y_pred
 
@@ -111,7 +205,7 @@ def binarize_prediction(y, threshold=0.5):
 def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
     """Plots a confusion matrix.
     Args:
-        cm (numpy array): The confusion matrix array.
+        cm (np.array): The confusion matrix array.
         classes (list): List wit the classes names.
         normalize (bool): Flag to normalize data.
         title (str): Title of the plot.
@@ -126,7 +220,8 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
     """
     cm_max = cm.max()
     cm_min = cm.min()
-    if cm_min > 0: cm_min = 0
+    if cm_min > 0:
+        cm_min = 0
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         cm_max = 1
@@ -152,6 +247,7 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
 def chunked_http_client(num_chunks, s):
     # Use semaphore to limit number of requests
     semaphore = asyncio.Semaphore(num_chunks)
+
     @asyncio.coroutine
     # Return co-routine that will work asynchronously and respect locking of semaphore
     def http_get(url, payload, verbose):
@@ -159,9 +255,11 @@ def chunked_http_client(num_chunks, s):
         with (yield from semaphore):
             headers = {'content-type': 'application/json'}
             response = yield from s.request('post', url, data=json.dumps(payload), headers=headers)
-            if verbose: print("Response status:", response.status)
+            if verbose:
+                print("Response status:", response.status)
             body = yield from response.json()
-            if verbose: print(body)
+            if verbose:
+                print(body)
             yield from response.wait_for_close()
         return body
     return http_get
@@ -169,7 +267,7 @@ def chunked_http_client(num_chunks, s):
 
 def run_load_test(url, payloads, _session, concurrent, verbose):
     http_client = chunked_http_client(num_chunks=concurrent, s=_session)
-    
+
     # http_client returns futures, save all the futures to a list
     tasks = [http_client(url, payload, verbose) for payload in payloads]
 
@@ -181,4 +279,4 @@ def run_load_test(url, payloads, _session, concurrent, verbose):
             dfs_route.append(data)
         except Exception as err:
             print("Error {0}".format(err))
-    return dfs_route    
+    return dfs_route
