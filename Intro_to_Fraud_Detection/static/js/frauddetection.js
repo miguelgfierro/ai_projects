@@ -150,5 +150,5 @@ $(document).ready(function () {
         // console.log("Pong sum=" + sum);
         $("#ping-pong").text(Math.round(10 * sum / pingPongTimes.length) / 10);
     });
-    
+
 }); // end jquery $(document).ready(function ()

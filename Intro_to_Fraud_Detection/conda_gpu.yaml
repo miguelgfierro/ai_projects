@@ -16,8 +16,6 @@ dependencies:
 - python==3.6
 - numpy==1.13.3
 - flask==1.0.2
-- cherrypy==12.0.1
-- paste==2.0.3
 - ipykernel==4.6.1
 - pip:
   - pandas==0.22.0
