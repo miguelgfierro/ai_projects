@@ -18,7 +18,7 @@ $(document).ready(function () {
         console.log("Response from server: " + msg.data + " (note: " + msg.note + ")");
     });
 
-
+    // Location
     function Location(title, latitude, longitude) {
         this.title = title;
         this.latitude = parseFloat(latitude);
@@ -27,8 +27,8 @@ $(document).ready(function () {
         this.zoomLevel = 5;
     }
 
+    // Placeholder for map locations
     var mapLocations = [];
-
 
     // Based on https://www.amcharts.com/demos/custom-html-elements-map-markers/ 
     var map = AmCharts.makeChart("chartdiv", {
@@ -48,9 +48,8 @@ $(document).ready(function () {
         "dataProvider": {
             "map": "worldLow",
             "images": mapLocations
-        },
+        }
     });
-
 
     // Location updated emitted by the server via websockets
     socket.on("map_update", function (msg) {
@@ -69,13 +68,10 @@ $(document).ready(function () {
 
         map.dataProvider.images = mapLocations;
         map.validateData(); //call to redraw the map with new data
-        console.log(map);
     });
-
 
     // add events to recalculate map position when the map is moved or zoomed
     map.addListener("positionChanged", updateCustomMarkers);
-
 
     // this function will take current images on the map and create HTML elements for them
     function updateCustomMarkers(event) {
@@ -130,7 +126,6 @@ $(document).ready(function () {
         return holder;
     }
 
-
     // Interval function that tests message latency by sending a "ping"
     // message. The server then responds with a "pong" message and the
     // round trip time is measured.
@@ -155,6 +150,5 @@ $(document).ready(function () {
         // console.log("Pong sum=" + sum);
         $("#ping-pong").text(Math.round(10 * sum / pingPongTimes.length) / 10);
     });
-
-
+    
 }); // end jquery $(document).ready(function ()
