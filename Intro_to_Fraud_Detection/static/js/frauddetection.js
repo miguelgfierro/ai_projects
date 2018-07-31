@@ -57,8 +57,16 @@ $(document).ready(function () {
         var message = "New event in " + msg.title + " (" + msg.latitude
             + "," + msg.longitude + ")";
         console.log(message);
-        newLocation = new Location(msg.title, msg.latitude, msg.longitude);
+        var newLocation = new Location(msg.title, msg.latitude, msg.longitude);
         mapLocations.push(newLocation);
+
+        //clear the markers before redrawing
+        mapLocations.forEach(function(location) {
+          if (location.externalElement) {
+            location.externalElement = undefined;
+          }
+        });
+
         map.dataProvider.images = mapLocations;
         map.validateData(); //call to redraw the map with new data
         console.log(map);
