@@ -1,6 +1,8 @@
 from agent.agent import Agent
 from functions import *
 import sys
+import os
+
 
 if len(sys.argv) != 4:
 	print("Usage: python train.py [stock] [window] [episodes]")
@@ -12,6 +14,7 @@ agent = Agent(window_size)
 data = getStockDataVec(stock_name)
 l = len(data) - 1
 batch_size = 32
+os.makedirs('models', exist_ok=True)
 
 for e in range(episode_count + 1):
 	print("Episode " + str(e) + "/" + str(episode_count))
@@ -50,4 +53,5 @@ for e in range(episode_count + 1):
 			agent.expReplay(batch_size)
 
 	if e % 10 == 0:
-		agent.model.save("models/model_ep" + str(e))
+		model_path = os.path.join('models', 'model_ep' + str(e))
+		agent.model.save(model_path)
