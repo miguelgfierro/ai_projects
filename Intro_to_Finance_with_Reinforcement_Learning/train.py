@@ -1,7 +1,9 @@
+import os
+os.environ['KERAS_BACKEND'] = 'tensorflow'
+
 from agent.agent import Agent
 from functions import *
 import sys
-import os
 
 
 if len(sys.argv) != 4:

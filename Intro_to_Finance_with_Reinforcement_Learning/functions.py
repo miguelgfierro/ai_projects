@@ -1,5 +1,7 @@
+import os
 import numpy as np
 import math
+
 
 # prints formatted price
 def formatPrice(n):
@@ -8,7 +10,8 @@ def formatPrice(n):
 # returns the vector containing stock data from a fixed file
 def getStockDataVec(key):
 	vec = []
-	lines = open("data/" + key + ".csv", "r").read().splitlines()
+	data_path = os.path.join('data', key + '.csv')
+	lines = open(data_path, "r").read().splitlines()
 
 	for line in lines[1:]:
 		vec.append(float(line.split(",")[4]))

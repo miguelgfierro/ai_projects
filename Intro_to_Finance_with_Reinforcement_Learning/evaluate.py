@@ -1,10 +1,12 @@
+import os
+os.environ['KERAS_BACKEND'] = 'tensorflow'
+
 import keras
 from keras.models import load_model
 
 from agent.agent import Agent
 from functions import *
 import sys
-import os
 
 
 if len(sys.argv) != 3:
