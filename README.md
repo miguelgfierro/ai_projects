@@ -6,6 +6,8 @@
 # Sciblog support information and code
 This repo contains the projects, additional information and code to support my blog: [sciblog](https://miguelgfierro.com/).
 
+You can find a list of all the post I made in [this file](miguelgfierro_posts.txt).
+
 ## Notebook projects
 
 * [Introduction to Convolutional Neural Networks](A_Gentle_Introduction_to_CNN/Intro_CNN.ipynb): In this project we explain what is a convolution and how to compute a CNN using MXNet deep learning library with the MNIST character recognition dataset. Here the [blog entry](https://miguelgfierro.com/blog/2016/a-gentle-introduction-to-convolutional-neural-networks/).
