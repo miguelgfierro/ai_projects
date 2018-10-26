@@ -1,4 +1,4 @@
-#T-SNE with CUDA and Barnes Hut (with Python wrapper) with a spike sorting application
+# T-SNE with CUDA and Barnes Hut (with Python wrapper) with a spike sorting application
 
 ## T-sne code
 
@@ -36,15 +36,15 @@ The GUI saves a pandas dataframe (as a pickle file) with the name given to every
 The GUI is generated using the bokeh library and requires running a bokeh server (once bokeh in installed do 'bokeh serve' in a command prompt).
 The python code is kept at the level of a number of functions (no object orientation) to allow users to 'easily' add functionality to the GUI.  
 
-##Notes for use
-###Installation
+## Notes for use
+### Installation
  This is a conda package so you can install it using conda install -c georgedimitriadis t_sne_bhcuda (after you have done conda install anaconda-client to install access to the anaconda cloud where the code is hosted). This will add the t_sne_bhcuda executable into the Scripts folder (for Windows) or the bin folder (for Linux) of the python environment that you installed the package in. The t_sne() function in the bhtsne_cuda script of the module will call this executable.
 
  The whole code base (including the C++ and CUDA source code) will be downloaded into your Conda_folder\conda-bld\work.
 
  **Important note for Windows users:** If you have not used cuda before, then you need to be aware that windows by default will stop and restart the nvidia driver if it thinks that the gpu is stuck. That by default will happen if the gpu does anything that takes longer than 2 seconds. The current code will not work under these conditions with sample sizes over a certain number. If the code requires more than 2 seconds to calculate the distances then windows will restart the driver and the program will fail (you will get a notification of this at the bottom of your screen). In order to get windows off your back do what he says: [Nvidia Display Device Driver Stopped Responding And Has Recovered Successfully (FIX)](https://www.youtube.com/watch?v=QQJ9T0oY-Jk). Also have a look here for MSDN info on the relative registry values [TDR Registry Keys](https://msdn.microsoft.com/en-us/library/windows/hardware/ff569918%28v=vs.85%29.aspx).
 
-###Use
+### Use
 Read the example in the bhtsne_cuda script on how to call t_sne. A very extensive documentation for the t-sne specific parameters can also be found in the sklearn.manifold.TSNE package.
 
 Not t-sne related parameters are the gpu_mem, the seed and verbose. The gpu_mem needs to be set between 0 and 1 and will control the percentage of GPU memory (from the amount available) each GPU cycle will use. If the number of distances calculated needs more than available*gpu_mem bytes then the computation is split in cycles that fit into that memory. 0 means no GPU is used (the code defaults to the original barnes hat algorithm on the CPU).
