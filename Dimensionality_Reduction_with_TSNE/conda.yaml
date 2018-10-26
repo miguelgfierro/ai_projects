@@ -14,13 +14,12 @@ channels:
 dependencies:
 - python==3.5
 - numpy==1.14.5
-- ipykernel==4.6.1
-- cython==0.28.3
+- ipykernel==4.8.2
+- cython==0.28.2
 - pip:
   - scikit-learn==0.19.1
-  - tornado==4.5.3
   - jupyter==1.0.0
-  - matplotlib==2.1.2
+  - matplotlib==2.2.2
 
 
 
