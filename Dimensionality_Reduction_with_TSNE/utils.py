@@ -100,6 +100,10 @@ def get_cudnn_version():
     return find_cudnn_in_headers(candidates)
 
 
+def find_files_with_pattern(path, pattern):
+    return glob.glob(os.path.join(path, 'cat*'))
+
+
 def chunks(l, n):
     """Yield successive n-sized chunks from l."""
     for i in range(0, len(l), n):
