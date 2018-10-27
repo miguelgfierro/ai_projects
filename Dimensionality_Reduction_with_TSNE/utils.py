@@ -111,17 +111,17 @@ def chunks(l, n):
 
         
 # https://keras.io/applications/
-def featurize_images(filesnames, model, batch_size=32):
+def featurize_images(filesnames, model, batch_size=64, target_size=(224, 224)):
     features = []
     
     for chunk in tqdm(chunks(filesnames, batch_size)):
         load_img = []
         for fname in chunk:
-            img = image.load_img(fname, target_size=(224, 224))
+            img = image.load_img(fname, target_size=target_size)
             x = image.img_to_array(img)
 
             # img = cv2.imread(fname)
-            # img = cv2.resize(img,(224, 224)).astype(np.float32)
+            # img = cv2.resize(img,target_size).astype(np.float32)
 
             x = np.expand_dims(x, axis=0)
             load_img.append(preprocess_input(x))
