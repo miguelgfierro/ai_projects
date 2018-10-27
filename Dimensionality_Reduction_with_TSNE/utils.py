@@ -11,9 +11,9 @@ from keras.applications.imagenet_utils import preprocess_input
 
 
 def plot_tsne(t_sne_result, labels=None):
-    t_sne_result_plot = np.transpose(t_sne_result)
+    #t_sne_result_plot = np.transpose(t_sne_result)
     fig = plt.figure()
-    plt.scatter(t_sne_result_plot[:,0], t_sne_result_plot[:,1], marker=".", c=labels, cmap=plt.cm.get_cmap('bwr'))
+    plt.scatter(t_sne_result[:,0], t_sne_result[:,1], marker=".", c=np.array(labels), cmap=plt.cm.get_cmap('bwr'))
     plt.show()
 
     
