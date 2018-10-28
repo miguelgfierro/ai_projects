@@ -95,6 +95,20 @@ def get_cudnn_version():
     return find_cudnn_in_headers(candidates)
 
 
+def clear_memory_all_gpus():
+    """Clear memory of all GPUs.
+    Examples:
+        >>> clear_memory_all_gpus()
+        No CUDA available
+    """
+    try:
+        for gpu in cuda.gpus:
+            with gpu:
+                cuda.current_context().deallocations.clear()
+    except CudaSupportError:
+        print("No CUDA available")
+
+
 def find_files_with_pattern(path, pattern):
     return glob.glob(os.path.join(path, 'cat*'))
 
