@@ -110,7 +110,7 @@ def clear_memory_all_gpus():
 
 
 def find_files_with_pattern(path, pattern):
-    return glob.glob(os.path.join(path, 'cat*'))
+    return glob.glob(os.path.join(path, pattern))
 
 
 def chunks(l, n):
