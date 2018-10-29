@@ -96,15 +96,11 @@ def get_cudnn_version():
 
 
 def clear_memory_all_gpus():
-    """Clear memory of all GPUs.
-    Examples:
-        >>> clear_memory_all_gpus()
-        No CUDA available
-    """
+    """Clear memory of all GPUs."""
     try:
         for gpu in cuda.gpus:
-            with gpu:
-                cuda.current_context().deallocations.clear()
+            cuda.select_device(gpu.id)
+            cuda.close()
     except CudaSupportError:
         print("No CUDA available")
 
