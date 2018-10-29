@@ -13,7 +13,11 @@ from keras.applications.imagenet_utils import preprocess_input
 
 
 def plot_tsne(t_sne_result, labels=None):
-    #t_sne_result_plot = np.transpose(t_sne_result)
+    """Plot the t-SNE results
+    Args:
+        t_sne_result (np.array): 2-dimensional array.
+        labels (np.array or list): Array with the labels.
+    """
     fig = plt.figure()
     plt.scatter(t_sne_result[:,0], t_sne_result[:,1], marker=".", c=np.array(labels), cmap=plt.cm.get_cmap('bwr'))
     plt.show()
@@ -22,11 +26,7 @@ def plot_tsne(t_sne_result, labels=None):
 def get_gpu_name():
     """Get the GPU names in the system.
     Returns:
-        list: List of strings with the GPU name.
-    Examples:
-        >>> get_gpu_name()
-        []
-        
+        list: List of strings with the GPU name.        
     """
     try:
         return [gpu.name.decode("utf-8") for gpu in cuda.gpus]
@@ -36,7 +36,7 @@ def get_gpu_name():
 def get_cuda_version():
     """Get CUDA version
     Returns:
-        version (str): Version of the library.
+        str: Version of the library.
     """
     if sys.platform == "win32":
         raise NotImplementedError("Implement this!")
@@ -55,7 +55,7 @@ def get_cuda_version():
 def get_cudnn_version():
     """Get the CUDNN version
     Returns:
-        version (str): Version of the library.
+        str: Version of the library.
     """
 
     def find_cudnn_in_headers(candiates):
@@ -106,6 +106,13 @@ def clear_memory_all_gpus():
 
 
 def find_files_with_pattern(path, pattern):
+    """Find file names given a pattern
+    Args:
+        path (str): Path to look for the files.
+        pattern (str): Pattern to match the file (it can contain the wildcard *).
+    Returns:
+        list: List with the file paths.
+    """
     return glob.glob(os.path.join(path, pattern))
 
 
@@ -117,8 +124,18 @@ def chunks(l, n):
         
 # https://keras.io/applications/
 def featurize_images(filesnames, model, batch_size=64, target_size=(224, 224)):
+    """Featurize a group of images given a CNN model
+    Args:
+        filenames (list): List of image paths.
+        model (obj): Keras CNN model.
+        batch_size (int): Batch size.
+        target_size (tuple): Size to which the input images are resized, it has to 
+            match the input layer of the CNN.
+    Returns:
+        np.array: Array with features, it has the size: number of files times
+            number of units in the CNN last layer.
+    """
     features = []
-    
     for chunk in tqdm(chunks(filesnames, batch_size)):
         load_img = []
         for fname in chunk:
