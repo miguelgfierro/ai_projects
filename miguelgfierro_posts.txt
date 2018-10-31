@@ -1,5 +1,8 @@
 https://miguelgfierro.com/
 https://miguelgfierro.com/about/
+https://miguelgfierro.com/blog/2018/a-gentle-explanation-of-dimensionality-reduction-with-t-sne/
+http://localhost:8000/blog/2018/evidence-based-software-design/
+http://localhost:8000/blog/2018/python-pro-tips-understanding-explicit-is-better-than-implicit/
 https://miguelgfierro.com/blog/2018/real-time-fraud-detection/
 https://miguelgfierro.com/blog/2018/a-beginners-guide-to-python-testing/
 https://miguelgfierro.com/blog/2018/demystifying-websockets-for-real-time-web-communication/
