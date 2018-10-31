@@ -1,0 +1,30 @@
+# To create the conda environment:
+# $ conda env create -n my_env_name -f conda.yaml
+#
+# To update the conda environment:
+# $ conda env update -n my_env_name -f conda.yaml
+#
+# To register the conda environment in Jupyter:
+# $ python -m ipykernel install --user --name my_env_name --display-name "Python (my_env_name)"
+#
+
+channels:
+- conda-forge
+- defaults
+dependencies:
+- python==3.5.5
+- numpy==1.14.5
+- ipykernel==4.8.2
+- cython==0.28.2
+- pip:
+  - scikit-learn==0.19.1
+  - jupyter==1.0.0
+  - matplotlib==2.2.2
+  - h5py==2.8.0rc1
+  - tqdm==4.26.0
+  - kaggle==1.5.0
+  - tensorflow-gpu==1.10.1
+  - keras==2.2.2
+
+
+
