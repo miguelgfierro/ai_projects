@@ -20,6 +20,7 @@ dependencies:
   - numexpr>=2.6.8
   - numba>=0.38.0
   - bokeh>=0.12.16
+  - psutil>=5.4.8
 
 
   
