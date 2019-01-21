@@ -149,4 +149,10 @@ def _manage_memory_units(data_in_bytes, units):
     else:
         raise AttributeError("Units not correct")
         
-        
+
+class AttributeDict(dict):
+    """Dictionary-like class to access its attributes like a class
+    source: https://stackoverflow.com/a/5021467
+    """
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setitem__
