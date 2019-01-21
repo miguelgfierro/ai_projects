@@ -12,10 +12,10 @@ channels:
 - defaults
 dependencies:
 - python==3.6.7
-- numpy>=1.16.0
 - pandas>=0.23.4
 - cudatoolkit>=9.2
 - pip:
+  - numpy>=1.16.0
   - ipykernel>=5.1.0
   - numexpr>=2.6.9
   - numba>=0.38.0
