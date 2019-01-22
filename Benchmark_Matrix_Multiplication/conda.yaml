@@ -10,10 +10,13 @@
 
 channels:
 - defaults
+- pytorch
 dependencies:
 - python==3.6.7
 - pandas>=0.23.4
 - cudatoolkit>=9.2
+- pytorch>=1.0.0
+- torchvision>=0.2.1
 - pip:
   - numpy>=1.16.0
   - ipykernel>=5.1.0
