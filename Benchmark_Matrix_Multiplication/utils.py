@@ -148,7 +148,24 @@ def _manage_memory_units(data_in_bytes, units):
         return data_in_bytes / 1024 / 1024 / 1024
     else:
         raise AttributeError("Units not correct")
-        
+
+
+def get_object_size(obj, units="Mb"):
+    """Calculate the size of an object.
+    Args:
+        obj (obj or str or array): Object.
+        units (str): Units [bytes, Kb, Mb, Gb]
+    Returns:
+        size (float): Size of the object.
+    Examples:
+        >>> get_object_size(7, "bytes")
+        28
+        >>> get_object_size("ABC", "bytes")
+        52
+    """
+    s_bytes = sys.getsizeof(obj)
+    return _manage_memory_units(s_bytes, units)
+
 
 class AttributeDict(dict):
     """Dictionary-like class to access its attributes like a class
