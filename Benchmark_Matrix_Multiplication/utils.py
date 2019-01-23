@@ -173,3 +173,19 @@ class AttributeDict(dict):
     """
     __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__
+    
+    
+def clear_memory_all_gpus():
+    """Clear memory of all GPUs.
+    Examples:
+        >>> clear_memory_all_gpus()
+        No CUDA available
+    """
+    try:
+        for gpu in cuda.gpus:
+            with gpu:
+                cuda.current_context().deallocations.clear()
+    except CudaSupportError:
+        print("No CUDA available")
+    
+    
