@@ -29,9 +29,9 @@ To run the code in R, with VDCNN network of 9 layers, with 4 GPUs, a batch size 
 In python there are several notebooks and scripts:
 
 * [Crepe DBPedia Prefetch](python/mxnet/crepe_dbpedia_prefetch.ipynb): uses the crepe model with DBpedia dataset to classify among 14 different classes.
-* [Crepe DBPedia](python/mxnet/03 - Crepe - Dbpedia.ipynb): modification of the previous notebook.
-* [Crepe Amazon](python/mxnet/02 - Crepe - Amazon.ipynb): Crepe model with Amazon dataset.
-* [VDCNN Amazon](python/mxnet/05 - VDCNN - Amazon(advc).py): VDCNN model with Amazon dataset.
+* [Crepe DBPedia](python/mxnet/03-Crepe-Dbpedia.ipynb): modification of the previous notebook.
+* [Crepe Amazon](python/mxnet/02-Crepe-Amazon.ipynb): Crepe model with Amazon dataset.
+* [VDCNN Amazon](python/mxnet/05-VDCNN-Amazon-advc.py): VDCNN model with Amazon dataset.
 
 ### Results
 
