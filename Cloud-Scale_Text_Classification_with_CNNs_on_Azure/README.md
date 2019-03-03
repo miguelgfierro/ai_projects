@@ -35,7 +35,7 @@ In python there are several notebooks and scripts:
 
 ### Results
 
-02 - Crepe - Amazon.ipynb:
+02-Crepe-Amazon.ipynb:
 ```
 Accuracy: 0.942
 Time per Epoch: 9,550 seconds = 220 rev/s
@@ -44,7 +44,7 @@ Train size = 2,097,152
 Test size = 233,016
 ```
 
-03 - Crepe - Dbpedia.ipynb:
+03-Crepe-Dbpedia.ipynb:
 ```
 Accuracy: 0.991
 Time per Epoch: 3,403 seconds = 170 rev/s
@@ -53,7 +53,7 @@ Train size = 560,000
 Test size = 70,000
 ```
 
-04 - Crepe - Amazon (advc).ipynb (generator + async):
+04-Crepe-Amazon (advc).ipynb (generator + async):
 ```
 Accuracy: 0.945
 Time per Epoch: 21,629 = 166 rev/s
@@ -62,9 +62,9 @@ Train size = 3.6M
 Test size = 400k
 ```
 
-05 - VDCNN - Amazon.ipynb:
-``
+05-VDCNN-Amazon.ipynb:
 Trying to create the final k-max pooling layer ...
+```
 class KMaxPooling(mx.operator.CustomOp):
     def forward(self, is_train, req, in_data, out_data, aux):
         # Desired (k=3):
@@ -74,6 +74,6 @@ class KMaxPooling(mx.operator.CustomOp):
         idx = x.argsort()[-k:]
         idx.sort(axis=0)
         y = x[idx]
-``
+```
 
 More information can be found in this [repo](https://github.com/ilkarman/NLP-Sentiment/).
