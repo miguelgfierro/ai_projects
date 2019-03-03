@@ -14,6 +14,8 @@ You can find a list of all the post I made in [this file](miguelgfierro_posts.tx
 
 * [Introduction to Transfer Learning](A_Gentle_Introduction_to_Transfer_Learning/Intro_Transfer_Learning.ipynb): In this project we use PyTorch to explain the basic methodologies of transfer learning (finetuning and freezing) and analyze in which case is better to use each of them. Here the [blog entry](https://miguelgfierro.com/blog/2017/a-gentle-introduction-to-transfer-learning-for-image-classification/).
 
+* [Cloud-Scale Text Classification With Convolutional Neural Networks](Cloud-Scale_Text_Classification_with_CNNs_on_Azure): In these notebooks we show how to perform character level convolutions for sentiment analysis using Char-CNN and VDCNN models. Here the [blog entry](https://miguelgfierro.com/blog/2019/cloud-scale-text-classification-with-convolutional-neural-networks/).
+
 * [Introduction to Dimensionality Reduction with t-SNE](Dimensionality_Reduction_with_TSNE/dimensionality_reduction.ipynb): In this project we use sklearn and CUDA to show an example of t-SNE algorithm. We use a CNN to generate high-dimensional features from images and then show how they can be projected and visualized into a 2-dimensional space. Here the [blog entry](https://miguelgfierro.com/blog/2018/a-gentle-explanation-of-dimensionality-reduction-with-t-sne/).
 
 * [Introduction to Fraud Detection](Intro_to_Fraud_Detection/fraud_detection.ipynb): In this notebook we design a real-time fraud detection model using LightGBM on GPU (also available on CPU). The model is then operationalized through an API using Flask and websockets. Here the [blog entry](https://github.com/miguelgfierro/sciblog_support/blob/master/Intro_to_Fraud_Detection/fraud_detection.ipynb).
