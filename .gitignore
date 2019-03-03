@@ -118,5 +118,5 @@ Dimensionality_Reduction_with_TSNE/tsne_results
 sampleSubmission.csv
 *.zip
 Dimensionality_Reduction_with_TSNE/train
-
+.vscode
 
