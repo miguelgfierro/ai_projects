@@ -1,6 +1,6 @@
-# Text Classification
+# Text Classification with CNNs
 
-Here we show some text classification examples with Recurrent Neural Networks and Convolutional Neural Networks.
+Here we show some text classification examples with Recurrent Neural Networks and Convolutional Neural Networks. This repo contains the original code of the post [Cloud-Scale Text Classification with Convolutional Neural Networks on Microsoft Azure](https://blogs.technet.microsoft.com/machinelearning/2017/02/13/cloud-scale-text-classification-with-convolutional-neural-networks-on-microsoft-azure/) published in 2017. An repost has been published in 2019 [here](https://miguelgfierro.com/blog/2019/cloud-scale-text-classification-with-convolutional-neural-networks/).
 
 
 ## Bidirectional LSTM using Keras
