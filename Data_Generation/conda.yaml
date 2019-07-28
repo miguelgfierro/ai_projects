@@ -17,11 +17,14 @@ dependencies:
 - numpy==1.16.4
 - pandas==0.24.2
 - ipykernel==5.1.1
+- opencv==3.4.1
 - imgaug==0.2.9
 - pip:
   - tornado==6.0.3
   - jupyter==1.0.0
-  - matplotlib==1.5.3
+  - matplotlib==3.1.1
   - Pillow==6.1.0
   - scikit-image==0.15.0
+  - nltk==3.4.4
+  - requests==2.22.0
 
