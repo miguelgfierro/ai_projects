@@ -1,13 +1,6 @@
 import requests
 import matplotlib.pyplot as plt
-
-# from PIL import Image
 from skimage import io
-
-
-# def read_image_from_url(url):
-#     img = Image.open(requests.get(url, stream=True).raw)
-#     return img
 
 
 def read_image_url(url):
@@ -27,12 +20,6 @@ def read_image_url(url):
     return io.imread(url)
 
 
-# def plot_image(img):
-#     plt.imshow(img)
-#     plt.axis("off")
-#     plt.show()
-
-
 def plot_image(img):
     """Plot an image.
     
@@ -45,5 +32,6 @@ def plot_image(img):
         >> plot_image(img)
     """
     io.imshow(img)
-    io.show()
+    plt.axis("off")
+    plt.show()
     
