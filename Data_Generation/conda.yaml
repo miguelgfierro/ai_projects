@@ -14,13 +14,14 @@ channels:
 - defaults
 dependencies:
 - python==3.6.8
-- numpy==1.16.3
+- numpy==1.16.4
 - pandas==0.24.2
-- ipykernel==4.6.1
-- imgaug == 0.2.9
+- ipykernel==5.1.1
+- imgaug==0.2.9
 - pip:
-  - tornado==4.5.3
+  - tornado==6.0.3
   - jupyter==1.0.0
   - matplotlib==1.5.3
-  - Pillow==5.0.0
+  - Pillow==6.1.0
+  - scikit-image==0.15.0
 
