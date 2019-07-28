@@ -1,0 +1,26 @@
+# To create the conda environment:
+# $ conda env create -n data_gen -f conda.yaml
+#
+# To update the conda environment:
+# $ conda env update -n data_gen -f conda.yaml
+#
+# To register the conda environment in Jupyter:
+# $ source activate data_gen
+# $ python -m ipykernel install --user --name data_gen --display-name "Python (data_gen)"
+#
+
+channels:
+- conda-forge
+- defaults
+dependencies:
+- python==3.6.8
+- numpy==1.16.3
+- pandas==0.24.2
+- ipykernel==4.6.1
+- imgaug == 0.2.9
+- pip:
+  - tornado==4.5.3
+  - jupyter==1.0.0
+  - matplotlib==1.5.3
+  - Pillow==5.0.0
+
