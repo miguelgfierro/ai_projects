@@ -47,7 +47,7 @@ def gen_eda(train_orig, output_file, alpha, num_aug=9):
             writer.write(label + "\t" + aug_sentence + '\n')
 
     writer.close()
-    print("generated augmented sentences with eda for " + train_orig + " to " + output_file + " with num_aug=" + str(num_aug))
+    #print("generated augmented sentences with eda for " + train_orig + " to " + output_file + " with num_aug=" + str(num_aug))
 
 #main function
 if __name__ == "__main__":
