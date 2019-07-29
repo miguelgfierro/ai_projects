@@ -1,6 +1,9 @@
+import numpy as np
 import requests
 import matplotlib.pyplot as plt
 from skimage import io
+from scipy.interpolate import CubicSpline      # for warping
+from transforms3d.axangles import axangle2mat  # for rotation
 
 
 def read_image_url(url):
