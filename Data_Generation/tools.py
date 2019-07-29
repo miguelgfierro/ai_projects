@@ -39,10 +39,10 @@ def plot_image(img):
     plt.show()
     
     
-def plot_series(x, title=None):
-    plt.plot(myX)
+def plot_series(x, title=None, axis=[0,3600,-1.5,1.5], linewidth=0.5):
+    plt.plot(x, linewidth=linewidth)
     plt.title(title)
-    plt.axis([0,3600,-1.5,1.5])
+    plt.axis(axis)
     plt.show()
     
 
