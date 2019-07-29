@@ -72,8 +72,8 @@ def GenerateRandomCurves(X, sigma=0.2, knot=4):
     return np.array([cs_x(x_range),cs_y(x_range),cs_z(x_range)]).transpose()
 
 
-def DA_MagWarp(X, sigma):
-    return X * GenerateRandomCurves(X, sigma)
+def DA_MagWarp(X, sigma, knot):
+    return X * GenerateRandomCurves(X, sigma, knot)
 
 
 def DistortTimesteps(X, sigma=0.2):
