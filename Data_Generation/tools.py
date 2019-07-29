@@ -76,8 +76,8 @@ def DA_MagWarp(X, sigma, knot):
     return X * GenerateRandomCurves(X, sigma, knot)
 
 
-def DistortTimesteps(X, sigma=0.2):
-    tt = GenerateRandomCurves(X, sigma) # Regard these samples aroun 1 as time intervals
+def DistortTimesteps(X, sigma, knot):
+    tt = GenerateRandomCurves(X, sigma, knot) # Regard these samples aroun 1 as time intervals
     tt_cum = np.cumsum(tt, axis=0)        # Add intervals to make a cumulative graph
     # Make the last value to have X.shape[0]
     t_scale = [(X.shape[0]-1)/tt_cum[-1,0],(X.shape[0]-1)/tt_cum[-1,1],(X.shape[0]-1)/tt_cum[-1,2]]
@@ -87,8 +87,8 @@ def DistortTimesteps(X, sigma=0.2):
     return tt_cum
 
 
-def DA_TimeWarp(X, sigma=0.2):
-    tt_new = DistortTimesteps(X, sigma)
+def DA_TimeWarp(X, sigma, knot):
+    tt_new = DistortTimesteps(X, sigma, knot)
     X_new = np.zeros(X.shape)
     x_range = np.arange(X.shape[0])
     X_new[:,0] = np.interp(x_range, tt_new[:,0], X[:,0])
