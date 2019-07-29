@@ -39,10 +39,21 @@ def plot_image(img):
     plt.show()
     
     
-def plot_series(x, title=None, axis=[0,3600,-1.5,1.5], linewidth=0.5):
-    plt.plot(x, linewidth=linewidth)
-    plt.title(title)
-    plt.axis(axis)
+def plot_series(x, title=None, xx=None, title_xx=None, axis=[0,3600,-1.5,1.5], linewidth=0.5):
+    if xx is None:
+        plt.plot(x, linewidth=linewidth)
+        plt.title(title)
+        plt.axis(axis)
+    else:
+        plt.figure(figsize=(15,4))
+        plt.subplot(121)
+        plt.plot(x, linewidth=linewidth)
+        plt.title(title)
+        plt.axis(axis)
+        plt.subplot(122)
+        plt.plot(xx, linewidth=linewidth)
+        plt.title(title_xx)
+        plt.axis(axis)
     plt.show()
     
 
