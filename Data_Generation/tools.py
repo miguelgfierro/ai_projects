@@ -39,13 +39,14 @@ def plot_image(img):
     plt.show()
     
     
-def plot_series(x, title=None, ):
+def plot_series(x, title=None):
     plt.plot(myX)
     plt.title(title)
     plt.axis([0,3600,-1.5,1.5])
     plt.show()
     
 
+# Original source: https://github.com/terryum/Data-Augmentation-For-Wearable-Sensor-Data
 def DA_Jitter(X, sigma=0.05):
     myNoise = np.random.normal(loc=0, scale=sigma, size=X.shape)
     return X+myNoise
@@ -57,9 +58,11 @@ def DA_Scaling(X, sigma=0.1):
     return X*myNoise
 
 
-## This example using cubic splice is not the best approach to generate random curves. 
-## You can use other aprroaches, e.g., Gaussian process regression, Bezier curve, etc.
 def GenerateRandomCurves(X, sigma=0.2, knot=4):
+    """
+    This example using cubic splice is not the best approach to generate random curves. 
+    You can use other aprroaches, e.g., Gaussian process regression, Bezier curve, etc.
+    """
     xx = (np.ones((X.shape[1],1))*(np.arange(0,X.shape[0], (X.shape[0]-1)/(knot+1)))).transpose()
     yy = np.random.normal(loc=1.0, scale=sigma, size=(knot+2, X.shape[1]))
     x_range = np.arange(X.shape[0])
