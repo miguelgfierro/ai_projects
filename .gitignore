@@ -119,4 +119,10 @@ sampleSubmission.csv
 *.zip
 Dimensionality_Reduction_with_TSNE/train
 .vscode
+Data_Generation/input.txt
+Data_Generation/output.txt
+
+
+
+
 
