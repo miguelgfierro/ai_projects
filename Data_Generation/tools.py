@@ -39,6 +39,11 @@ def plot_image(img):
     plt.show()
     
     
+def show_file(filename):
+    with open(filename, "r") as f:
+        print(f.read())
+        
+    
 def plot_series(x, title=None, xx=None, title_xx=None, axis=[0,3600,-1.5,1.5], linewidth=0.5):
     if xx is None:
         plt.plot(x, linewidth=linewidth)
