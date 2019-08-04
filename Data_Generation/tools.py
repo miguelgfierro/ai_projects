@@ -1,7 +1,8 @@
 import numpy as np
 import requests
 import matplotlib.pyplot as plt
-from skimage import io
+from skimage import io, img_as_uint,img_as_ubyte
+from skimage.transform import resize
 from scipy.interpolate import CubicSpline      # for warping
 from transforms3d.axangles import axangle2mat  # for rotation
 
@@ -21,6 +22,27 @@ def read_image_url(url):
         (512, 512, 3)
     """
     return io.imread(url)
+
+
+def resize_image(img, new_width, new_height):
+    """Resize image to a ``new_width`` and ``new_height``.
+    
+    Args:
+        img (np.array): An image.
+        new_width (int): New width.
+        new_height (int): New height.
+    
+    Returns:
+        np.array: A resized image.
+    
+    Examples:
+        >>> img = Image.open('share/Lenna.png')
+        >>> img_resized = resize_image(img, 256, 256)
+        >>> img_resized.shape
+        (256, 256, 3)
+    """
+    img_new = resize(img, (int(new_width), int(new_height)), anti_aliasing=True)
+    return img_as_ubyte(img_new)
 
 
 def plot_image(img):
