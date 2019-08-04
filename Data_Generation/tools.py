@@ -1,7 +1,8 @@
 import numpy as np
 import requests
 import matplotlib.pyplot as plt
-from skimage import io, img_as_uint,img_as_ubyte
+from skimage.util.dtype import convert
+from skimage import io
 from skimage.transform import resize
 from scipy.interpolate import CubicSpline      # for warping
 from transforms3d.axangles import axangle2mat  # for rotation
@@ -42,7 +43,7 @@ def resize_image(img, new_width, new_height):
         (256, 256, 3)
     """
     img_new = resize(img, (int(new_width), int(new_height)), anti_aliasing=True)
-    return img_as_ubyte(img_new)
+    return convert(img_new, dtype=img.dtype)
 
 
 def plot_image(img):
