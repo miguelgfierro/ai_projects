@@ -1,5 +1,9 @@
 https://miguelgfierro.com/
 https://miguelgfierro.com/about/
+https://miguelgfierro.com/blog/2020/a-gentle-introduction-to-contextual-bandits/
+https://miguelgfierro.com/blog/2019/asrob-10th-anniversary/
+https://miguelgfierro.com/blog/2019/understanding-the-sequential-recommender-sli-rec/
+https://miguelgfierro.com/blog/2019/understanding-xlnet-and-its-implications-for-nlp/
 https://miguelgfierro.com/blog/2019/revisiting-the-revisit-of-the-unreasonable-effectiveness-of-data/
 https://miguelgfierro.com/blog/2019/cloud-scale-text-classification-with-convolutional-neural-networks/
 https://miguelgfierro.com/blog/2018/top-35-ai-solutions-for-todays-key-industries/
