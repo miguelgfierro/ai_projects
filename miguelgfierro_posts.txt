@@ -1,5 +1,7 @@
 https://miguelgfierro.com/
 https://miguelgfierro.com/about/
+https://miguelgfierro.com/blog/2021/book-review-influence-by-robert-cialdini/
+https://miguelgfierro.com/blog/2021/technology-is-reducing-the-cost-of-education/
 https://miguelgfierro.com/blog/2020/10-reasons-why-ai-has-developed-faster-than-robotics/
 https://miguelgfierro.com/blog/2020/a-gentle-introduction-to-contextual-bandits/
 https://miguelgfierro.com/blog/2019/asrob-10th-anniversary/
