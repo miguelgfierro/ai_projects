@@ -4,7 +4,6 @@
 [![Last commit](https://img.shields.io/github/last-commit/miguelgfierro/sciblog_support.svg)](https://github.com/miguelgfierro/sciblog_support/commits/master)
 [![Twitter](https://img.shields.io/twitter/follow/miguelgfierro?style=social)](https://twitter.com/intent/follow?screen_name=miguelgfierro
 )
-[![Beerpay](https://img.shields.io/beerpay/miguelgfierro/sciblog_support)](https://beerpay.io/miguelgfierro/sciblog_support)
 
 # Sciblog support information and code
 This repo contains the projects, additional information and code to support my blog: [sciblog](https://miguelgfierro.com/).
