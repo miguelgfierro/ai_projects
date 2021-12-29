@@ -1,9 +1,13 @@
 [![Issues](https://img.shields.io/github/issues/miguelgfierro/sciblog_support.svg)](https://github.com/miguelgfierro/sciblog_support/issues)
 [![Pull requests](https://img.shields.io/github/issues-pr/miguelgfierro/sciblog_support.svg)](https://github.com/miguelgfierro/sciblog_support/pulls)
-[![Commits](https://img.shields.io/github/commit-activity/y/miguelgfierro/sciblog_support.svg)](https://github.com/miguelgfierro/sciblog_support/commits/master)
+[![Commits](https://img.shields.io/github/commit-activity/y/miguelgfierro/sciblog_support.svg?color=success)](https://github.com/miguelgfierro/sciblog_support/commits/master)
 [![Last commit](https://img.shields.io/github/last-commit/miguelgfierro/sciblog_support.svg)](https://github.com/miguelgfierro/sciblog_support/commits/master)
-[![Twitter](https://img.shields.io/twitter/follow/miguelgfierro?style=social)](https://twitter.com/intent/follow?screen_name=miguelgfierro
-)
+[![Lines of code](https://tokei.rs/b1/github/miguelgfierro/sciblog_support)](https://github.com/miguelgfierro/sciblog_support/graphs/contributors)
+[![Files](https://tokei.rs/b1/github/miguelgfierro/sciblog_support?category=files)](https://github.com/miguelgfierro/sciblog_support/graphs/contributors)
+
+[![Linkedin](https://img.shields.io/badge/Linkedin-Follow%20Miguel-blue?logo=linkedin)](https://www.linkedin.com/in/miguelgfierro/)
+[![Blog](https://img.shields.io/badge/Blog-Visit%20miguelgfierro.com-blue.svg)](https://miguelgfierro.com?utm_source=github.com&utm_medium=profile&utm_campaign=sciblog_support)
+
 
 # Sciblog support information and code
 This repo contains the projects, additional information and code to support my blog: [sciblog](https://miguelgfierro.com/).
