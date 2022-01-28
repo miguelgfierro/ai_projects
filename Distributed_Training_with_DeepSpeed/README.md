@@ -37,7 +37,7 @@ Transformers version: 4.16.0
 Datasets version: 1.18.1
 ```
 
-## Implementation
+## Implementation of DeepSpeed in a PyTorch model
 
 One of the first [tutorials](https://github.com/microsoft/DeepSpeedExamples/tree/d1452c9d6c48f7586b1d1b734f89751c1585d25e/HelloDeepSpeed) that can be found in the repository explains how to create and train a Transformer encoder on the Masked Language Modeling (MLM) task. It also shows the code changes that need to be made to transform a PyTorch solution into a DeepSpeed one.
 
