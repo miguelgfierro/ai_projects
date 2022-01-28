@@ -11,3 +11,29 @@ The other important feature is its speed. According the [their experiments](http
 Last, but not least, the library only requires minimal code changes to use. In comparison to other distributed training libraries, DeepSpeed does not require a code redesign or model refactoring.
 
 # Installation
+
+The installation is very simple, for a basic test of the library we can install DeepSpeed, PyTorch and Transformers.
+
+```bash
+conda create -n deepspeed python=3.7 -y
+conda install pytorch torchvision cudatoolkit=11.3 -c pytorch
+pip install deepspeed transformers datasets fire loguru sh pytz
+```
+
+The versions installed are from the [requirements.txt](requirements.txt) file.
+
+```python
+print(f"Numpy version: {np.__version__}")
+print(f"PyTorch version: {torch.__version__}")
+print(f"DeepSpeed version: {deepspeed.__version__}")
+print(f"Transformers version: {transformers.__version__}")
+print(f"Datasets version: {datasets.__version__}")
+```
+```bash
+Numpy version: 1.21.2
+PyTorch version: 1.10.2
+DeepSpeed version: 0.5.10
+Transformers version: 4.16.0
+Datasets version: 1.18.1
+```
+
