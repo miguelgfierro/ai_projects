@@ -1,6 +1,6 @@
 # Introduction to Distributed Training with DeepSpeed
 
-# Introduction
+## Introduction
 
 [DeepSpeed](https://github.com/microsoft/DeepSpeed) is an open-source library that facilitate the training of large deep learning models based on PyTorch. With minimal code changes, a developer can train a model on a single GPU machine, a single machine with multiple GPUs or on multiple machines in a distributed fashion. 
 
@@ -10,7 +10,7 @@ The other important feature is its speed. According the [their experiments](http
 
 Last, but not least, the library only requires minimal code changes to use. In comparison to other distributed training libraries, DeepSpeed does not require a code redesign or model refactoring.
 
-# Installation
+## Installation
 
 The installation is very simple, for a basic test of the library we can install DeepSpeed, PyTorch and Transformers.
 
