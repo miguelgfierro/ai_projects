@@ -26,6 +26,8 @@ You can find a list of all the post I made in [this file](miguelgfierro_posts.tx
 
 * [Introduction to Dimensionality Reduction with t-SNE](Dimensionality_Reduction_with_TSNE/dimensionality_reduction.ipynb): In this project we use sklearn and CUDA to show an example of t-SNE algorithm. We use a CNN to generate high-dimensional features from images and then show how they can be projected and visualized into a 2-dimensional space. Here the [blog entry](https://miguelgfierro.com/blog/2018/a-gentle-explanation-of-dimensionality-reduction-with-t-sne/).
 
+* [Introduction to Distributed Training with DeepSpeed](Distributed_Training_with_DeepSpeed): In this project we show how to use DeepSpeed to perform distributed training with PyTorch. Here the [blog entry]().
+
 * [Introduction to Fraud Detection](Intro_to_Fraud_Detection/fraud_detection.ipynb): In this notebook we design a real-time fraud detection model using LightGBM on GPU (also available on CPU). The model is then operationalized through an API using Flask and websockets. Here the [blog entry](https://github.com/miguelgfierro/sciblog_support/blob/master/Intro_to_Fraud_Detection/fraud_detection.ipynb).
 
 * [Introduction to Machine Learning API](Intro_to_Machine_Learning_API/Intro_to_Cloud_ML_with_Flask_and_CNTK.ipynb): In this notebook we show how to create an image classification API. The system works with a pretrained CNN using CNTK deep learning library. The API is setup with Flask for managing the end point services and CherryPy as the backend server. Here the [blog entry](https://miguelgfierro.com/blog/2017/how-to-deploy-an-image-classification-api-based-on-deep-learning/).
