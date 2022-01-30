@@ -26,7 +26,7 @@ You can find a list of all the post I made in [this file](miguelgfierro_posts.tx
 
 * [Introduction to Dimensionality Reduction with t-SNE](Dimensionality_Reduction_with_TSNE/dimensionality_reduction.ipynb): In this project we use sklearn and CUDA to show an example of t-SNE algorithm. We use a CNN to generate high-dimensional features from images and then show how they can be projected and visualized into a 2-dimensional space. Here the [blog entry](https://miguelgfierro.com/blog/2018/a-gentle-explanation-of-dimensionality-reduction-with-t-sne/).
 
-* [Introduction to Distributed Training with DeepSpeed](Distributed_Training_with_DeepSpeed): In this project we show how to use DeepSpeed to perform distributed training with PyTorch. Here the [blog entry]().
+* [Introduction to Distributed Training with DeepSpeed](Distributed_Training_with_DeepSpeed): In this project we show how to use DeepSpeed to perform distributed training with PyTorch. Here the [blog entry](https://miguelgfierro.com/blog/2022/a-gentle-introduction-to-distributed-training-with-deepspeed/?utm_source=github.com&utm_medium=repo-entry&utm_campaign=deepspeed).
 
 * [Introduction to Fraud Detection](Intro_to_Fraud_Detection/fraud_detection.ipynb): In this notebook we design a real-time fraud detection model using LightGBM on GPU (also available on CPU). The model is then operationalized through an API using Flask and websockets. Here the [blog entry](https://github.com/miguelgfierro/sciblog_support/blob/master/Intro_to_Fraud_Detection/fraud_detection.ipynb).
 
@@ -39,6 +39,3 @@ You can find a list of all the post I made in [this file](miguelgfierro_posts.tx
 * [Time Series Forecasting of Stock Price](Time_Series_Forecasting_of_Stock_Price/Stock_Price_Forecasting.ipynb): In this tutorial we show how to implement a simple stock forecasting model using different variants of LSTMs and Keras. Here the [blog entry](https://miguelgfierro.com/blog/2018/stock-price-prediction-with-lstms/).
 
 * [Visualization of Football Matches with Datashader](Visualization_of_Football_Matches/visualization_football.ipynb): In this notebook we explain how to visualize all matches in the UEFA Champions League since its beginning using the python library datashader. To create the project we use the Lean Startup method. Here the [blog entry](https://miguelgfierro.com/blog/2016/how-to-develop-a-data-science-project-using-the-lean-startup-method/).
-
-
-
