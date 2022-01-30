@@ -1,5 +1,6 @@
 https://miguelgfierro.com/
 https://miguelgfierro.com/about/
+https://miguelgfierro.com/blog/2022/a-gentle-introduction-to-distributed-training-with-deepspeed/
 https://miguelgfierro.com/blog/2021/a-gentle-introduction-to-matrix-factorization-for-recommendations/
 https://miguelgfierro.com/blog/2021/understanding-the-new-project-of-elon-musk-the-tesla-bot/
 https://miguelgfierro.com/blog/2021/a-gentle-introduction-to-fourier-transformers-for-nlp
