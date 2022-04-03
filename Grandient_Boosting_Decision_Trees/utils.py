@@ -234,7 +234,7 @@ def visualize_classifier(model, X, y, ax=None, cmap="rainbow"):
         X[:, 0], X[:, 1], c=y, s=30, cmap=cmap, clim=(y.min(), y.max()), zorder=3
     )
     ax.axis("tight")
-    ax.axis("off")
+    # ax.axis("off")
     xlim = ax.get_xlim()
     ylim = ax.get_ylim()
 
@@ -258,10 +258,6 @@ def visualize_classifier(model, X, y, ax=None, cmap="rainbow"):
     ax.set(xlim=xlim, ylim=ylim)
 
 
-def visualize_tree(model, feature_names, class_names=None, figsize=(7, 7)):
-    if class_names is None:
-        class_names = list(map(str, feature_names))
+def visualize_tree(model, figsize=(7, 7), **kwargs):
     fig = plt.figure(figsize=figsize)
-    _ = tree.plot_tree(
-        model, feature_names=feature_names, class_names=class_names, filled=True
-    )
+    _ = tree.plot_tree(model, filled=True, rounded=True, **kwargs)
