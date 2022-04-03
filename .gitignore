@@ -107,6 +107,12 @@ Intro_to_Recommendation_Systems/Netflix
 Intro_to_Recommendation_Systems/model_save
 Intro_to_Recommendation_Systems/preds.txt
 Time_Series_Forecasting_of_Stock_Price/*.svg
+Dimensionality_Reduction_with_TSNE/tsne_results
+Dimensionality_Reduction_with_TSNE/train
+Data_Generation/input.txt
+Data_Generation/output.txt
+
+# Other files
 playground*
 .DS_Store
 .~*
@@ -114,13 +120,12 @@ nohup.out
 *-Copy*
 Untitled.ipynb
 db.sqlite3
-Dimensionality_Reduction_with_TSNE/tsne_results
-sampleSubmission.csv
+*.csv
 *.zip
-Dimensionality_Reduction_with_TSNE/train
 .vscode
-Data_Generation/input.txt
-Data_Generation/output.txt
+*.pdf
+*.gv
+
 
 
 

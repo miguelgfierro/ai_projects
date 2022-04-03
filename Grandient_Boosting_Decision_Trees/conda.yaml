@@ -17,6 +17,7 @@ dependencies:
 - pip
 - numpy
 - pandas
+- graphviz
 - pip:
   - scikit-learn==1.0.2
   - lightgbm==3.3.2
@@ -24,4 +25,5 @@ dependencies:
   - jupyter
   - matplotlib
   - seaborn
+  
 

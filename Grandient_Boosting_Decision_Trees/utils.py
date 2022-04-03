@@ -17,6 +17,7 @@ from sklearn.metrics import (
     recall_score,
     f1_score,
 )
+import lightgbm as lgb
 
 
 def load_airline():
@@ -258,6 +259,15 @@ def visualize_classifier(model, X, y, ax=None, cmap="rainbow"):
     ax.set(xlim=xlim, ylim=ylim)
 
 
-def visualize_tree(model, figsize=(7, 7), **kwargs):
+def visualize_tree_sklearn(model, figsize=(7, 7), **kwargs):
     fig = plt.figure(figsize=figsize)
     _ = tree.plot_tree(model, filled=True, rounded=True, **kwargs)
+
+
+def visualize_tree_lightgbm(model, figsize=(10, 10), **kwargs):
+    lgb.plot_tree(
+        model,
+        figsize=figsize,
+        orientation="vertical",
+        show_info=["split_gain", "leaf_count"],
+    )
