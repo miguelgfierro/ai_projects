@@ -1,6 +1,19 @@
-# Source of part of this code: https://github.com/Azure/fast_retraining
+# Source of part of this code:
+# https://github.com/Azure/fast_retraining/
+# https://github.com/miguelgfierro/codebase/
+
+
 import os
+import numpy as np
 import pandas as pd
+from timeit import default_timer
+from sklearn.metrics import (
+    roc_auc_score,
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+)
 
 
 def load_airline():
@@ -103,3 +116,108 @@ def convert_related_cols_categorical_to_numeric(df, col_list):
         else:
             ret[column_name] = column
     return ret
+
+
+def convert_cols_categorical_to_numeric(df, col_list=None):
+    """Convert categorical columns to numeric and leave numeric columns
+    as they are. You can force to convert a numerical column if it is
+    included in `col_list`.
+
+    Args:
+        df (pd.DataFrame): Dataframe.
+        col_list (list): List of columns.
+
+    Returns:
+        pd.DataFrame: An dataframe with numeric values.
+
+    Examples:
+        >>> df = pd.DataFrame({'letters':['a','b','c'],'numbers':[1,2,3]})
+        >>> df_numeric = convert_cols_categorical_to_numeric(df)
+        >>> print(df_numeric)
+           letters  numbers
+        0        0        1
+        1        1        2
+        2        2        3
+    """
+    if col_list is None:
+        col_list = []
+    ret = pd.DataFrame()
+    for column_name in df.columns:
+        column = df[column_name]
+        if column.dtype == "object" or column_name in col_list:
+            col_dict = _get_nominal_integer_dict(column)
+            ret[column_name] = _convert_to_integer(column, col_dict)
+        else:
+            ret[column_name] = column
+    return ret
+
+
+class Timer(object):
+    """Timer class.
+
+    Examples:
+        >>> big_num = 100000
+        >>> t = Timer()
+        >>> t.start()
+        >>> for i in range(big_num):
+        >>>     r = 1
+        >>> t.stop()
+        >>> print(t.interval)
+        0.0946876304844
+        >>> with Timer() as t:
+        >>>     for i in range(big_num):
+        >>>         r = 1
+        >>> print(t.interval)
+        0.0766928562442
+        >>> try:
+        >>>     with Timer() as t:
+        >>>         for i in range(big_num):
+        >>>             r = 1
+        >>>             raise(Exception("Get out!"))
+        >>> finally:
+        >>>     print(t.interval)
+        0.0757778924471
+    """
+
+    def __init__(self):
+        self._timer = default_timer
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, *args):
+        self.stop()
+
+    def start(self):
+        """Start the timer."""
+        self.start = self._timer()
+
+    def stop(self):
+        """Stop the timer. Calculate the interval in seconds."""
+        self.end = self._timer()
+        self.interval = self.end - self.start
+
+
+def binarize_prediction(y, threshold=0.5):
+    return np.where(y > threshold, 1, 0)
+
+
+def classification_metrics_binary(y_true, y_pred):
+    m_acc = accuracy_score(y_true, y_pred)
+    m_f1 = f1_score(y_true, y_pred)
+    m_precision = precision_score(y_true, y_pred)
+    m_recall = recall_score(y_true, y_pred)
+    report = {
+        "Accuracy": m_acc,
+        "Precision": m_precision,
+        "Recall": m_recall,
+        "F1": m_f1,
+    }
+    return report
+
+
+def classification_metrics_binary_prob(y_true, y_prob):
+    m_auc = roc_auc_score(y_true, y_prob)
+    report = {"AUC": m_auc}
+    return report
