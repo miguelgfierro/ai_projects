@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 from timeit import default_timer
 import matplotlib.pyplot as plt
+from sklearn import tree
 from sklearn.metrics import (
     roc_auc_score,
     accuracy_score,
@@ -255,3 +256,12 @@ def visualize_classifier(model, X, y, ax=None, cmap="rainbow"):
     )
 
     ax.set(xlim=xlim, ylim=ylim)
+
+
+def visualize_tree(model, feature_names, class_names=None, figsize=(7, 7)):
+    if class_names is None:
+        class_names = list(map(str, feature_names))
+    fig = plt.figure(figsize=figsize)
+    _ = tree.plot_tree(
+        model, feature_names=feature_names, class_names=class_names, filled=True
+    )
