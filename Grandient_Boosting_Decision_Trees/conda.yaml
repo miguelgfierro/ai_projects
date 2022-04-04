@@ -1,0 +1,29 @@
+# To create the conda environment:
+# $ conda env create -n boosting -f conda.yaml
+#
+# To update the conda environment:
+# $ conda env update -n boosting -f conda.yaml
+#
+# To register the conda environment in Jupyter:
+# $ conda activate boosting
+# $ python -m ipykernel install --user --name boosting --display-name "Python (boosting)"
+#
+
+channels:
+- conda-forge
+- defaults
+dependencies:
+- python==3.8
+- pip
+- numpy
+- pandas
+- graphviz
+- pip:
+  - scikit-learn==1.0.2
+  - lightgbm==3.3.2
+  - xgboost==1.5.2
+  - jupyter
+  - matplotlib
+  - seaborn
+  
+
