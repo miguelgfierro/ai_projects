@@ -20,7 +20,7 @@ from sklearn.metrics import (
 import lightgbm as lgb
 
 
-def load_airline():
+def load_airline(**kwargs):
     """Loads airline data.
 
     The dataset consists of a large amount of records, containing flight arrival and departure details for all the
@@ -54,7 +54,7 @@ def load_airline():
         "Diverted",
         "ArrDelay",
     ]
-    return pd.read_csv(os.path.join("data", "airline_14col.data"), names=cols)
+    return pd.read_csv(os.path.join("data", "airline_14col.data"), names=cols, **kwargs)
 
 
 def _get_nominal_integer_dict(nominal_vals):
