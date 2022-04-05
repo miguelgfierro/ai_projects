@@ -21,7 +21,7 @@ dependencies:
 - pip:
   - scikit-learn==1.0.2
   - lightgbm==3.3.2
-  - xgboost==1.5.2
+  - xgboost==1.6.0rc1
   - jupyter
   - matplotlib
   - seaborn
