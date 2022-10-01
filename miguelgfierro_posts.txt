@@ -1,5 +1,8 @@
 https://miguelgfierro.com/
 https://miguelgfierro.com/about/
+https://miguelgfierro.com/blog/2022/d4-data-podcast-with-miguel-fierro-recommendation-systems/
+https://miguelgfierro.com/blog/2022/an-analysis-of-the-adoption-of-top-deep-learning-frameworks/
+https://miguelgfierro.com/blog/2022/my-most-popular-linkedin-posts-of-2021/
 https://miguelgfierro.com/blog/2022/a-gentle-introduction-to-distributed-training-with-deepspeed/
 https://miguelgfierro.com/blog/2021/a-gentle-introduction-to-matrix-factorization-for-recommendations/
 https://miguelgfierro.com/blog/2021/understanding-the-new-project-of-elon-musk-the-tesla-bot/
