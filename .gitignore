@@ -125,7 +125,9 @@ db.sqlite3
 .vscode
 *.pdf
 *.gv
-
+*.txt
+*.xlsx
+*.xls
 
 
 
