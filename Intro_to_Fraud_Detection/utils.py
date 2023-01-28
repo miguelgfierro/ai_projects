@@ -26,13 +26,14 @@ TABLE_LOCATIONS = 'locations'
 
 
 def connect_to_database(database=None):
-    """
-    Connect to a sqlite database. Don't forget to close the connection at the
+    """Connect to a sqlite database. Don't forget to close the connection at the
     end of the routine with `conn.close()`.
+
     Args:
         database (str): Database filename.
+
     Returns:
-        conn (object): Connector object.
+        object: Connector object.
 
     """
     if database is None:
@@ -56,11 +57,13 @@ def select_random_row(connection, table_name):
 
 def save_to_sqlite(dataframe, database, table_name, **kargs):
     """Save a dataframe to a SQL database.
+
     Args:
         dataframe (pd.DataFrame): A dataframe
         database (str): Database filename.
         connection_string (str): Database connection string.
         table_name (str): Table name
+
     Examples:
         >>> df = pd.DataFrame({'col1':[1,2,3], 'col2':[0.1,0.2,0.3]})
         >>> save_to_sqlite(df, 'test.db', 'table1', if_exists='replace')
@@ -83,11 +86,14 @@ def save_to_sqlite(dataframe, database, table_name, **kargs):
 
 def read_from_sqlite(database, query, **kargs):
     """Make a query to a SQL database.
+
     Args:
         database (str): Database filename.
         query (str): Query.
+
     Returns:
-        dataframe (pd.DataFrame): An dataframe.
+        pd.DataFrame: An dataframe.
+
     Examples:
         >>> df = read_from_sqlite('test.db', 'SELECT col1,col2 FROM table1;')
         >>> df
@@ -106,12 +112,15 @@ def read_from_sqlite(database, query, **kargs):
 
 def split_train_test(X, y, test_size=0.2):
     """Split a dataset into train and test sets.
+
     Args:
         X (np.array or pd.DataFrame): Features.
         y (np.array or pd.DataFrame): Labels.
         test_size (float): Percentage in the test set.
+
     Returns:
-        X_train, X_test, y_train, y_test (list): List with the dataset splitted.
+        list: List with the dataset splitted as X_train, X_test, y_train, y_test 
+
     Example:
         >>> import numpy as np
         >>> X = np.random.randint(0,10, (100,5))
@@ -127,6 +136,7 @@ def split_train_test(X, y, test_size=0.2):
 
 def classification_metrics_binary(y_true, y_pred):
     """Returns a report with different metrics for a binary classification problem.
+
     - Accuracy: Number of correct predictions made as a ratio of all predictions. Useful when there are equal number
     of observations in each class and all predictions and prediction errors are equally important.
     - Confusion matrix: C_ij where observations are known to be in group i but predicted to be in group j. In binary
@@ -138,11 +148,14 @@ def classification_metrics_binary(y_true, y_pred):
     High Precision and low Recall will return few positive results but most of them will be correct. 
     High Recall and low Precision will return many positive results but most of them will be incorrect.
     - F1 Score: 2*((precision*recall)/(precision+recall)). It measures the balance between precision and recall.
+
     Args:
         y_true (list or np.array): True labels.
         y_pred (list or np.array): Predicted labels (binary).
+
     Returns:
-        report (dict): Dictionary with metrics.
+        dict: Dictionary with metrics.
+
     Examples:
         >>> from collections import OrderedDict
         >>> y_true = [0,1,0,0,1]
@@ -164,16 +177,20 @@ def classification_metrics_binary(y_true, y_pred):
 
 def classification_metrics_binary_prob(y_true, y_prob):
     """Returns a report with different metrics for a binary classification problem.
+
     - AUC: The Area Under the Curve represents the ability to discriminate between positive and negative classes. An
     area of 1 represent perfect scoring and an area of 0.5 means random guessing.
     - Log loss: Also called logistic regression loss or cross-entropy loss. It quantifies the performance by
     penalizing false classifications. Minimizing the Log Loss is equivalent to minimizing the squared error but using
     probabilistic predictions. Log loss penalize heavily classifiers that are confident about incorrect classifications.
+
     Args:
         y_true (list or np.array): True labels.
         y_prob (list or np.array): Predicted labels (probability).
+
     Returns:
-        report (dict): Dictionary with metrics.
+        dict: Dictionary with metrics.
+        
     Examples:
         >>> from collections import OrderedDict
         >>> y_true = [0,1,0,0,1]
@@ -194,6 +211,7 @@ def classification_metrics_binary_prob(y_true, y_prob):
 
 def binarize_prediction(y, threshold=0.5):
     """Binarize prediction based on a threshold
+
     Args:
         y (np.array): Array with predictions.
         threshold (float): Theshold value for binarization.
@@ -204,12 +222,14 @@ def binarize_prediction(y, threshold=0.5):
 
 def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
     """Plots a confusion matrix.
+
     Args:
         cm (np.array): The confusion matrix array.
         classes (list): List wit the classes names.
         normalize (bool): Flag to normalize data.
         title (str): Title of the plot.
         cmap (matplotlib.cm): Matplotlib colormap https://matplotlib.org/api/cm_api.html
+
     Examples:
         >>> import numpy as np
         >>> a = np.array([[10, 3, 0],[1, 2, 3],[1, 5, 9]])
