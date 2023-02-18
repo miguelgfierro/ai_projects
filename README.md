@@ -3,7 +3,7 @@
 [![Commits](https://img.shields.io/github/commit-activity/y/miguelgfierro/sciblog_support.svg?color=success)](https://github.com/miguelgfierro/sciblog_support/commits/master)
 [![Last commit](https://img.shields.io/github/last-commit/miguelgfierro/sciblog_support.svg)](https://github.com/miguelgfierro/sciblog_support/commits/master)
 
-[![Linkedin](https://img.shields.io/badge/Linkedin-Follow%20Miguel-blue?logo=linkedin)](https://www.linkedin.com/in/miguelgfierro/)
+[![Linkedin](https://img.shields.io/badge/Linkedin-Follow%20Miguel-blue?logo=linkedin)](https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=miguelgfierro)
 [![Blog](https://img.shields.io/badge/Blog-Visit%20miguelgfierro.com-blue.svg)](https://miguelgfierro.com?utm_source=github&utm_medium=profile&utm_campaign=sciblog_support)
 
 
