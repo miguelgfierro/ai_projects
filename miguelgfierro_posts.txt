@@ -1,5 +1,6 @@
 https://miguelgfierro.com/
 https://miguelgfierro.com/about/
+https://miguelgfierro.com/blog/2023/from-cloud-solution-architect-to-data-scientist-in-4-months/
 https://miguelgfierro.com/blog/2023/the-story-of-how-nikolaos-got-a-data-science-job-in-just-3-months/
 https://miguelgfierro.com/blog/2023/machine-learning-mastery-for-career-growth-at-top-tech-corporations/
 https://miguelgfierro.com/blog/2023/start-with-transformers/
