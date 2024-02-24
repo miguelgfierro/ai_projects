@@ -1,18 +1,19 @@
-[![Issues](https://img.shields.io/github/issues/miguelgfierro/sciblog_support.svg)](https://github.com/miguelgfierro/sciblog_support/issues)
-[![Pull requests](https://img.shields.io/github/issues-pr/miguelgfierro/sciblog_support.svg)](https://github.com/miguelgfierro/sciblog_support/pulls)
-[![Commits](https://img.shields.io/github/commit-activity/y/miguelgfierro/sciblog_support.svg?color=success)](https://github.com/miguelgfierro/sciblog_support/commits/master)
-[![Last commit](https://img.shields.io/github/last-commit/miguelgfierro/sciblog_support.svg)](https://github.com/miguelgfierro/sciblog_support/commits/master)
+[![Issues](https://img.shields.io/github/issues/miguelgfierro/ai_projects.svg)](https://github.com/miguelgfierro/ai_projects/issues)
+[![Pull requests](https://img.shields.io/github/issues-pr/miguelgfierro/ai_projects.svg)](https://github.com/miguelgfierro/ai_projects/pulls)
+[![Commits](https://img.shields.io/github/commit-activity/y/miguelgfierro/ai_projects.svg?color=success)](https://github.com/miguelgfierro/ai_projects/commits/master)
+[![Last commit](https://img.shields.io/github/last-commit/miguelgfierro/ai_projects.svg)](https://github.com/miguelgfierro/ai_projects/commits/master)
 
 [![Linkedin](https://img.shields.io/badge/Linkedin-Follow%20Miguel-blue?logo=linkedin)](https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=miguelgfierro)
-[![Blog](https://img.shields.io/badge/Blog-Visit%20miguelgfierro.com-blue.svg)](https://miguelgfierro.com?utm_source=github&utm_medium=profile&utm_campaign=sciblog_support)
+[![Blog](https://img.shields.io/badge/Blog-Visit%20miguelgfierro.com-blue.svg)](https://miguelgfierro.com?utm_source=github&utm_medium=profile&utm_campaign=ai_projects)
 
 
-# Sciblog support information and code
-This repo contains the projects, additional information and code to support my blog: [sciblog](https://miguelgfierro.com/).
+# AI projects
 
-You can find a list of all the post I made in [this file](miguelgfierro_posts.txt).
+This repo contains AI projects in multiple areas of machine learning. Many of these projects have associated articles on the blog [sciblog](https://miguelgfierro.com/).
 
-## Notebook projects
+You can find a list of most the post I made in [this file](miguelgfierro_posts.txt).
+
+## Featured projects
 
 * [Introduction to Convolutional Neural Networks](A_Gentle_Introduction_to_CNN/Intro_CNN.ipynb): In this project we explain what is a convolution and how to compute a CNN using MXNet deep learning library with the MNIST character recognition dataset. Here the [blog entry](https://miguelgfierro.com/blog/2016/a-gentle-introduction-to-convolutional-neural-networks/?utm_source=github&utm_medium=repo-entry&utm_campaign=cnn-intro).
 
@@ -26,7 +27,7 @@ You can find a list of all the post I made in [this file](miguelgfierro_posts.tx
 
 * [Introduction to Distributed Training with DeepSpeed](Distributed_Training_with_DeepSpeed): In this project we show how to use DeepSpeed to perform distributed training with PyTorch. Here the [blog entry](https://miguelgfierro.com/blog/2022/a-gentle-introduction-to-distributed-training-with-deepspeed/?utm_source=github&utm_medium=repo-entry&utm_campaign=deepspeed).
 
-* [Introduction to Fraud Detection](Intro_to_Fraud_Detection/fraud_detection.ipynb): In this notebook we design a real-time fraud detection model using LightGBM on GPU (also available on CPU). The model is then operationalized through an API using Flask and websockets. Here the [blog entry](https://github.com/miguelgfierro/sciblog_support/blob/master/Intro_to_Fraud_Detection/fraud_detection.ipynb?utm_source=github&utm_medium=repo-entry&utm_campaign=fraud).
+* [Introduction to Fraud Detection](Intro_to_Fraud_Detection/fraud_detection.ipynb): In this notebook we design a real-time fraud detection model using LightGBM on GPU (also available on CPU). The model is then operationalized through an API using Flask and websockets. Here the [blog entry](https://github.com/miguelgfierro/ai_projects/blob/master/Intro_to_Fraud_Detection/fraud_detection.ipynb?utm_source=github&utm_medium=repo-entry&utm_campaign=fraud).
 
 * [Introduction to Machine Learning API](Intro_to_Machine_Learning_API/Intro_to_Cloud_ML_with_Flask_and_CNTK.ipynb): In this notebook we show how to create an image classification API. The system works with a pretrained CNN using CNTK deep learning library. The API is setup with Flask for managing the end point services and CherryPy as the backend server. Here the [blog entry](https://miguelgfierro.com/blog/2017/how-to-deploy-an-image-classification-api-based-on-deep-learning/?utm_source=github&utm_medium=repo-entry&utm_campaign=ml-api).
 
