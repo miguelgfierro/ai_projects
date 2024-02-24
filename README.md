@@ -7,12 +7,13 @@
 [![Blog](https://img.shields.io/badge/Blog-Visit%20miguelgfierro.com-blue.svg)](https://miguelgfierro.com?utm_source=github&utm_medium=profile&utm_campaign=ai_projects)
 
 
-# Sciblog support information and code
-This repo contains the projects, additional information and code to support my blog: [sciblog](https://miguelgfierro.com/).
+# AI projects
 
-You can find a list of all the post I made in [this file](miguelgfierro_posts.txt).
+This repo contains AI projects in multiple areas of machine learning. Many of these projects have associated articles on the blog [sciblog](https://miguelgfierro.com/).
 
-## Notebook projects
+You can find a list of most the post I made in [this file](miguelgfierro_posts.txt).
+
+## Featured projects
 
 * [Introduction to Convolutional Neural Networks](A_Gentle_Introduction_to_CNN/Intro_CNN.ipynb): In this project we explain what is a convolution and how to compute a CNN using MXNet deep learning library with the MNIST character recognition dataset. Here the [blog entry](https://miguelgfierro.com/blog/2016/a-gentle-introduction-to-convolutional-neural-networks/?utm_source=github&utm_medium=repo-entry&utm_campaign=cnn-intro).
 
