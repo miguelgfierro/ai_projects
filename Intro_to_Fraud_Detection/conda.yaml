@@ -18,6 +18,7 @@ dependencies:
 - flask==1.0.2
 - ipykernel==4.6.1
 - cython==0.28.3
+-pip
 - pip:
   - pandas==0.22.0
   - scipy==1.1.0
