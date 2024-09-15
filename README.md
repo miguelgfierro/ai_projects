@@ -38,3 +38,7 @@ You can find a list of most the post I made in [this file](miguelgfierro_posts.t
 * [Time Series Forecasting of Stock Price](Time_Series_Forecasting_of_Stock_Price/Stock_Price_Forecasting.ipynb): In this tutorial we show how to implement a simple stock forecasting model using different variants of LSTMs and Keras. Here the [blog entry](https://miguelgfierro.com/blog/2018/stock-price-prediction-with-lstms/?utm_source=github&utm_medium=repo-entry&utm_campaign=stock-forecasting).
 
 * [Visualization of Football Matches with Datashader](Visualization_of_Football_Matches/visualization_football.ipynb): In this notebook we explain how to visualize all matches in the UEFA Champions League since its beginning using the python library datashader. To create the project we use the Lean Startup method. Here the [blog entry](https://miguelgfierro.com/blog/2016/how-to-develop-a-data-science-project-using-the-lean-startup-method/?utm_source=github&utm_medium=repo-entry&utm_campaign=datashader).
+
+## Machine Learning reference architecture
+
+![](./ML_reference_architecture.svg)
