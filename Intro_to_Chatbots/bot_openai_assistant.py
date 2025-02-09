@@ -71,10 +71,7 @@ if __name__ == "__main__":
         run = submit_message(os.getenv("OPENAI_ASSISTANT_ID"), thread, user_input)
 
         # Wait for the assistant to respond
-        # NOTE: wait_on_run is slower, but it doesn't tend to repeat the same response
-        # time.sleep is faster, but it tends to repeat the same response
         run = wait_on_run(run, thread)
-        # time.sleep(0.5)
 
         # Display the assistant's response
         assistant_response = get_response(thread)
