@@ -50,7 +50,7 @@ def main():
         message_history.append({"role": "user", "content": user_input})
 
         # Check if the conversation is complete
-        if any(exit_keyword in user_input.lower() for exit_keyword in ["exit", "quit", "bye"]):
+        if any(exit_keyword in user_input.lower() for exit_keyword in ["exit", "quit", "bye", "goodbye"]):
             print("Chatbot: Goodbye! Chat session is over.")
             break
 
