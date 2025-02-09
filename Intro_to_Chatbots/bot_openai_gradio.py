@@ -25,7 +25,7 @@ def openai_chat(user_input):
 
     # Call OpenAI's Chat API
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo-1106",
+        model="gpt-4o-mini",
         messages=messages,
     )
 

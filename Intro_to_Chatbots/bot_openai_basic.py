@@ -27,7 +27,7 @@ def format_response(response):
 def generate_response(message_history):
     # Generate a response from OpenAI API
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo-1106",  # Models: https://platform.openai.com/docs/models/overview
+        model="gpt-4o-mini",  # Models: https://platform.openai.com/docs/models/overview
         response_format={"type": "json_object"},
         messages=message_history,
         temperature=0.7,  # The temperature can range from 0 to 2.
