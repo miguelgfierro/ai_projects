@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path="environment")
 
 import os
-import json
 from openai import OpenAI
 
 
@@ -12,7 +11,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def setup_message(welcome_message):
-    system_message = "You are a helpful assistant designed to output JSON."
+    system_message = "You are a helpful assistant."
     messages = [
         {"role": "system", "content": system_message},
         {"role": "assistant", "content": welcome_message},
@@ -21,17 +20,13 @@ def setup_message(welcome_message):
 
 
 def format_response(response):
-    # Parse the JSON response and convert it back to a string
-    content = response.choices[0].message.content
-    parsed_response = json.loads(content)
-    return json.dumps(parsed_response)
+    return response.choices[0].message.content
 
 
 def generate_response(message_history):
     # Generate a response from OpenAI API
     response = client.chat.completions.create(
         model="gpt-4o-mini",  # Models: https://platform.openai.com/docs/models/overview
-        response_format={"type": "json_object"},
         messages=message_history,
         temperature=0.7,  # The temperature can range from 0 to 2.
         # max_tokens=150,
@@ -43,8 +38,8 @@ def generate_response(message_history):
 
 
 def main():
-    welcome_message = json.dumps({"response": "Hello! I'm your chatbot. Ask me anything, and I'll do my best to help you."})
-    print(f"Chatbot: {json.loads(welcome_message)['response']}")
+    welcome_message = "Hello! I'm your chatbot. Ask me anything, and I'll do my best to help you."
+    print(f"Chatbot: {welcome_message}")
 
     message_history = setup_message(welcome_message)
 
@@ -62,7 +57,7 @@ def main():
         # Generate and display the bot's response
         response = generate_response(message_history)
         bot_response = format_response(response)
-        print(f"Chatbot: {json.loads(bot_response)['response']}")
+        print(f"Chatbot: {bot_response}")
 
         # Add the bot's response to the chat history
         message_history.append({"role": "assistant", "content": bot_response})
