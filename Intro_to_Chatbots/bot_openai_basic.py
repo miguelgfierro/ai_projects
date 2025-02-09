@@ -1,15 +1,17 @@
-import json
-from openai import OpenAI
+from dotenv import load_dotenv
 
-from secretos import OPENAI_API_KEY  # https://platform.openai.com/account/api-keys
+load_dotenv(dotenv_path="environment")
+
+import os
+from openai import OpenAI
 
 
 # Set your OpenAI API key
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def setup_message(welcome_message):
-    system_message = "You are a helpful assistant designed to output JSON."
+    system_message = "You are a helpful assistant."
     messages = [
         {"role": "system", "content": system_message},
         {"role": "assistant", "content": welcome_message},
@@ -18,14 +20,13 @@ def setup_message(welcome_message):
 
 
 def format_response(response):
-    return json.loads(response.choices[0].message.content)["response"]
+    return response.choices[0].message.content
 
 
 def generate_response(message_history):
     # Generate a response from OpenAI API
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo-1106",  # Models: https://platform.openai.com/docs/models/overview
-        response_format={"type": "json_object"},
+        model="gpt-4o-mini",  # Models: https://platform.openai.com/docs/models/overview
         messages=message_history,
         temperature=0.7,  # The temperature can range from 0 to 2.
         # max_tokens=150,
@@ -37,8 +38,8 @@ def generate_response(message_history):
 
 
 def main():
-    welcome_message = "Chatbot: Hello! I'm your chatbot. Ask me anything, and I'll do my best to help you."
-    print(welcome_message)
+    welcome_message = "Hello! I'm your chatbot. Ask me anything, and I'll do my best to help you."
+    print(f"Chatbot: {welcome_message}")
 
     message_history = setup_message(welcome_message)
 
@@ -49,10 +50,7 @@ def main():
         message_history.append({"role": "user", "content": user_input})
 
         # Check if the conversation is complete
-        if any(
-            exit_keyword in user_input.lower()
-            for exit_keyword in ["exit", "quit", "bye"]
-        ):
+        if any(exit_keyword in user_input.lower() for exit_keyword in ["exit", "quit", "bye", "goodbye"]):
             print("Chatbot: Goodbye! Chat session is over.")
             break
 
