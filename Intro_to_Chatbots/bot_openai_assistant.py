@@ -68,7 +68,7 @@ if __name__ == "__main__":
             break
 
         # Submit the user's message to the existing thread
-        run = submit_message(OPENAI_ASSISTANT_ID, thread, user_input)
+        run = submit_message(os.getenv("OPENAI_ASSISTANT_ID"), thread, user_input)
 
         # Wait for the assistant to respond
         # NOTE: wait_on_run is slower, but it doesn't tend to repeat the same response
