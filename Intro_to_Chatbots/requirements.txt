@@ -1,4 +1,4 @@
-openai>=1.2.3,<=1.7.0
+openai>=1.2.3
 gradio>=4.7.1
 langchain>=0.1.0
 fais-cpu>=1.7.0
