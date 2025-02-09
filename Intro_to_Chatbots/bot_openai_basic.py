@@ -21,7 +21,10 @@ def setup_message(welcome_message):
 
 
 def format_response(response):
-    return json.loads(response.choices[0].message.content)["response"]
+    # Parse the JSON response and convert it back to a string
+    content = response.choices[0].message.content
+    parsed_response = json.loads(content)
+    return json.dumps(parsed_response)
 
 
 def generate_response(message_history):
@@ -40,8 +43,8 @@ def generate_response(message_history):
 
 
 def main():
-    welcome_message = "Chatbot: Hello! I'm your chatbot. Ask me anything, and I'll do my best to help you."
-    print(welcome_message)
+    welcome_message = json.dumps({"response": "Hello! I'm your chatbot. Ask me anything, and I'll do my best to help you."})
+    print(f"Chatbot: {json.loads(welcome_message)['response']}")
 
     message_history = setup_message(welcome_message)
 
@@ -59,7 +62,7 @@ def main():
         # Generate and display the bot's response
         response = generate_response(message_history)
         bot_response = format_response(response)
-        print(f"Chatbot: {bot_response}")
+        print(f"Chatbot: {json.loads(bot_response)['response']}")
 
         # Add the bot's response to the chat history
         message_history.append({"role": "assistant", "content": bot_response})
