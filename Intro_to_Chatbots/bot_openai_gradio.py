@@ -1,11 +1,14 @@
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path="environment")
+
+import os
 from openai import OpenAI
 import gradio as gr
 
-from secretos import OPENAI_API_KEY  # https://platform.openai.com/account/api-keys
-
 
 # Set your OpenAI API key
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 # Initialize an empty conversation history

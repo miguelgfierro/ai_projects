@@ -1,19 +1,20 @@
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path="environment")
+
+import os
 import time
 from openai import OpenAI
 
-from secretos import OPENAI_API_KEY, OPENAI_ASSISTANT_ID
 
-
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Create a new thread for each conversation
 thread = client.beta.threads.create()
 
 
 def submit_message(assistant_id, thread, user_message):
-    client.beta.threads.messages.create(
-        thread_id=thread.id, role="user", content=user_message
-    )
+    client.beta.threads.messages.create(thread_id=thread.id, role="user", content=user_message)
     return client.beta.threads.runs.create(
         thread_id=thread.id,
         assistant_id=assistant_id,
@@ -32,7 +33,6 @@ def wait_on_run(run, thread):
         )
         time.sleep(0.1)
     return run
-
 
 
 def print_assistant_response(messages):

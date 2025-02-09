@@ -1,11 +1,14 @@
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path="environment")
+
+import os
 import json
 from openai import OpenAI
 
-from secretos import OPENAI_API_KEY  # https://platform.openai.com/account/api-keys
-
 
 # Set your OpenAI API key
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def setup_message(welcome_message):
@@ -49,10 +52,7 @@ def main():
         message_history.append({"role": "user", "content": user_input})
 
         # Check if the conversation is complete
-        if any(
-            exit_keyword in user_input.lower()
-            for exit_keyword in ["exit", "quit", "bye"]
-        ):
+        if any(exit_keyword in user_input.lower() for exit_keyword in ["exit", "quit", "bye"]):
             print("Chatbot: Goodbye! Chat session is over.")
             break
 
