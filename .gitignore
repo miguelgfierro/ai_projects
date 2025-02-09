@@ -128,7 +128,7 @@ db.sqlite3
 *.txt
 *.xlsx
 *.xls
-environment.py
+environment
 
 
 
