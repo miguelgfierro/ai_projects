@@ -1,8 +1,9 @@
 # A Gentle Introduction to ChatBots
 
-* OpenAI chat completion API
-* OpenAI assistant API
-* Interface with Gradio
+* OpenAI chat completion API.
+* OpenAI assistant API.
+* Interface with Gradio.
+* RAG with LangChain.
 
 ## Installation
 
