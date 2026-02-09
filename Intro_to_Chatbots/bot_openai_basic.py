@@ -6,17 +6,15 @@ import os
 from openai import OpenAI
 
 
-# Set your OpenAI API key
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-SYSTEM_INSTRUCTIONS = "You are a helpful assistant."
 
 
 def generate_response(user_input, previous_response_id=None):
     # Generate a response from OpenAI Responses API
     response = client.responses.create(
-        model="gpt-4o-mini",  # Models: https://platform.openai.com/docs/models/overview
-        instructions=SYSTEM_INSTRUCTIONS,
+        model="gpt-4o-mini",  # Models: https://platform.openai.com/docs/models
+        # model="gpt-5.2",  
+        instructions="You are a helpful assistant.",
         input=user_input,
         previous_response_id=previous_response_id,
         temperature=0.7,  # The temperature can range from 0 to 2.
