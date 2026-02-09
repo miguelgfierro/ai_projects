@@ -2,6 +2,7 @@
 
 * `bot_openai_basic.py` - Stateless chatbot using the OpenAI Responses API. Each message is independent with no conversation memory.
 * `bot_openai_persistent.py` - Stateful chatbot using the OpenAI Conversations API. The model remembers all previous messages in the session.
+* `bot_openai_tools.py` - Stateful chatbot with web search tool. The model can search the internet for current information and cites its sources.
 * `bot_openai_gradio.py` - Chat interface with Gradio.
 * `bot_langchain_rag.ipynb` - RAG with LangChain and FAISS over a text document.
 
