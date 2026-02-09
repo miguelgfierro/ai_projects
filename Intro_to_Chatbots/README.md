@@ -1,14 +1,14 @@
 # A Gentle Introduction to ChatBots
 
-* OpenAI chat completion API.
-* OpenAI assistant API.
+* OpenAI Responses API.
+* OpenAI Assistant API.
 * Interface with Gradio.
 * RAG with LangChain.
 
 ## Installation
 
-```bash	
-conda create -n chatbot python=3.9
-conda activate chatbot
-pip install -r requirements.txt
+```bash
+uv venv --python 3.11
+source .venv/bin/activate
+uv pip install -r requirements.txt
 ```

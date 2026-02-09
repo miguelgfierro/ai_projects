@@ -1,5 +1,5 @@
 # Usage
-# $ cp environment_template.py environment.py
+# $ cp environment_template environment
 
 # OPENAI
 # https://platform.openai.com/account/api-keys
