@@ -9,14 +9,12 @@ from openai import OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
-def generate_response(user_input, previous_response_id=None):
-    # Generate a response from OpenAI Responses API
+def generate_response(user_input):
+    # Each call is independent, no conversation memory
     response = client.responses.create(
         model="gpt-4o-mini",  # Models: https://platform.openai.com/docs/models
-        # model="gpt-5.2",  
         instructions="You are a helpful assistant.",
         input=user_input,
-        previous_response_id=previous_response_id,
         temperature=0.7,  # The temperature can range from 0 to 2.
         top_p=1.0,
     )
@@ -26,8 +24,6 @@ def generate_response(user_input, previous_response_id=None):
 def main():
     welcome_message = "Hello! I'm your chatbot. Ask me anything, and I'll do my best to help you."
     print(f"Chatbot: {welcome_message}")
-
-    previous_response_id = None
 
     while True:
         # Get user input
@@ -40,12 +36,8 @@ def main():
             break
 
         # Generate and display the bot's response
-        response = generate_response(user_input, previous_response_id)
-        bot_response = response.output_text
-        print(f"Chatbot: {bot_response}")
-
-        # Keep track of conversation state
-        previous_response_id = response.id
+        response = generate_response(user_input)
+        print(f"Chatbot: {response.output_text}")
 
 
 if __name__ == "__main__":
