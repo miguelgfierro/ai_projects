@@ -37,7 +37,6 @@ with gr.Blocks(title="OpenAI Chatbot") as app:
 
     chatbot = gr.Chatbot(
         height=500,
-        show_copy_button=True,
         placeholder="Start a conversation...",
     )
     previous_response_id = gr.State(None)
