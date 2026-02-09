@@ -2,7 +2,5 @@
 # $ cp environment_template environment
 
 # OPENAI
-# https://platform.openai.com/account/api-keys
+# https://platform.openai.com/api-keys
 OPENAI_API_KEY = "sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-# https://platform.openai.com/assistants
-OPENAI_ASSISTANT_ID = "asst_XXXXXXXXXXXXXXXXXXXXXXXX"

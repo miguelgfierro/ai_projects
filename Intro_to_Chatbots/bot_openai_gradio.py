@@ -32,7 +32,9 @@ def clear_chat():
     return [], None
 
 
-with gr.Blocks(title="OpenAI Chatbot") as app:
+css = ".gradio-container { max-width: 700px !important; margin: auto; }"
+
+with gr.Blocks(title="OpenAI Chatbot", css=css) as app:
     gr.Markdown("# OpenAI Chatbot\nPowered by the Responses API")
 
     chatbot = gr.Chatbot(

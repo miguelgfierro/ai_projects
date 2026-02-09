@@ -1,7 +1,7 @@
 # A Gentle Introduction to ChatBots
 
 * OpenAI Responses API.
-* OpenAI Assistant API.
+* OpenAI Conversations API (persistent chat across sessions).
 * Interface with Gradio.
 * RAG with LangChain.
 
