@@ -32,11 +32,10 @@ def clear_chat():
     return [], None
 
 
-with gr.Blocks(title="OpenAI Chatbot", theme=gr.themes.Soft()) as app:
+with gr.Blocks(title="OpenAI Chatbot") as app:
     gr.Markdown("# OpenAI Chatbot\nPowered by the Responses API")
 
     chatbot = gr.Chatbot(
-        type="messages",
         height=500,
         show_copy_button=True,
         placeholder="Start a conversation...",
@@ -69,4 +68,4 @@ with gr.Blocks(title="OpenAI Chatbot", theme=gr.themes.Soft()) as app:
         outputs=[chatbot, previous_response_id],
     )
 
-app.launch()
+app.launch(theme=gr.themes.Soft())
