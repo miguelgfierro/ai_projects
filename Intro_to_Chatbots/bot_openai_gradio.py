@@ -34,7 +34,7 @@ def clear_chat():
 
 css = ".gradio-container { max-width: 700px !important; margin: auto; }"
 
-with gr.Blocks(title="OpenAI Chatbot", css=css) as app:
+with gr.Blocks(title="OpenAI Chatbot") as app:
     gr.Markdown("# OpenAI Chatbot\nPowered by the Responses API")
 
     chatbot = gr.Chatbot(
@@ -43,16 +43,14 @@ with gr.Blocks(title="OpenAI Chatbot", css=css) as app:
     )
     previous_response_id = gr.State(None)
 
+    user_input = gr.Textbox(
+        placeholder="Type your message here...",
+        show_label=False,
+        container=False,
+    )
     with gr.Row():
-        user_input = gr.Textbox(
-            placeholder="Type your message here...",
-            show_label=False,
-            scale=9,
-            container=False,
-        )
-        send_btn = gr.Button("Send", variant="primary", scale=1)
-
-    clear_btn = gr.Button("Clear Chat")
+        send_btn = gr.Button("Send", variant="primary")
+        clear_btn = gr.Button("Clear Chat")
 
     send_btn.click(
         fn=chat,
@@ -69,4 +67,4 @@ with gr.Blocks(title="OpenAI Chatbot", css=css) as app:
         outputs=[chatbot, previous_response_id],
     )
 
-app.launch(theme=gr.themes.Soft())
+app.launch(theme=gr.themes.Soft(), css=css)
