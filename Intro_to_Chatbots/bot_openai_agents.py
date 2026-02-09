@@ -3,13 +3,11 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path="environment")
 
 import os
-
-os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-
 import json
-
-from agents import Agent, Runner, function_tool, handoff, InputGuardrail, GuardrailFunctionOutput
+from agents import Agent, Runner, function_tool, InputGuardrail, GuardrailFunctionOutput, set_default_openai_key
 from pydantic import BaseModel
+
+set_default_openai_key(os.getenv("OPENAI_API_KEY"))
 
 
 # --- Shared Mock Data ---
